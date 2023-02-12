@@ -1,0 +1,484 @@
+{
+    "base_packages": [
+        {
+            "name": "acl",
+            "version": "2.3.1",
+            "url": "https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "attr",
+            "version": "2.5.1",
+            "url": "https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "autoconf",
+            "version": "2.71",
+            "url": "https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "automake",
+            "version": "1.16.5",
+            "url": "https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "bash",
+            "version": "5.1.16",
+            "url": "https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz",
+            "script": "bash.sh"
+        },
+        {
+            "name": "bc",
+            "version": "6.0.1",
+            "url": "https://github.com/gavinhoward/bc/releases/download/6.0.1/bc-6.0.1.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "binutils",
+            "version": "2.39",
+            "url": "https://ftp.gnu.org/gnu/binutils/binutils-2.39.tar.xz",
+            "script": "binutils_"
+        },
+        {
+            "name": "bison",
+            "version": "3.8.2",
+            "url": "https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "bzip2",
+            "version": "1.0.8",
+            "url": "https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "check",
+            "version": "0.15.2",
+            "url": "https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "coreutils",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.1.tar.xz",
+            "script": "coreutils.sh"
+        },
+        {
+            "name": "dejagnu",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "diffutils",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/diffutils/diffutils-3.8.tar.xz",
+            "script": "diffutils.sh"
+        },
+        {
+            "name": "e2fsprogs",
+            "version": "",
+            "url": "https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.46.5/e2fsprogs-1.46.5.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "elfutils",
+            "version": "",
+            "url": "https://sourceware.org/ftp/elfutils/0.187/elfutils-0.187.tar.bz2",
+            "script": ""
+        },
+        {
+            "name": "eudev",
+            "version": "",
+            "url": "https://github.com/eudev-project/eudev/releases/download/v3.2.11/eudev-3.2.11.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "expat",
+            "version": "",
+            "url": "https://prdownloads.sourceforge.net/expat/expat-2.4.8.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "expect",
+            "version": "",
+            "url": "https://prdownloads.sourceforge.net/expect/expect5.45.4.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "file",
+            "version": "",
+            "url": "https://astron.com/pub/file/file-5.42.tar.gz",
+            "script": "file.sh"
+        },
+        {
+            "name": "findutils",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/findutils/findutils-4.9.0.tar.xz",
+            "script": "findutils.sh"
+        },
+        {
+            "name": "flex",
+            "version": "",
+            "url": "https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "gawk",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gawk/gawk-5.1.1.tar.xz",
+            "script": "gawk.sh"
+        },
+        {
+            "name": "gcc",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gcc/gcc-12.2.0/gcc-12.2.0.tar.xz",
+            "script": "gcc_"
+        },
+        {
+            "name": "gdbm",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "gettext",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "glibc",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/glibc/glibc-2.36.tar.xz",
+            "script": "glibc.sh"
+        },
+        {
+            "name": "gmp",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "gperf",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "grep",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz",
+            "script": "grep.sh"
+        },
+        {
+            "name": "groff",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/groff/groff-1.22.4.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "grub",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "gzip",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/gzip/gzip-1.12.tar.xz",
+            "script": "gzip.sh"
+        },
+        {
+            "name": "iana-etc",
+            "version": "",
+            "url": "https://github.com/Mic92/iana-etc/releases/download/20220812/iana-etc-20220812.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "inetutils",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/inetutils/inetutils-2.3.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "intltool",
+            "version": "",
+            "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "iproute2",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.19.0.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "kbd",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/utils/kbd/kbd-2.5.1.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "kmod",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "less",
+            "version": "",
+            "url": "https://www.greenwoodsoftware.com/less/less-590.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "lfs-bootscripts",
+            "version": "",
+            "url": "https://www.linuxfromscratch.org/lfs/downloads/11.2/lfs-bootscripts-20220723.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "libcap",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.65.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "libffi",
+            "version": "",
+            "url": "https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "libpipeline",
+            "version": "",
+            "url": "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.6.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "libtool",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "linux",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.19.2.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "m4",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz",
+            "script": "m4.sh"
+        },
+        {
+            "name": "make",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/make/make-4.3.tar.gz",
+            "script": "make.sh"
+        },
+        {
+            "name": "man-db",
+            "version": "",
+            "url": "https://download.savannah.gnu.org/releases/man-db/man-db-2.10.2.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "man-pages",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/docs/man-pages/man-pages-5.13.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "meson",
+            "version": "",
+            "url": "https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "mpc",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "mpfr",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "ncurses",
+            "version": "",
+            "url": "https://invisible-mirror.net/archives/ncurses/ncurses-6.3.tar.gz",
+            "script": "ncurses.sh"
+        },
+        {
+            "name": "ninja",
+            "version": "",
+            "url": "https://github.com/ninja-build/ninja/archive/v1.11.0/ninja-1.11.0.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "openssl",
+            "version": "",
+            "url": "https://www.openssl.org/source/openssl-3.0.5.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "patch",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz",
+            "script": "patch.sh"
+        },
+        {
+            "name": "perl",
+            "version": "",
+            "url": "https://www.cpan.org/src/5.0/perl-5.36.0.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "pkg-config",
+            "version": "",
+            "url": "https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "procps",
+            "version": "",
+            "url": "https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-4.0.0.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "psmisc",
+            "version": "",
+            "url": "https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.5.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "python",
+            "version": "",
+            "url": "https://www.python.org/ftp/python/3.10.6/Python-3.10.6.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "python-doc",
+            "version": "",
+            "url": "https://www.python.org/ftp/python/doc/3.10.6/python-3.10.6-docs-html.tar.bz2",
+            "script": ""
+        },
+        {
+            "name": "readline",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/readline/readline-8.1.2.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "sed",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz",
+            "script": "sed.sh"
+        },
+        {
+            "name": "shadow",
+            "version": "",
+            "url": "https://github.com/shadow-maint/shadow/releases/download/4.12.2/shadow-4.12.2.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "sysklogd",
+            "version": "",
+            "url": "https://www.infodrom.org/projects/sysklogd/download/sysklogd-1.5.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "sysvinit",
+            "version": "",
+            "url": "https://download.savannah.gnu.org/releases/sysvinit/sysvinit-3.04.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "tar",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/tar/tar-1.34.tar.xz",
+            "script": "tar.sh"
+        },
+        {
+            "name": "tcl",
+            "version": "",
+            "url": "https://downloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "tcl-doc",
+            "version": "",
+            "url": "https://downloads.sourceforge.net/tcl/tcl8.6.12-html.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "texinfo",
+            "version": "",
+            "url": "https://ftp.gnu.org/gnu/texinfo/texinfo-6.8.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "time-zone-data",
+            "version": "",
+            "url": "https://www.iana.org/time-zones/repository/releases/tzdata2022c.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "udef-lfs",
+            "version": "",
+            "url": "https://anduin.linuxfromscratch.org/LFS/udev-lfs-20171102.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "util-linux",
+            "version": "",
+            "url": "https://www.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.1.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "vim",
+            "version": "",
+            "url": "https://anduin.linuxfromscratch.org/LFS/vim-9.0.0228.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "wheel",
+            "version": "",
+            "url": "https://anduin.linuxfromscratch.org/LFS/wheel-0.37.1.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "xml-parser",
+            "version": "",
+            "url": "https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "xz-utils",
+            "version": "",
+            "url": "https://tukaani.org/xz/xz-5.2.6.tar.xz",
+            "script": "xz.sh"
+        },
+        {
+            "name": "zlib",
+            "version": "",
+            "url": "https://zlib.net/zlib-1.2.12.tar.xz",
+            "script": ""
+        },
+        {
+            "name": "zstd",
+            "version": "",
+            "url": "https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz",
+            "script": ""
+        }
+    ]
+}

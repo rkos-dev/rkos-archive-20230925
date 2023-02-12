@@ -1,0 +1,9 @@
+{
+    "lfs_partition": "/dev/sdb",
+    "lfs_env": "/mnt/lfs",
+    "base_packages": "base_packages.json",
+    "cross_compile_packages": "cross_compile_packages.json",
+    "package_sources_path": "./sources/",
+    "config_path": "./configs/",
+    "host_install_cmd": "sudo apt install -y "
+}
