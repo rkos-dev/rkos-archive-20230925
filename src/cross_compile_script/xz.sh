@@ -3,6 +3,11 @@
             --build=$(build-aux/config.guess) \
             --disable-static                  \
             --docdir=/usr/share/doc/xz-5.2.6
-make
-make DESTDIR=$LFS install
+
+if [ "$?" -eq 1 ];
+then
+    exit $?
+fi
+
+make && make DESTDIR=$LFS install
 rm -v $LFS/usr/lib/liblzma.la

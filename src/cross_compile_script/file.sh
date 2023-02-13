@@ -6,7 +6,13 @@ pushd build
                --disable-zlib
   make
 popd
+
 ./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
-make FILE_COMPILE=$(pwd)/build/src/file
-make DESTDIR=$LFS install
+
+if [ "$?" -eq 1 ];
+then
+    exit $?
+fi
+
+make FILE_COMPILE=$(pwd)/build/src/file && make DESTDIR=$LFS install
 rm -v $LFS/usr/lib/libmagic.la
