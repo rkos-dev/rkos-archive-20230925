@@ -27,7 +27,8 @@ impl TaskTrait for CreateVmBack {
 
 fn main() {
     init_logger(None);
-    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    //    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
     let mut dagrs = DagEngine::new();
