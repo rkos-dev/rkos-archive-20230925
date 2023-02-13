@@ -64,6 +64,8 @@ pub struct BaseConfig {
     pub cross_compile_packages: String,
     pub package_sources_path: String,
     pub host_install_cmd: String,
+    pub cross_compile_script_path: String,
+    pub base_compile_script_path: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
