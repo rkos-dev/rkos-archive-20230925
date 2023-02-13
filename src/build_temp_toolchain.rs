@@ -4,7 +4,9 @@ use crate::vars;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use flate2::read::GzDecoder;
 use std::env;
+use std::fs;
 use std::fs::File;
+use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
 use tar::Archive;
@@ -18,30 +20,61 @@ fn exec_script(script_path: PathBuf) {
     println!("{}", out);
 }
 
-struct CompilingCrossToolChain {}
+fn exec_chroot_script(script_path: PathBuf) {
+    let output = Command::new("ls")
+        .env_clear()
+        .env("PATH", "/bin")
+        .env("PATH", "/sbin")
+        .spawn()
+        .expect("error");
+}
+
+pub struct CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
-    fn check_system_env() {}
-    fn install_packages() -> Result<(), std::io::Error> {
+    fn check_system_env(&self) -> Result<String, env::VarError> {
+        let lfs_env = "LFS";
+        match env::var(lfs_env) {
+            Ok(v) => Ok(v),
+            Err(e) => Err(e),
+        }
+    }
+
+    fn install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
         let cross_compile_package = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
         for i in cross_compile_package {
-            let path = "sources/".to_string() + &i;
-            let tar_gz = File::open(path)?;
-            let mut archive = Archive::new(tar_gz);
-            archive.unpack("./".to_string() + &i)?;
+            let package_path: PathBuf = ["sources", i].iter().collect();
+            let script_path: PathBuf = [
+                &vars::BASE_CONFIG.cross_compile_script_path,
+                &(i.clone() + ".sh"),
+            ]
+            .iter()
+            .collect();
 
-            env::set_current_dir(&i).unwrap();
+            println!("{:?} : {:?}", &package_path, &script_path);
+            let file = File::open(&package_path)?;
 
-            let mut current_path = vars::ROOT_DIR.clone();
-            current_path.push("cross_compile_scripts");
-            current_path.push(i.clone() + ".sh");
+            let mut tar = GzDecoder::new(file);
+            let mut archive = Archive::new(tar);
+            archive.unpack(".")?;
 
-            exec_script(current_path);
+            //            let target_script_path: PathBuf = ["./", &i].iter().collect();
+            //            fs::copy(script_path, &target_script_path)?;
+            //
+            //            exec_script(target_script_path);
+            return Ok(());
         }
 
         Ok(())
     }
-    fn check_output_data() {}
-    fn delete_package() {}
+
+    fn check_data(&self, package_name: String) {
+        //检测命令的状态就可以
+    }
+
+    fn delete_package(&self, package_path: String) -> std::io::Result<()> {
+        fs::remove_dir_all(package_path)?;
+        Ok(())
+    }
 }
 impl TaskTrait for CompilingCrossToolChain {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
@@ -52,19 +85,47 @@ impl TaskTrait for CompilingCrossToolChain {
         //判断输出是否正常，软件包安装是否正常
         //删除软件包
         //否则下载软件包然后重复上述过程
-        let hello_dagrs = String::from("Hello Dagrs!");
-        Retval::new(hello_dagrs)
+        let lfs_env = match self.check_system_env() {
+            Ok(v) => v,
+            Err(e) => {
+                println!("LFS_ENV ERROR : {}", e);
+                //TODO:使用错误常量来定义错误
+                std::process::exit(1);
+            }
+        };
+
+        println!("{}", lfs_env);
+        self.install_packages(lfs_env).unwrap();
+
+        Retval::new(())
     }
 }
 
 struct EnterChroot {}
+impl EnterChroot {
+    fn prepare_chroot(&self) {
+        //脚本来实现
+    }
+    fn enter_chroot(&self) -> std::io::Result<()> {
+        chroot("/mnt/lfs")?;
+        std::env::set_current_dir("/")?;
+        Ok(())
+    }
+}
 impl TaskTrait for EnterChroot {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        self.prepare_chroot();
+        self.enter_chroot();
+
         //修改临时环境目录的所有者
         //挂载内核文件系统
+        //移动所有文件
         //进入chroot环境
-        let hello_dagrs = String::from("Hello Dagrs!");
-        Retval::new(hello_dagrs)
+        // - 本体chroot
+        // - set 目录到/
+        // - 删除所有env
+        // - 重新设定HOME PATH
+        Retval::new(())
     }
 }
 
