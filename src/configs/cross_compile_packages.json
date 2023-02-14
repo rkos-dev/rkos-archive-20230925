@@ -2,9 +2,7 @@
     "cross_compile_toolchains": [
         "binutils",
         "gcc",
-        "linux_header",
-        "glibc",
-        "libstdc++"
+        "glibc"
     ],
     "cross_compile_packages": [
         "m4",
