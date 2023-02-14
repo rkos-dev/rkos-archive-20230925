@@ -7,5 +7,6 @@
     "config_path": "./configs/",
     "host_install_cmd": "sudo apt install -y ",
     "cross_compile_script_path": "./cross_compile_script/",
-    "base_compile_script_path": "./base_package_script/"
+    "base_compile_script_path": "./base_package_script/",
+    "decompress_script": "./other_scripts/decompress.sh"
 }
