@@ -10,13 +10,14 @@ use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
 
-fn exec_script(script_path: PathBuf) {
+fn exec_script(script_path: PathBuf, dir: PathBuf) {
     let output = Command::new("/bin/bash")
         .arg(script_path)
-        .output()
+        .current_dir(dir)
+        .spawn()
         .expect("error");
-    let out = String::from_utf8(output.stdout).unwrap();
-    println!("{}", out);
+    //    let out = String::from_utf8(output.stdout).unwrap();
+    //    println!("{}", out);
 }
 
 fn exec_chroot_script(script_path: PathBuf) {
@@ -97,14 +98,14 @@ impl CompilingCrossToolChain {
                 None => panic!("Not found package {:?}", i),
             };
 
-            let target_path: PathBuf = [target_path, (i.to_owned() + ".sh").into()]
+            let script_target_path: PathBuf = [target_path.clone(), (i.to_owned() + ".sh").into()]
                 .iter()
                 .collect();
-            println!("{:?}", target_path);
+            println!("{:?} : {:?}", target_path, script_target_path);
             //let target_script_path: PathBuf = ["./", &i].iter().collect();
-            fs::copy(script_path, &target_path)?;
+            fs::copy(script_path, &script_target_path)?;
 
-            exec_script(target_path);
+            exec_script(script_target_path, target_path);
         }
 
         Ok(())
