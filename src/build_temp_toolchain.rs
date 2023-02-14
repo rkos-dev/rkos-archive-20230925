@@ -2,14 +2,13 @@ extern crate dagrs;
 
 use crate::vars;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use flate2::read::GzDecoder;
+use glob::glob;
 use std::env;
 use std::fs;
 use std::fs::File;
 use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
-use tar::Archive;
 
 fn exec_script(script_path: PathBuf) {
     let output = Command::new("/bin/bash")
@@ -42,26 +41,70 @@ impl CompilingCrossToolChain {
     fn install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
         let cross_compile_package = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
         for i in cross_compile_package {
-            let package_path: PathBuf = ["sources", i].iter().collect();
-            let script_path: PathBuf = [
-                &vars::BASE_CONFIG.cross_compile_script_path,
-                &(i.clone() + ".sh"),
-            ]
-            .iter()
-            .collect();
+            let package_path = match glob(&("sources/".to_owned() + &i + "*"))
+                .unwrap()
+                .filter_map(Result::ok)
+                .next()
+            {
+                Some(v) => v,
+                //TODO:添加软件包缺失时的处理程序
+                //1. 请求用户判断链接是否正确，若正确，则重新下载
+                None => panic!("Not found package {:?}", i),
+            };
 
-            println!("{:?} : {:?}", &package_path, &script_path);
-            let file = File::open(&package_path)?;
+            //TODO:同上，最终形成一个可以生成迭代器的函数，提供包类型（cross，base）等然后返回包和
+            //脚本路径的迭代器
+            let script_path =
+                match glob(&(vars::BASE_CONFIG.cross_compile_script_path.clone() + &i + "*sh"))
+                    .unwrap()
+                    .filter_map(Result::ok)
+                    .next()
+                {
+                    Some(v) => v,
+                    //TODO:添加软件包缺失时的处理程序
+                    //1. 请求用户判断链接是否正确，若正确，则重新下载
+                    None => panic!("Not found package {:?}", i),
+                };
 
-            let mut tar = GzDecoder::new(file);
-            let mut archive = Archive::new(tar);
-            archive.unpack(".")?;
+            //            let script_path: PathBuf = [
+            //                &vars::BASE_CONFIG.cross_compile_script_path,
+            //                &(i.clone() + ".sh"),
+            //            ]
+            //            .iter()
+            //            .collect();
 
-            //            let target_script_path: PathBuf = ["./", &i].iter().collect();
-            //            fs::copy(script_path, &target_script_path)?;
-            //
-            //            exec_script(target_script_path);
-            return Ok(());
+            println!("{:?} : {:?} : {:?}", &i, &package_path, &script_path);
+
+            println!("{:?}", &vars::BASE_CONFIG.decompress_script);
+            let output = Command::new("tar")
+                .arg("xvf")
+                .arg(package_path)
+                .arg("-C")
+                .arg("sources")
+                .output()
+                .expect("error");
+            let out = String::from_utf8(output.stdout).unwrap();
+            println!("{}", out);
+
+            let target_path = match glob(&("sources/".to_owned() + &i + "*/"))
+                .unwrap()
+                .filter_map(Result::ok)
+                .next()
+            {
+                Some(v) => v,
+                //TODO:添加软件包缺失时的处理程序
+                //1. 请求用户判断链接是否正确，若正确，则重新下载
+                None => panic!("Not found package {:?}", i),
+            };
+
+            let target_path: PathBuf = [target_path, (i.to_owned() + ".sh").into()]
+                .iter()
+                .collect();
+            println!("{:?}", target_path);
+            //let target_script_path: PathBuf = ["./", &i].iter().collect();
+            fs::copy(script_path, &target_path)?;
+
+            exec_script(target_path);
         }
 
         Ok(())
@@ -95,6 +138,12 @@ impl TaskTrait for CompilingCrossToolChain {
         };
 
         println!("{}", lfs_env);
+        //for entry in glob("binutils*").expect("not fount") {
+        //    match entry {
+        //        Ok(path) => println!("{:?}", path.display()),
+        //        Err(e) => println!("{:?}", e),
+        //    }
+        //}
         self.install_packages(lfs_env).unwrap();
 
         Retval::new(())
