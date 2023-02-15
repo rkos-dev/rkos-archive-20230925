@@ -480,5 +480,37 @@
             "url": "https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz",
             "script": ""
         }
+    ],
+    "package_patches": [
+        {
+            "name": "bzip2*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/bzip2-1.0.8-install_docs-1.patch",
+            "script": ""
+        },
+        {
+            "name": "coreutils*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/coreutils-9.1-i18n-1.patch",
+            "script": ""
+        },
+        {
+            "name": "glibc*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/glibc-2.36-fhs-1.patch",
+            "script": ""
+        },
+        {
+            "name": "kbd*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/kbd-2.5.1-backspace-1.patch",
+            "script": ""
+        },
+        {
+            "name": "sysvinit*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/sysvinit-3.04-consolidated-1.patch",
+            "script": ""
+        },
+        {
+            "name": "zstd*patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/zstd-1.5.2-upstream_fixes-1.patch",
+            "script": ""
+        }
     ]
 }

@@ -50,10 +50,16 @@ pub struct PackageInfo {
     pub url: String,
     pub script: String,
 }
+pub struct PatchInfo {
+    pub name: String,
+    pub url: String,
+    pub script: String,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BasePackages {
     pub base_packages: Vec<PackageInfo>,
+    pub package_patches: Vec<PatchInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
