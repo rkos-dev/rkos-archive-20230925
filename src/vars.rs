@@ -50,6 +50,8 @@ pub struct PackageInfo {
     pub url: String,
     pub script: String,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PatchInfo {
     pub name: String,
     pub url: String,
