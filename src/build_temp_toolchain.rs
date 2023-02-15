@@ -64,7 +64,7 @@ impl CompilingCrossToolChain {
                     Some(v) => v,
                     //TODO:添加软件包缺失时的处理程序
                     //1. 请求用户判断链接是否正确，若正确，则重新下载
-                    None => panic!("Not found package {:?}", i),
+                    None => panic!("Not found script {:?}", i),
                 };
 
             //            let script_path: PathBuf = [
@@ -95,7 +95,7 @@ impl CompilingCrossToolChain {
                 Some(v) => v,
                 //TODO:添加软件包缺失时的处理程序
                 //1. 请求用户判断链接是否正确，若正确，则重新下载
-                None => panic!("Not found package {:?}", i),
+                None => panic!("Not found targetpath {:?}", i),
             };
 
             let script_target_path: PathBuf = [target_path.clone(), (i.to_owned() + ".sh").into()]
@@ -105,7 +105,12 @@ impl CompilingCrossToolChain {
             //let target_script_path: PathBuf = ["./", &i].iter().collect();
             fs::copy(script_path, &script_target_path)?;
 
-            exec_script(script_target_path, target_path);
+            let script_name = match script_target_path.file_name() {
+                Some(v) => v,
+                None => panic!("err"),
+            };
+
+            exec_script(script_name.into(), target_path);
         }
 
         Ok(())
