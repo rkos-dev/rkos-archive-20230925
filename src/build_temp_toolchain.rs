@@ -42,6 +42,7 @@ impl CompilingCrossToolChain {
     fn install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
         let cross_compile_package = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
         for i in cross_compile_package {
+            //软件包相对工作目录的路径
             let package_path = match glob(&("sources/".to_owned() + &i + "*"))
                 .unwrap()
                 .filter_map(Result::ok)
@@ -55,6 +56,8 @@ impl CompilingCrossToolChain {
 
             //TODO:同上，最终形成一个可以生成迭代器的函数，提供包类型（cross，base）等然后返回包和
             //脚本路径的迭代器
+
+            //预先准备的脚本文件路径
             let script_path =
                 match glob(&(vars::BASE_CONFIG.cross_compile_script_path.clone() + &i + "*sh"))
                     .unwrap()
@@ -66,13 +69,6 @@ impl CompilingCrossToolChain {
                     //1. 请求用户判断链接是否正确，若正确，则重新下载
                     None => panic!("Not found script {:?}", i),
                 };
-
-            //            let script_path: PathBuf = [
-            //                &vars::BASE_CONFIG.cross_compile_script_path,
-            //                &(i.clone() + ".sh"),
-            //            ]
-            //            .iter()
-            //            .collect();
 
             println!("{:?} : {:?} : {:?}", &i, &package_path, &script_path);
 
@@ -87,6 +83,7 @@ impl CompilingCrossToolChain {
             let out = String::from_utf8(output.stdout).unwrap();
             println!("{}", out);
 
+            //解压好的程序包路径
             let target_path = match glob(&("sources/".to_owned() + &i + "*/"))
                 .unwrap()
                 .filter_map(Result::ok)
@@ -98,6 +95,7 @@ impl CompilingCrossToolChain {
                 None => panic!("Not found targetpath {:?}", i),
             };
 
+            //最终脚本文件在程序包中的路径
             let script_target_path: PathBuf = [target_path.clone(), (i.to_owned() + ".sh").into()]
                 .iter()
                 .collect();
@@ -105,6 +103,7 @@ impl CompilingCrossToolChain {
             //let target_script_path: PathBuf = ["./", &i].iter().collect();
             fs::copy(script_path, &script_target_path)?;
 
+            //脚本文件名字
             let script_name = match script_target_path.file_name() {
                 Some(v) => v,
                 None => panic!("err"),
@@ -144,12 +143,7 @@ impl TaskTrait for CompilingCrossToolChain {
         };
 
         println!("{}", lfs_env);
-        //for entry in glob("binutils*").expect("not fount") {
-        //    match entry {
-        //        Ok(path) => println!("{:?}", path.display()),
-        //        Err(e) => println!("{:?}", e),
-        //    }
-        //}
+
         self.install_packages(lfs_env).unwrap();
 
         Retval::new(())
