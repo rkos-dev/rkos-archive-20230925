@@ -173,7 +173,16 @@ impl PreparingDisk {
         )
         .unwrap();
         new_part.set_flag(PartitionFlag::PED_PARTITION_BOOT, true);
-        disk.add_partition(new_part, new_part.get_geom().exact());
+        let constraint = new_part.get_geom();
+        let constraint = match constraint.exact() {
+            Some(v) => v,
+            None => panic!("err"),
+        };
+        //{
+        //   Some(v) => v,
+        //  None => panic!("no constraint"),
+        //};
+        disk.add_partition(&mut new_part, &constraint);
         //       }
         println!("over");
     }
