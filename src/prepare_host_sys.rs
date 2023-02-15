@@ -1,8 +1,8 @@
 extern crate dagrs;
 //extern crate sys_mount;
 
-use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Partition, Retval, TaskTrait, TaskWrapper};
-use libparted::{Device, Disk, FileSystemType, PartitionFlag, PartitionType};
+use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
+use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
 use nix::mount;
 
 use std::collections::HashMap;
