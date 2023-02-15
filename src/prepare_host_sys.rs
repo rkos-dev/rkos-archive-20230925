@@ -194,6 +194,7 @@ impl TaskTrait for SettingLfsVariable {
     //设定LFS环境变量并保证在所有时刻都可用
     //可以加入/root/.bash_profile和主目录.bash_profile
     //需要确认/etc/passwd中为每个需要使用LFS变量的用户指定shell为bash
+    //TODO:计划改为软件运行前用户手动设定
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::new(())
     }
@@ -206,6 +207,7 @@ impl PrepareEnvironment {
     //配置lfs环境
     //配置make的线程数
     //创建挂载点并挂载LFS分区
+    //已经通过脚本设置好了
 }
 impl TaskTrait for PrepareEnvironment {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
