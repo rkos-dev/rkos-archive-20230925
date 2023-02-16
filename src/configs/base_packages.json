@@ -67,6 +67,18 @@
             "script": "coreutils.sh"
         },
         {
+            "name": "rust",
+            "version": "",
+            "url": "https://static.rust-lang.org/dist/rust-1.67.1-x86_64-unknown-linux-gnu.tar.gz",
+            "script": ""
+        },
+        {
+            "name": "coreutils*rust",
+            "version": "",
+            "url": "https://github.com/uutils/coreutils/releases/download/0.0.17/coreutils-0.0.17-x86_64-unknown-linux-gnu.tar.gz",
+            "script": "coreutils.sh"
+        },
+        {
             "name": "dejagnu",
             "version": "",
             "url": "https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz",
