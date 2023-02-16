@@ -75,6 +75,7 @@ pub struct BaseConfig {
     pub cross_compile_script_path: String,
     pub base_compile_script_path: String,
     pub decompress_script: String,
+    pub enter_chroot_script_path: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
