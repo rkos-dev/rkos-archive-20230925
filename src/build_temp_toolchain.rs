@@ -4,29 +4,36 @@ use crate::vars;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use glob::glob;
 use std::env;
+use std::ffi::OsStr;
 use std::fs;
 use std::fs::File;
 use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
 
-fn exec_script(script_path: PathBuf, dir: PathBuf) {
+fn exec_script(script_path: PathBuf, dir: PathBuf) -> bool {
+    let abs_path = fs::canonicalize(dir.as_path()).unwrap();
+    let filename = match script_path.to_str() {
+        Some(v) => v,
+        None => panic!("cannot turn to str"),
+    };
     let output = Command::new("/bin/bash")
-        .arg(script_path)
-        .current_dir(dir)
-        .spawn()
+        .current_dir(abs_path)
+        .arg(filename)
+        .status()
         .expect("error");
-    //    let out = String::from_utf8(output.stdout).unwrap();
-    //    println!("{}", out);
+    output.success()
 }
 
-fn exec_chroot_script(script_path: PathBuf) {
+fn exec_chroot_script(script_path: PathBuf) -> bool {
     let output = Command::new("ls")
         .env_clear()
         .env("PATH", "/bin")
         .env("PATH", "/sbin")
-        .spawn()
+        .env("HOME", "/root")
+        .status()
         .expect("error");
+    output.success()
 }
 
 pub struct CompilingCrossToolChain {}
@@ -99,7 +106,7 @@ impl CompilingCrossToolChain {
             let script_target_path: PathBuf = [target_path.clone(), (i.to_owned() + ".sh").into()]
                 .iter()
                 .collect();
-            println!("{:?} : {:?}", target_path, script_target_path);
+            println!("{:?} : {:?}", &target_path, script_target_path);
             //let target_script_path: PathBuf = ["./", &i].iter().collect();
             fs::copy(script_path, &script_target_path)?;
 
@@ -109,7 +116,11 @@ impl CompilingCrossToolChain {
                 None => panic!("err"),
             };
 
-            exec_script(script_name.into(), target_path);
+            let status = exec_script(script_name.into(), target_path.clone());
+            if !status {
+                self.delete_package(target_path);
+            }
+            assert!(status);
         }
 
         Ok(())
@@ -119,7 +130,7 @@ impl CompilingCrossToolChain {
         //检测命令的状态就可以
     }
 
-    fn delete_package(&self, package_path: String) -> std::io::Result<()> {
+    fn delete_package(&self, package_path: PathBuf) -> std::io::Result<()> {
         fs::remove_dir_all(package_path)?;
         Ok(())
     }
@@ -152,7 +163,21 @@ impl TaskTrait for CompilingCrossToolChain {
 
 struct EnterChroot {}
 impl EnterChroot {
-    fn prepare_chroot(&self) {
+    fn prepare_chroot_chmod(&self) -> bool {
+        let chmod_script_path = "enter_chroot_scripts/chown.sh";
+        let output = Command::new("/bin/bash")
+            .arg(chmod_script_path)
+            .status()
+            .expect("error");
+        output.success()
+    }
+    fn prepare_virt_fsys(&self) -> bool {
+        let prepare_virtual_fsys = "enter_chroot_scripts/prepare_vir_filesystem.sh";
+        let output = Command::new("/bin/bash")
+            .arg(prepare_virtual_fsys)
+            .status()
+            .expect("error");
+        output.success()
         //脚本来实现
     }
     fn enter_chroot(&self) -> std::io::Result<()> {
@@ -160,11 +185,23 @@ impl EnterChroot {
         std::env::set_current_dir("/")?;
         Ok(())
     }
+    fn create_path(&self) -> bool {
+        let created_script_path: PathBuf = ["enter_chroot_scripts", "created_script.sh"]
+            .iter()
+            .collect();
+        let status = exec_chroot_script(created_script_path);
+        status
+    }
 }
 impl TaskTrait for EnterChroot {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        self.prepare_chroot();
+        let status = self.prepare_chroot_chmod();
+        assert!(status);
+        let status = self.prepare_virt_fsys();
+        assert!(status);
         self.enter_chroot();
+        let status = self.create_path();
+        assert!(status);
 
         //修改临时环境目录的所有者
         //挂载内核文件系统
@@ -187,8 +224,8 @@ impl TaskTrait for CompileTempPackages {
         //判断输出是否正常，软件包安装是否正常
         //删除软件包
         //否则下载软件包然后重复上述过程
-        let hello_dagrs = String::from("Hello Dagrs!");
-        Retval::new(hello_dagrs)
+
+        Retval::new(())
     }
 }
 
