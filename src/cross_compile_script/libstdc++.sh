@@ -1,4 +1,5 @@
-mkdir -v build && pushd build 
+mkdir -v build 
+cd build 
 
 ../libstdc++-v3/configure           \
     --host=$LFS_TGT                 \
@@ -17,6 +18,5 @@ fi
 
 make && make DESTDIR=$LFS install
 
-popd
 
 rm -v $LFS/usr/lib/lib{stdc++,stdc++fs,supc++}.la

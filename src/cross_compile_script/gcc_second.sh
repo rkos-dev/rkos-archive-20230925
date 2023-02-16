@@ -14,7 +14,8 @@ esac
 sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
 
-mkdir -v build && pushd build
+mkdir -v build 
+cd build
 ../configure                                       \
     --build=$(../config.guess)                     \
     --host=$LFS_TGT                                \
@@ -40,6 +41,5 @@ fi
 
 make && make DESTDIR=$LFS install
 
-popd
 
 ln -sv gcc $LFS/usr/bin/cc
