@@ -12,7 +12,9 @@ case $(uname -m) in
  ;;
 esac
 
-mkdir -v build && pushd build
+mkdir -v build  
+
+cd  build
 
 ../configure                  \
     --target=$LFS_TGT         \

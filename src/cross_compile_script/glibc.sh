@@ -8,7 +8,8 @@ esac
 
 patch -Np1 -i ../glibc-2.36-fhs-1.patch
 
-mkdir -v build && pushd build
+mkdir -v build 
+cd build
 
 echo "rootsbindir=/usr/sbin" > configparms
 
@@ -27,7 +28,6 @@ fi
 
 make && make DESTDIR=$LFS install
 
-popd
 
 sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
 

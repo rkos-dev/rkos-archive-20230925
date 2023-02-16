@@ -1,6 +1,7 @@
 sed '6009s/$add_dir//' -i ltmain.sh
+
 mkdir -v build
-pushd build
+cd build
     ../configure                   \
         --prefix=/usr              \
         --build=$(../config.guess) \
@@ -18,7 +19,6 @@ pushd build
     fi
 
     make && make DESTDIR=$LFS install
-popd
 
 rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.{a,la}
 
