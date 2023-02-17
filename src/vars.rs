@@ -52,8 +52,16 @@ pub struct PackageInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct PatchInfo {
+    pub name: String,
+    pub url: String,
+    pub script: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BasePackages {
     pub base_packages: Vec<PackageInfo>,
+    pub package_patches: Vec<PatchInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -64,6 +72,10 @@ pub struct BaseConfig {
     pub cross_compile_packages: String,
     pub package_sources_path: String,
     pub host_install_cmd: String,
+    pub cross_compile_script_path: String,
+    pub base_compile_script_path: String,
+    pub decompress_script: String,
+    pub enter_chroot_script_path: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

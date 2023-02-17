@@ -1,12 +1,15 @@
 extern crate dagrs;
+//extern crate sys_mount;
 
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use libparted::{Device, Disk};
+use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
 use nix::mount;
+
 use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command;
 
 use crate::vars;
@@ -93,6 +96,12 @@ impl PreparingSoftware {
 
         let base_software = &vars::BASE_PACKAGES.base_packages;
         for i in base_software {
+            //            let cmd = format!("wget -P sources {}", &i.url.as_str());
+            //            let output = Command::new("/bin/bash")
+            //                .arg("-c")
+            //                .arg(cmd)
+            //                .status()
+            //                .expect("cannot download");
             let output = Command::new("wget")
                 .arg("-P")
                 .arg("./sources")
@@ -140,14 +149,41 @@ impl PreparingDisk {
     //在分区上建立文件系统
     //挂载分区
 
-    fn preparing_new_filesystem(&self) {
-        for (_dev_i, mut device) in Device::devices(true).enumerate() {
-            println!("Path : {:?}", device.path());
-            let disk = Disk::new(&mut device).unwrap();
-            for part in disk.parts() {
-                println!("{:?}", part.type_get_name());
-            }
+    fn preparing_new_filesystem(&self, path: PathBuf) {
+        let mut device = Device::new(path).unwrap();
+        //        for mut device in Device::devices(true) {
+        let mut disk = Disk::new(&mut device).unwrap();
+        for mut part in disk.parts() {
+            println!(
+                "{:?} : {:?} : {:?}",
+                part.name(),
+                part.type_get_name(),
+                part.get_path()
+            );
         }
+        let fs_type = FileSystemType::get("ext4").expect("no systemtype");
+        println!("{:?}", fs_type.name());
+        assert_eq!(1, 0); //TODO:后续部分不能在本机上测试
+        let mut new_part = Partition::new(
+            &disk,
+            PartitionType::PED_PARTITION_LOGICAL,
+            FileSystemType::get("ext4").as_ref(),
+            0,
+            128,
+        )
+        .unwrap();
+        new_part.set_flag(PartitionFlag::PED_PARTITION_BOOT, true);
+        let constraint = new_part.get_geom();
+        let constraint = match constraint.exact() {
+            Some(v) => v,
+            None => panic!("err"),
+        };
+        //{
+        //   Some(v) => v,
+        //  None => panic!("no constraint"),
+        //};
+        disk.add_partition(&mut new_part, &constraint);
+        //       }
         println!("over");
     }
     fn preparing_new_partition(&self) {}
@@ -155,8 +191,9 @@ impl PreparingDisk {
 }
 impl TaskTrait for PreparingDisk {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        // TODO: 创建分区还在修改中，目前还是手动执行命令
-        self.preparing_new_filesystem();
+        // TODO: 创建分区修改好了，最后再测试，目前还是手动执行命令
+        let path: PathBuf = ["/dev"].iter().collect();
+        self.preparing_new_filesystem(path);
         Retval::new(())
     }
 }
@@ -166,6 +203,7 @@ impl TaskTrait for SettingLfsVariable {
     //设定LFS环境变量并保证在所有时刻都可用
     //可以加入/root/.bash_profile和主目录.bash_profile
     //需要确认/etc/passwd中为每个需要使用LFS变量的用户指定shell为bash
+    //TODO:计划改为软件运行前用户手动设定
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::new(())
     }
@@ -178,6 +216,7 @@ impl PrepareEnvironment {
     //配置lfs环境
     //配置make的线程数
     //创建挂载点并挂载LFS分区
+    //已经通过脚本设置好了
 }
 impl TaskTrait for PrepareEnvironment {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {

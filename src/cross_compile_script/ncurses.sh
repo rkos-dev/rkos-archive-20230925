@@ -17,5 +17,12 @@ popd
             --without-ada                \
             --disable-stripping          \
             --enable-widec
+
+if [ "$?" -eq 1 ];
+then
+    exit $?
+fi
+
 make && make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
+
 echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so

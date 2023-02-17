@@ -4,14 +4,18 @@ tar -xf ../gmp-6.2.1.tar.xz
 mv -v gmp-6.2.1 gmp
 tar -xf ../mpc-1.2.1.tar.gz
 mv -v mpc-1.2.1 mpc
+
 case $(uname -m) in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
   ;;
 esac
+
 sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
-mkdir -v build && cd build
+
+mkdir -v build 
+cd build
 ../configure                                       \
     --build=$(../config.guess)                     \
     --host=$LFS_TGT                                \
@@ -29,5 +33,13 @@ mkdir -v build && cd build
     --disable-libssp                               \
     --disable-libvtv                               \
     --enable-languages=c,c++
+
+if [ "$?" -eq 1 ];
+then
+    exit $?
+fi
+
 make && make DESTDIR=$LFS install
+
+
 ln -sv gcc $LFS/usr/bin/cc

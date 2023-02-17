@@ -2,6 +2,8 @@ extern crate dagrs;
 
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use std::env;
+use std::fs::File;
+use std::io::{Seek, SeekFrom};
 
 mod build_temp_toolchain;
 mod prepare_host_sys;
@@ -27,10 +29,14 @@ impl TaskTrait for CreateVmBack {
 
 fn main() {
     init_logger(None);
-    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    //let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
     let mut dagrs = DagEngine::new();
+    //TODO:python-doc需要调整包名，libstdc++需要调整包名，tcl-doc需要调整包名，zlib包会随着版本更新
+    //而链接失效，libstdc++只需要下载gcc之后copy一份成为libstdc++就可以
+    //python tcl 解决了 明天需要确认
 
     //t2.exec_after(&[&t1]);
     //t2.input_from(&[&t1]);
