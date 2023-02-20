@@ -14,4 +14,6 @@ serde = "1.0.1"
 lazy_static = "1.1.1"
 glob = "0.3.1"
 to_absolute = "0.1.0"
+log4rs = "1.2.0"
+log = "0.4.17"
 
