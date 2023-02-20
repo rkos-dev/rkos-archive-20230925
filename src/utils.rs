@@ -25,7 +25,7 @@ fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
 pub fn download(target_path: String, url: String) -> Result<(), Box<dyn Error>> {
     let cmd = format!("wget -P {} {}", target_path, url);
     let mut output = Command::new("/bin/bash").arg("-c").arg(cmd).spawn()?;
-    info!("{:?}", output.try_wait());
+    info!("{:?}", output);
     Ok(())
 }
 
@@ -40,10 +40,15 @@ pub fn target_path_exists(path: &str) -> Result<(), Box<dyn Error>> {
 pub fn install_package(
     package_name: String,
     script_path: String,
+    script_name: String,
     package_source_path: String,
     package_target_path: String,
 ) -> Result<bool, Box<dyn Error>> {
     //软件包相对工作目录的路径
+    info!("package source path :{};  package name :{};  script path :{}; script name :{};  package_target_path :{};",&package_source_path,&package_name,&script_path,&script_name,&package_target_path);
+
+    let package_full_path = package_source_path.clone() + &package_name + "*";
+    info!("{:?}", package_full_path);
     let package_path = match glob(&(package_source_path.clone() + &package_name + "*"))?
         //let package_path = match glob(&("sources/".to_owned() + &package_name + "*"))
         .filter_map(Result::ok)
@@ -56,7 +61,7 @@ pub fn install_package(
     };
 
     //预先准备的脚本文件路径
-    let script_full_path = match glob(&(script_path + &package_name + "*sh"))?
+    let script_full_path = match glob(&(script_path.clone() + &script_name + "*sh"))?
         .filter_map(Result::ok)
         .next()
     {
@@ -99,7 +104,7 @@ pub fn install_package(
     };
 
     //最终脚本文件在程序包中的路径
-    let script_target_path: PathBuf = [target_path.clone(), (package_name.clone() + ".sh").into()]
+    let script_target_path: PathBuf = [target_path.clone(), (script_name.clone() + ".sh").into()]
         .iter()
         .collect();
 
@@ -111,12 +116,12 @@ pub fn install_package(
     fs::copy(script_full_path, &script_target_path)?;
 
     //脚本文件名字
-    let script_name = match script_target_path.file_name() {
+    let fin_script_name = match script_target_path.file_name() {
         Some(v) => v,
         None => return Err("err".into()),
     };
 
-    let status = exec_build_script(script_name.into(), target_path.clone());
+    let status = exec_build_script(fin_script_name.into(), target_path.clone());
 
     fs::remove_dir_all(target_path.clone()).unwrap();
 
