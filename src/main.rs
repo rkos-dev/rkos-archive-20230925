@@ -28,13 +28,8 @@ impl TaskTrait for CreateVmBack {
 }
 
 fn main() {
-    log4rs::init_file("configs/log4rs.yaml", Default::default()).unwrap();
-    //init_logger(None);
-    trace!("trace");
-    debug!("debug");
-    info!("info");
-    warn!("warn");
-    error!("error");
+    //    log4rs::init_file("configs/log4rs.yaml", Default::default()).unwrap();
+    init_logger(None);
     //let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
 
     let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
@@ -54,7 +49,7 @@ fn main() {
     dagrs.add_tasks(vec![t1]);
     assert!(dagrs.run().unwrap());
     let current_dir = env::current_dir().unwrap();
-    println!("{:?}", current_dir);
+    info!("{:?}", current_dir);
 }
 
 #[cfg(test)]
