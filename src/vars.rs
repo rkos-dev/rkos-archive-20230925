@@ -103,7 +103,7 @@ pub struct CrossCompilePackagesInfo {
 pub struct CrossCompilePackages {
     pub cross_compile_toolchains: Vec<CrossCompilePackagesInfo>,
     pub cross_compile_packages: Vec<CrossCompilePackagesInfo>,
-    pub after_chroot: Vec<CrossCompilePackagesInfo>,
+    pub after_chroot_packages: Vec<CrossCompilePackagesInfo>,
 }
 
 pub fn parse_json<T: serde::de::DeserializeOwned>(
