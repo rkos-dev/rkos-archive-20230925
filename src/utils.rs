@@ -1,8 +1,6 @@
+use log::info;
 use std::error::Error;
 use std::fs;
-use std::fs::{File, OpenOptions};
-use std::io::Write;
-use std::os::unix::fs::chroot;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
@@ -24,6 +22,13 @@ fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
     output.success()
 }
 
+pub fn download(target_path: String, url: String) -> Result<(), Box<dyn Error>> {
+    let cmd = format!("wget -P {} {}", target_path, url);
+    let mut output = Command::new("/bin/bash").arg("-c").arg(cmd).spawn()?;
+    info!("{:?}", output.try_wait());
+    Ok(())
+}
+
 pub fn target_path_exists(path: &str) -> Result<(), Box<dyn Error>> {
     let target_path = Path::new(&path);
     match target_path.exists() {
@@ -32,49 +37,44 @@ pub fn target_path_exists(path: &str) -> Result<(), Box<dyn Error>> {
     }
 }
 
-pub fn build_packages(package_name: String) {
-    match target_path_exists(&package_name) {
-        Ok(_) => {}
-        Err(_) => {}
-    }
-}
-
-pub fn lfs_chroot(path: &str) -> std::io::Result<()> {
-    chroot(path)?;
-    std::env::set_current_dir("/")?;
-    Ok(())
-}
-
-pub fn install_package(package_name: String, script_path: String) {
+pub fn install_package(
+    package_name: String,
+    script_path: String,
+    package_source_path: String,
+    package_target_path: String,
+) -> Result<bool, Box<dyn Error>> {
     //软件包相对工作目录的路径
-    let package_path = match glob(&("sources/".to_owned() + &package_name + "*"))
-        .unwrap()
+    let package_path = match glob(&(package_source_path.clone() + &package_name + "*"))?
+        //let package_path = match glob(&("sources/".to_owned() + &package_name + "*"))
         .filter_map(Result::ok)
         .next()
     {
         Some(v) => v,
         //TODO:添加软件包缺失时的处理程序
         //1. 请求用户判断链接是否正确，若正确，则重新下载
-        None => panic!("Not found package {:?}", package_name),
+        None => return Err(format!("Not found package {:?}", package_name).into()),
     };
 
     //预先准备的脚本文件路径
-    let script_full_path = match glob(&(script_path + &package_name + "*sh"))
-        .unwrap()
+    let script_full_path = match glob(&(script_path + &package_name + "*sh"))?
         .filter_map(Result::ok)
         .next()
     {
         Some(v) => v,
-        //TODO:添加软件包缺失时的处理程序
-        //1. 请求用户判断链接是否正确，若正确，则重新下载
-        None => panic!("Not found script {:?}", package_name),
+        None => return Err(format!("Not found script {:?}", package_name).into()),
     };
 
-    println!(
-        "{:?} : {:?} : {:?}",
+    info!(
+        "Package name : {:?} ; Package path : {:?} ; Script path : {:?}",
         &package_name, &package_path, &script_full_path
     );
 
+    //    let cmd = format!("tar -xvf {} -C {}", package_path, package_source_path);
+    //    let output = Command::new("/bin/bash")
+    //        .arg("-c")
+    //        .arg(cmd)
+    //        .status()
+    //        .expect("error");
     let output = Command::new("tar")
         .arg("xvf")
         .arg(package_path)
@@ -83,38 +83,45 @@ pub fn install_package(package_name: String, script_path: String) {
         .output()
         .expect("error");
     let out = String::from_utf8(output.stdout).unwrap();
-    println!("{}", out);
+
+    info!("{}", out);
 
     //解压好的程序包路径
-    let target_path = match glob(&("sources/".to_owned() + &package_name + "*/"))
-        .unwrap()
+    let target_path = match glob(&(package_target_path + &package_name + "*/"))?
+        //    let target_path = match glob(&("sources/".to_owned() + &package_name + "*/"))
         .filter_map(Result::ok)
         .next()
     {
         Some(v) => v,
         //TODO:添加软件包缺失时的处理程序
         //1. 请求用户判断链接是否正确，若正确，则重新下载
-        None => panic!("Not found targetpath {:?}", package_name),
+        None => return Err(format!("Can not get target path {}", package_name).into()), //None => panic!("Not found target path {:?}", package_name),
     };
 
     //最终脚本文件在程序包中的路径
-    let script_target_path: PathBuf = [
-        target_path.clone(),
-        (package_name.to_owned() + ".sh").into(),
-    ]
-    .iter()
-    .collect();
+    let script_target_path: PathBuf = [target_path.clone(), (package_name.clone() + ".sh").into()]
+        .iter()
+        .collect();
 
-    println!("{:?} : {:?}", &target_path, script_target_path);
-    fs::copy(script_full_path, &script_target_path).unwrap();
+    info!(
+        "Script source path : {:?} ; Script target path : {:?} ;",
+        target_path, script_target_path
+    );
+    //    println!("{:?} : {:?}", &target_path, script_target_path);
+    fs::copy(script_full_path, &script_target_path)?;
 
     //脚本文件名字
     let script_name = match script_target_path.file_name() {
         Some(v) => v,
-        None => panic!("err"),
+        None => return Err("err".into()),
     };
 
     let status = exec_build_script(script_name.into(), target_path.clone());
-    fs::remove_dir_all(target_path).unwrap();
-    assert!(status);
+
+    fs::remove_dir_all(target_path.clone()).unwrap();
+
+    match status {
+        true => Ok(true),
+        false => Err(format!("Package {:?} install failed", target_path).into()),
+    }
 }
