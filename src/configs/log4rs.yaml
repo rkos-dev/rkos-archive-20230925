@@ -4,7 +4,7 @@ appenders:
     kind: console
   requests:
     kind: file
-    path: "log/requests/log"
+    path: "log/lfs.log"
     encoder:
       pattern: "{d} - {m}{n}"
 root:
