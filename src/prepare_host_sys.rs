@@ -94,7 +94,8 @@ impl PreparingSoftware {
         //使用wget下载所有软件包
         //可选的检查所有软件包的正确性
 
-        let base_software = &vars::BASE_PACKAGES.base_packages;
+        let base_software = &vars::ALL_PACKAGES.all_packages;
+        let patches = &vars::ALL_PACKAGES.package_patches;
         for i in base_software {
             //            let cmd = format!("wget -P sources {}", &i.url.as_str());
             //            let output = Command::new("/bin/bash")
@@ -102,6 +103,15 @@ impl PreparingSoftware {
             //                .arg(cmd)
             //                .status()
             //                .expect("cannot download");
+            let output = Command::new("wget")
+                .arg("-P")
+                .arg("./sources")
+                .arg(i.url.as_str())
+                .status()
+                .expect("");
+            print!("{}", output.success());
+        }
+        for i in patches {
             let output = Command::new("wget")
                 .arg("-P")
                 .arg("./sources")
