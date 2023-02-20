@@ -15,11 +15,11 @@ lazy_static! {
             Err(_e) => panic!("Cannot load base config"),
         }
     };
-    pub static ref BASE_PACKAGES: BasePackages = {
-        let temp = parse_json("configs/base_packages.json");
+    pub static ref ALL_PACKAGES: AllPackages = {
+        let temp = parse_json("configs/all_packages.json");
         match temp {
             Ok(v) => v,
-            Err(_e) => panic!("Cannot load base packages"),
+            Err(_e) => panic!("Cannot load all packages"),
         }
     };
     pub static ref CROSS_COMPILE_PACKAGES: CrossCompilePackages = {
@@ -36,6 +36,24 @@ lazy_static! {
             Err(_e) => panic!("Cannot load host packages"),
         }
     };
+    pub static ref BASE_PACKAGES: BasePackages = {
+        let temp = parse_json("configs/base_packages.json");
+        match temp {
+            Ok(v) => v,
+            Err(_e) => panic!("Cannot load base packages"),
+        }
+    };
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BasePackagesInfo {
+    pub name: String,
+    pub script: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BasePackages {
+    pub base_packages: Vec<BasePackagesInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -46,21 +64,18 @@ pub struct HostPackage {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageInfo {
     pub name: String,
-    pub version: String,
     pub url: String,
-    pub script: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PatchInfo {
     pub name: String,
     pub url: String,
-    pub script: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct BasePackages {
-    pub base_packages: Vec<PackageInfo>,
+pub struct AllPackages {
+    pub all_packages: Vec<PackageInfo>,
     pub package_patches: Vec<PatchInfo>,
 }
 
@@ -79,9 +94,16 @@ pub struct BaseConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct CrossCompilePackagesInfo {
+    pub name: String,
+    pub script: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CrossCompilePackages {
-    pub cross_compile_toolchains: Vec<String>,
-    pub cross_compile_packages: Vec<String>,
+    pub cross_compile_toolchains: Vec<CrossCompilePackagesInfo>,
+    pub cross_compile_packages: Vec<CrossCompilePackagesInfo>,
+    pub after_chroot: Vec<CrossCompilePackagesInfo>,
 }
 
 pub fn parse_json<T: serde::de::DeserializeOwned>(
