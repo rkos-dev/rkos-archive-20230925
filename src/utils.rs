@@ -24,7 +24,7 @@ fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
 
 pub fn download(target_path: String, url: String) -> Result<(), Box<dyn Error>> {
     let cmd = format!("wget -P {} {}", target_path, url);
-    let mut output = Command::new("/bin/bash").arg("-c").arg(cmd).spawn()?;
+    let output = Command::new("/bin/bash").arg("-c").arg(cmd).spawn()?;
     info!("{:?}", output);
     Ok(())
 }
