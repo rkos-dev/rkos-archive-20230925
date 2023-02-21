@@ -109,7 +109,6 @@ impl CompilingCrossToolChain {
         for (k, v) in package_install_status {
             info!("{} : {}", k, v);
         }
-        info!("{:?}", package_install_status);
 
         Ok(())
     }
