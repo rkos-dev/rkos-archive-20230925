@@ -54,7 +54,12 @@
         "type": "iso"
     },
     "packages": [
-        "openssh"
+        "openssh",
+        "vim",
+        "wget"
+    ],
+    "services": [
+        "sshd"
     ],
     "no_pkg_lookups": false,
     "offline": false,
