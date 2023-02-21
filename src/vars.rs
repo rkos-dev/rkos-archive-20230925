@@ -83,13 +83,14 @@ pub struct AllPackages {
 pub struct BaseConfig {
     pub lfs_partition: String,
     pub lfs_env: String,
+    pub all_packages: String,
     pub base_packages: String,
+    pub host_packages: String,
     pub cross_compile_packages: String,
     pub package_sources_path: String,
-    pub host_install_cmd: String,
+    pub config_path: String,
     pub cross_compile_script_path: String,
     pub base_compile_script_path: String,
-    pub decompress_script: String,
     pub enter_chroot_script_path: String,
 }
 
