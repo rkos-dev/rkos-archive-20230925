@@ -1,13 +1,13 @@
 {
-    "lfs_partition": "/dev/sdb",
+    "lfs_partition": "/dev/vdb2",
     "lfs_env": "/mnt/lfs",
+    "all_packages": "all_packages.json",
     "base_packages": "base_packages.json",
+    "host_packages": "host_packages.json",
     "cross_compile_packages": "cross_compile_packages.json",
     "package_sources_path": "./sources/",
     "config_path": "./configs/",
-    "host_install_cmd": "sudo apt install -y ",
     "cross_compile_script_path": "./cross_compile_script/",
     "base_compile_script_path": "./base_package_script/",
-    "decompress_script": "./other_scripts/decompress.sh",
     "enter_chroot_script_path": "./enter_chroot_scripts"
 }
