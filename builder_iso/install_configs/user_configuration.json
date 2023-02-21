@@ -54,7 +54,7 @@
         "type": "iso"
     },
     "packages": [
-        "bash"
+        "openssh"
     ],
     "no_pkg_lookups": false,
     "offline": false,
