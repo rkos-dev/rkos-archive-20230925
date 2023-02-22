@@ -18,7 +18,7 @@
         },
         {
             "name": "bash",
-            "url": "https://mirrors.nju.edu.cn/gnu/bash/bash-5.1.16.tar.gz"
+            "url": "https://mirrors.nju.edu.cn/gnu/bash/bash-5.2.tar.gz"
         },
         {
             "name": "bc",
@@ -150,15 +150,15 @@
         },
         {
             "name": "iproute2",
-            "url": "http://ftp.iij.ad.jp/pub/linux/kernel/linux/utils/net/iproute2/iproute2-6.1.0.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/utils/net/iproute2/iproute2-6.2.0.tar.xz"
         },
         {
             "name": "kbd",
-            "url": "http://ftp.iij.ad.jp/pub/linux/kernel/linux/utils/kbd/kbd-2.5.1.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/utils/kbd/kbd-2.5.1.tar.gz"
         },
         {
             "name": "kmod",
-            "url": "https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/utils/kernel/kmod/kmod-30.tar.gz"
         },
         {
             "name": "less",
@@ -170,7 +170,7 @@
         },
         {
             "name": "libcap",
-            "url": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.65.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/libs/security/linux-privs/libcap2/libcap-2.67.tar.xz"
         },
         {
             "name": "libffi",
@@ -202,7 +202,7 @@
         },
         {
             "name": "man-pages",
-            "url": "http://ftp.iij.ad.jp/pub/linux/kernel/linux/docs/man-pages/man-pages-6.03.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/docs/man-pages/man-pages-6.03.tar.xz"
         },
         {
             "name": "meson",
@@ -302,7 +302,7 @@
         },
         {
             "name": "util-linux",
-            "url": "http://ftp.iij.ad.jp/pub/linux/kernel/linux/utils/util-linux/v2.38/util-linux-2.38.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/utils/util-linux/v2.38/util-linux-2.38.1.tar.gz"
         },
         {
             "name": "vim",
