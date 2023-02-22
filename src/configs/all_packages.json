@@ -234,7 +234,7 @@
         },
         {
             "name": "perl",
-            "url": "https://www.cpan.org/src/5.0/perl-5.36.0.tar.xz"
+            "url": "http://mirrors.ustc.edu.cn/CPAN/src/5.0/perl-5.36.0.tar.xz"
         },
         {
             "name": "pkg-config",
@@ -314,7 +314,7 @@
         },
         {
             "name": "XML-Parser",
-            "url": "https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz"
+            "url": "http://mirrors.ustc.edu.cn/CPAN/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz"
         },
         {
             "name": "xz",
