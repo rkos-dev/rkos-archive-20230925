@@ -22,7 +22,7 @@ cp /root/.bash_profile{,.TGT_origin}
 if [ $LFS_TGT ]; then
     echo "LFS_TGT=$LFS_TGT"
 else
-    echo "export LFS_TGT=$(uname -m)-linux-gnu" >> /root/.bash_profile
+    echo "export LFS_TGT=$(uname -m)-lfs-linux-gnu" >> /root/.bash_profile
 fi
 
 #设定LC_ALL，PATH，CONFIG_FILE的环境变量
