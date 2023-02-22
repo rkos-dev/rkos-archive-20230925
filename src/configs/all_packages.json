@@ -186,7 +186,7 @@
         },
         {
             "name": "linux",
-            "url": "https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.19.2.tar.xz"
+            "url": "https://mirrors.nju.edu.cn/kernel.org/linux/kernel/v6.x/linux-6.1.tar.gz"
         },
         {
             "name": "m4",
