@@ -9,7 +9,7 @@
             "script": "inna_etc"
         },
         {
-            "name": "glibc*xz",
+            "name": "glibc",
             "script": "glibc"
         },
         {
@@ -17,7 +17,7 @@
             "script": "zlib"
         },
         {
-            "name": "bzip2*gz",
+            "name": "bzip2",
             "script": "bzip2"
         },
         {
@@ -25,7 +25,7 @@
             "script": "xz"
         },
         {
-            "name": "zstd*gz",
+            "name": "zstd",
             "script": "zstd"
         },
         {
@@ -205,7 +205,7 @@
             "script": "meson"
         },
         {
-            "name": "coreutils*xz",
+            "name": "coreutils",
             "script": "coreutils"
         },
         {
@@ -241,7 +241,7 @@
             "script": "iproute"
         },
         {
-            "name": "kbd*gz",
+            "name": "kbd",
             "script": "kbd"
         },
         {
@@ -293,7 +293,7 @@
             "script": "sysklogd"
         },
         {
-            "name": "sysvinit*xz",
+            "name": "sysvinit",
             "script": "sysvinit"
         }
     ]
