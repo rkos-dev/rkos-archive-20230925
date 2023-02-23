@@ -10,4 +10,5 @@ fi
 
 make && make DESTDIR=$LFS install
 
+rm $LFS/bin/sh
 ln -sv bash $LFS/bin/sh
