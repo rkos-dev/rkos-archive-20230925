@@ -1,7 +1,7 @@
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use log::{debug, error, info, trace, warn};
+use std::collections::HashMap;
 use std::env;
-use std::HashMap;
 
 mod build_temp_toolchain;
 mod prepare_host_sys;
@@ -47,12 +47,12 @@ struct DagNodes {
 fn main() {
     //    log4rs::init_file("configs/log4rs.yaml", Default::default()).unwrap();
     init_logger(None);
-    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    //    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
     let mut dag_nodes = vec![t1];
 
-    //    let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
     //
-    let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
+    //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
     //
     let mut dagrs = DagEngine::new();
@@ -64,7 +64,7 @@ fn main() {
     //t2.input_from(&[&t1]);
 
     //dagrs.add_tasks(vec![t1, t2]);
-    dagrs.add_tasks(vec![t1]);
+    dagrs.add_tasks(dag_nodes);
     assert!(dagrs.run().unwrap());
     let current_dir = env::current_dir().unwrap();
     info!("{:?}", current_dir);
