@@ -1,9 +1,7 @@
-extern crate dagrs;
-
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
+use log::{debug, error, info, trace, warn};
+use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::{Seek, SeekFrom};
 
 mod build_temp_toolchain;
 mod prepare_host_sys;
@@ -27,12 +25,36 @@ impl TaskTrait for CreateVmBack {
     }
 }
 
+//TODO:增加流程控制
+struct DagNodes {
+    prepare_env: bool,
+    prepare_disk: bool,
+    check_env: bool,
+    prepare_software: HashMap<String, bool>,
+    compile_cross_toolchain_check: bool,
+    compile_cross_toolchain: HashMap<String, bool>,
+    prepare_chroot_chmod: bool,
+    prepare_virt_sys: bool,
+    enter_chroot: bool,
+    create_path: bool,
+    compile_temp_packages: bool,
+    clean_up: bool,
+    build_basic_system: bool,
+    config_sys: bool,
+    output: bool,
+}
+
 fn main() {
+    //    log4rs::init_file("configs/log4rs.yaml", Default::default()).unwrap();
     init_logger(None);
-    //let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
+    //    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
     let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
+    let mut dag_nodes = vec![t1];
+
+    //
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
     //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
+    //
     let mut dagrs = DagEngine::new();
     //TODO:python-doc需要调整包名，libstdc++需要调整包名，tcl-doc需要调整包名，zlib包会随着版本更新
     //而链接失效，libstdc++只需要下载gcc之后copy一份成为libstdc++就可以
@@ -42,15 +64,14 @@ fn main() {
     //t2.input_from(&[&t1]);
 
     //dagrs.add_tasks(vec![t1, t2]);
-    dagrs.add_tasks(vec![t1]);
+    dagrs.add_tasks(dag_nodes);
     assert!(dagrs.run().unwrap());
     let current_dir = env::current_dir().unwrap();
-    println!("{:?}", current_dir);
+    info!("{:?}", current_dir);
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::utils;
     use crate::vars;
 
     #[test]
@@ -68,8 +89,6 @@ mod tests {
         assert!(base_packages.is_ok());
         assert!(cross_packages.is_ok());
         assert!(base_config.is_ok());
-
-        //TODO:处理下载的逻辑，要验证交叉编译的包都在下载列表中
     }
 
     #[test]

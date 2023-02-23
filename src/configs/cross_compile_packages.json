@@ -1,26 +1,120 @@
 {
     "cross_compile_toolchains": [
-        "binutils",
-        "gcc",
-        "glibc"
+        {
+            "name": "binutils",
+            "script": "binutils_first"
+        },
+        {
+            "name": "gcc",
+            "script": "gcc_first"
+        },
+        {
+            "name": "linux",
+            "script": "linux_headers_api"
+        },
+        {
+            "name": "glibc",
+            "script": "glibc"
+        },
+        {
+            "name": "gcc",
+            "script": "libstdc++"
+        }
     ],
     "cross_compile_packages": [
-        "m4",
-        "ncurses",
-        "bash",
-        "coreutils",
-        "diffutils",
-        "file",
-        "findutils",
-        "gawk",
-        "grep",
-        "gzip",
-        "make",
-        "patch",
-        "sed",
-        "tar",
-        "xz",
-        "binutils",
-        "gcc"
+        {
+            "name": "m4",
+            "script": "m4"
+        },
+        {
+            "name": "ncurses",
+            "script": "ncurses"
+        },
+        {
+            "name": "bash",
+            "script": "bash"
+        },
+        {
+            "name": "coreutils",
+            "script": "coreutils"
+        },
+        {
+            "name": "diffutils",
+            "script": "diffutils"
+        },
+        {
+            "name": "file",
+            "script": "file"
+        },
+        {
+            "name": "findutils",
+            "script": "findutils"
+        },
+        {
+            "name": "gawk",
+            "script": "gawk"
+        },
+        {
+            "name": "grep",
+            "script": "grep"
+        },
+        {
+            "name": "gzip",
+            "script": "gzip"
+        },
+        {
+            "name": "make",
+            "script": "make"
+        },
+        {
+            "name": "patch",
+            "script": "patch"
+        },
+        {
+            "name": "sed",
+            "script": "sed"
+        },
+        {
+            "name": "tar",
+            "script": "tar"
+        },
+        {
+            "name": "xz",
+            "script": "xz"
+        },
+        {
+            "name": "binutils",
+            "script": "binutils_second"
+        },
+        {
+            "name": "gcc",
+            "script": "gcc_second"
+        }
+    ],
+    "after_chroot_packages": [
+        {
+            "name": "gettext",
+            "script": "gettext"
+        },
+        {
+            "name": "bison",
+            "script": "bison"
+        },
+        {
+            "name": "perl",
+            "script": "perl"
+        },
+        {
+            "name": "python",
+            "script": "python"
+        },
+        {
+            "name": "texinfo",
+            "script": "texinfo"
+        },
+        {
+            "name": "util-linux",
+            "script": "util-linux"
+        }
     ]
 }

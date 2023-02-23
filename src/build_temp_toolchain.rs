@@ -1,12 +1,13 @@
 extern crate dagrs;
 
+use crate::utils;
 use crate::vars;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use glob::glob;
+use log::{error, info};
+use std::collections::HashMap;
 use std::env;
-use std::ffi::OsStr;
 use std::fs;
-use std::fs::File;
 use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
@@ -40,87 +41,73 @@ pub struct CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
     fn check_system_env(&self) -> Result<String, env::VarError> {
         let lfs_env = "LFS";
-        match env::var(lfs_env) {
-            Ok(v) => Ok(v),
-            Err(e) => Err(e),
-        }
+        let status = match env::var(lfs_env) {
+            Ok(v) => return Ok(v),
+            Err(e) => return Err(e),
+        };
     }
 
-    fn install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
-        let cross_compile_package = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
-        for i in cross_compile_package {
-            //软件包相对工作目录的路径
-            let package_path = match glob(&("sources/".to_owned() + &i + "*"))
-                .unwrap()
-                .filter_map(Result::ok)
-                .next()
-            {
-                Some(v) => v,
-                //TODO:添加软件包缺失时的处理程序
-                //1. 请求用户判断链接是否正确，若正确，则重新下载
-                None => panic!("Not found package {:?}", i),
+    fn new_install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
+        let mut package_install_status = HashMap::new();
+        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
+        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
+        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        info!(
+            "{:?} {:?} {:?}",
+            &cross_compile_toolchains, &cross_compile_packages, &after_chroot_packages
+        );
+        for i in cross_compile_toolchains {
+            let res = utils::install_package(
+                i.name.clone(),
+                "cross_compile_script/".to_owned(),
+                i.script.clone(),
+                "sources/".to_owned(),
+                "sources/".to_owned(),
+            );
+            match res {
+                Ok(v) => package_install_status.insert(i.script.clone(), v),
+                Err(e) => {
+                    error!("{:?}", e);
+                    package_install_status.insert(i.script.clone(), false);
+                    return Ok(());
+                }
             };
-
-            //TODO:同上，最终形成一个可以生成迭代器的函数，提供包类型（cross，base）等然后返回包和
-            //脚本路径的迭代器
-
-            //预先准备的脚本文件路径
-            let script_path =
-                match glob(&(vars::BASE_CONFIG.cross_compile_script_path.clone() + &i + "*sh"))
-                    .unwrap()
-                    .filter_map(Result::ok)
-                    .next()
-                {
-                    Some(v) => v,
-                    //TODO:添加软件包缺失时的处理程序
-                    //1. 请求用户判断链接是否正确，若正确，则重新下载
-                    None => panic!("Not found script {:?}", i),
-                };
-
-            println!("{:?} : {:?} : {:?}", &i, &package_path, &script_path);
-
-            println!("{:?}", &vars::BASE_CONFIG.decompress_script);
-            let output = Command::new("tar")
-                .arg("xvf")
-                .arg(package_path)
-                .arg("-C")
-                .arg("sources")
-                .output()
-                .expect("error");
-            let out = String::from_utf8(output.stdout).unwrap();
-            println!("{}", out);
-
-            //解压好的程序包路径
-            let target_path = match glob(&("sources/".to_owned() + &i + "*/"))
-                .unwrap()
-                .filter_map(Result::ok)
-                .next()
-            {
-                Some(v) => v,
-                //TODO:添加软件包缺失时的处理程序
-                //1. 请求用户判断链接是否正确，若正确，则重新下载
-                None => panic!("Not found targetpath {:?}", i),
+        }
+        for i in cross_compile_packages {
+            let res = utils::install_package(
+                i.name.clone(),
+                "cross_compile_script/".to_owned(),
+                i.script.clone(),
+                "sources/".to_owned(),
+                "sources/".to_owned(),
+            );
+            match res {
+                Ok(v) => package_install_status.insert(i.script.clone(), v),
+                Err(e) => {
+                    error!("{:?}", e);
+                    package_install_status.insert(i.script.clone(), false);
+                    return Ok(());
+                }
             };
-
-            //最终脚本文件在程序包中的路径
-            let script_target_path: PathBuf = [target_path.clone(), (i.to_owned() + ".sh").into()]
-                .iter()
-                .collect();
-            println!("{:?} : {:?}", &target_path, script_target_path);
-            //let target_script_path: PathBuf = ["./", &i].iter().collect();
-            fs::copy(script_path, &script_target_path)?;
-
-            //脚本文件名字
-            let script_name = match script_target_path.file_name() {
-                Some(v) => v,
-                None => panic!("err"),
-            };
-
-            let status = exec_script(script_name.into(), target_path.clone());
-            if !status {
-                self.delete_package(target_path);
-            }
-            assert!(status);
+        }
+        //        for i in after_chroot_packages {
+        //            let res = utils::install_package(
+        //                i.name.clone(),
+        //                "cross_compile_script/".to_owned(),
+        //                i.script.clone(),
+        //                "sources/".to_owned(),
+        //                "sources/".to_owned(),
+        //            );
+        //            match res {
+        //                Ok(v) => package_install_status.insert(i.script.clone(), v),
+        //                Err(e) => {
+        //                    error!("{:?}", e);
+        //                    package_install_status.insert(i.script.clone(), false)
+        //                }
+        //            };
+        //        }
+        for (k, v) in package_install_status {
+            info!("{} : {}", k, v);
         }
 
         Ok(())
@@ -144,18 +131,20 @@ impl TaskTrait for CompilingCrossToolChain {
         //判断输出是否正常，软件包安装是否正常
         //删除软件包
         //否则下载软件包然后重复上述过程
-        let lfs_env = match self.check_system_env() {
-            Ok(v) => v,
-            Err(e) => {
-                println!("LFS_ENV ERROR : {}", e);
-                //TODO:使用错误常量来定义错误
-                std::process::exit(1);
-            }
-        };
+        //        let lfs_env = match self.check_system_env() {
+        //            Ok(v) => v,
+        //            Err(e) => {
+        //                error!("LFS_ENV ERROR : {}", e);
+        //                //TODO:使用错误常量来定义错误
+        //                std::process::exit(1);
+        //            }
+        //        };
 
-        println!("{}", lfs_env);
+        let lfs_env = "/mnt/lfs".to_string();
+        info!("start install {}", lfs_env);
 
-        self.install_packages(lfs_env).unwrap();
+        //        self.install_packages(lfs_env).unwrap();
+        self.new_install_packages(lfs_env).unwrap();
 
         Retval::new(())
     }

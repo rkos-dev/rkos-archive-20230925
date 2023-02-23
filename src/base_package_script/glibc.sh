@@ -1,4 +1,4 @@
-patch -Np1 -i ../glibc-2.36-fhs-1.patch
+patch -Np1 -i ../base_patches/glibc-2.36-fhs-1.patch
 mkdir -v build && cd build
 echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                            \
