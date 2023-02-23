@@ -7,4 +7,4 @@ then
     exit $?
 fi
 
-make && DESTDIR=$LFS install
+make && make DESTDIR=$LFS install
