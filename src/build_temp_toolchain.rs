@@ -41,8 +41,6 @@ pub struct CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
     fn check_system_env(&self) -> Result<String, env::VarError> {
         let lfs_env = "LFS";
-        //TODO:添加默认设置的make线程，在某些特定软件中重新设定make线程
-        let make_threads_env = "";
         let status = match env::var(lfs_env) {
             Ok(v) => return Ok(v),
             Err(e) => return Err(e),
@@ -70,7 +68,8 @@ impl CompilingCrossToolChain {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(i.script.clone(), false)
+                    package_install_status.insert(i.script.clone(), false);
+                    return Ok(());
                 }
             };
         }
@@ -86,26 +85,27 @@ impl CompilingCrossToolChain {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(i.script.clone(), false)
+                    package_install_status.insert(i.script.clone(), false);
+                    return Ok(());
                 }
             };
         }
-        for i in after_chroot_packages {
-            let res = utils::install_package(
-                i.name.clone(),
-                "cross_compile_script/".to_owned(),
-                i.script.clone(),
-                "sources/".to_owned(),
-                "sources/".to_owned(),
-            );
-            match res {
-                Ok(v) => package_install_status.insert(i.script.clone(), v),
-                Err(e) => {
-                    error!("{:?}", e);
-                    package_install_status.insert(i.script.clone(), false)
-                }
-            };
-        }
+        //        for i in after_chroot_packages {
+        //            let res = utils::install_package(
+        //                i.name.clone(),
+        //                "cross_compile_script/".to_owned(),
+        //                i.script.clone(),
+        //                "sources/".to_owned(),
+        //                "sources/".to_owned(),
+        //            );
+        //            match res {
+        //                Ok(v) => package_install_status.insert(i.script.clone(), v),
+        //                Err(e) => {
+        //                    error!("{:?}", e);
+        //                    package_install_status.insert(i.script.clone(), false)
+        //                }
+        //            };
+        //        }
         for (k, v) in package_install_status {
             info!("{} : {}", k, v);
         }
