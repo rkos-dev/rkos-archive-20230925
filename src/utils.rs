@@ -22,11 +22,10 @@ fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
     output.success()
 }
 
-pub fn download(target_path: String, url: String) -> Result<(), Box<dyn Error>> {
+pub fn download(target_path: String, url: String) -> Result<bool, Box<dyn Error>> {
     let cmd = format!("wget -P {} {}", target_path, url);
-    let output = Command::new("/bin/bash").arg("-c").arg(cmd).spawn()?;
-    info!("{:?}", output);
-    Ok(())
+    let output = Command::new("/bin/bash").arg("-c").arg(cmd).status()?;
+    Ok(output.success())
 }
 
 pub fn target_path_exists(path: &str) -> Result<(), Box<dyn Error>> {
