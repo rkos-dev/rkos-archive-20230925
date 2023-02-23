@@ -1,3 +1,4 @@
+unset MAKEFLAGS
 case $(uname -m) in
     i?86)   ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
     ;;
@@ -6,7 +7,7 @@ case $(uname -m) in
     ;;
 esac
 
-patch -Np1 -i ../glibc-2.36-fhs-1.patch
+patch -Np1 -i ../base_patches/glibc-2.36-fhs-1.patch
 
 mkdir -v build 
 cd build
@@ -33,3 +34,4 @@ sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
 
 $LFS/tools/libexec/gcc/$LFS_TGT/12.2.0/install-tools/mkheaders
 
+export MAKEFLAGS='-j4'
