@@ -6,6 +6,9 @@ use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, RunScript, TaskTra
 use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
 use nix::mount;
 
+#[macro_use]
+use goto::gpoint;
+
 use log::{error, info};
 use std::collections::HashMap;
 use std::fs;
@@ -13,21 +16,13 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 
-use crate::vars;
+use crate::{utils, vars};
 
 // TODO:将所有本阶段合并统一管理
 
 impl PreparingSoftware {
     //目前使用脚本替代该部分，计划弃用或者完全使用rust
     fn preparing_host_software(&self) {
-        //需要一个列表用来保存软件包
-        //然后调用sudo yum install 来安装这些包
-        //捕获输出或者shell的$?来判断是否出错
-        // /bin/sh调整为到bash的符号链接或硬链接
-        // /usr/bin/yacc 必须是到bison的链接或者是一个执行bison的脚本
-        // /usr/bin/awk必须是到gawk的链接
-        //执行测试脚本测试环境是否正常
-
         //        let packages = &vars::HOST_PACKAGES;
         //        let mut cmd: String = vars::BASE_CONFIG.host_install_cmd.clone();
         //        for package in &packages.host_packages {
@@ -80,31 +75,62 @@ impl PreparingSoftware {
         let patches = &vars::ALL_PACKAGES.package_patches;
         let mut pack_status = HashMap::new();
         for i in all_packages {
-            info!("{:?}", i);
-            //            let cmd = format!("wget -P sources {}", &i.url.as_str());
-            //            let output = Command::new("/bin/bash")
-            //                .arg("-c")
-            //                .arg(cmd)
+            let mut flag = 0;
+            gpoint!['begin:
+                if flag>=5{
+                    flag=0;
+                    pack_status.insert(&i.name,false);
+                    break 'begin;
+                }
+
+                match utils::download("sources".to_owned(), i.url.clone()){
+                    Ok(v)=>{
+                        match v{
+                            true=>{pack_status.insert(&i.name,v);break 'begin},
+                            false=>{continue 'begin},
+                        }
+                    },
+                    Err(_e)=>{continue 'begin;}
+                }
+            ];
+            //            info!("{:?}", i);
+            //            let output = Command::new("wget")
+            //                .arg("-P")
+            //                .arg("sources")
+            //                .arg(i.url.as_str())
             //                .status()
-            //                .expect("cannot download");
-            let output = Command::new("wget")
-                .arg("-P")
-                .arg("sources")
-                .arg(i.url.as_str())
-                .status()
-                .expect("wget failed");
-            let status = output.success();
-            pack_status.insert(&i.name, status);
+            //                .expect("wget failed");
+            //            let status = output.success();
+            //            pack_status.insert(&i.name, status);
         }
         for i in patches {
-            let output = Command::new("wget")
-                .arg("-P")
-                .arg("sources")
-                .arg(i.url.as_str())
-                .status()
-                .expect("wget failed");
-            let status = output.success();
-            pack_status.insert(&i.name, status);
+            let mut flag = 0;
+            gpoint!['begin:
+                if flag>=5{
+                    flag=0;
+                    pack_status.insert(&i.name,false);
+                    break 'begin;
+                }
+
+                match utils::download("sources/base_patches".to_owned(), i.url.clone()){
+
+                    Ok(v)=>{
+                        match v{
+                            true=>{pack_status.insert(&i.name,v);break 'begin},
+                            false=>{continue 'begin},
+                        }
+                    },
+                    Err(_e)=>{continue 'begin;}
+                }
+            ];
+            //let output = Command::new("wget")
+            //    .arg("-P")
+            //    .arg("sources")
+            //    .arg(i.url.as_str())
+            //    .status()
+            //    .expect("wget failed");
+            //let status = output.success();
+            //pack_status.insert(&i.name, status);
         }
         for (k, v) in pack_status {
             info!("{} : {}", k, v);
