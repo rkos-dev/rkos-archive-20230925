@@ -13,7 +13,7 @@
             "script": "linux_headers_api"
         },
         {
-            "name": "glibc",
+            "name": "glibc*xz",
             "script": "glibc"
         },
         {
@@ -35,7 +35,7 @@
             "script": "bash"
         },
         {
-            "name": "coreutils",
+            "name": "coreutils*xz",
             "script": "coreutils"
         },
         {
@@ -67,7 +67,7 @@
             "script": "make"
         },
         {
-            "name": "patch",
+            "name": "patch*xz",
             "script": "patch"
         },
         {

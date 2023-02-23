@@ -2,299 +2,299 @@
     "base_packages": [
         {
             "name": "man-page",
-            "script": ""
+            "script": "man_page"
         },
         {
             "name": "inna-etc",
-            "script": ""
+            "script": "inna_etc"
         },
         {
-            "name": "glibc",
-            "script": ""
+            "name": "glibc*xz",
+            "script": "glibc"
         },
         {
             "name": "zlib",
-            "script": ""
+            "script": "zlib"
         },
         {
-            "name": "bzip2",
-            "script": ""
+            "name": "bzip2*gz",
+            "script": "bzip2"
         },
         {
             "name": "xz",
-            "script": ""
+            "script": "xz"
         },
         {
-            "name": "zstd",
-            "script": ""
+            "name": "zstd*gz",
+            "script": "zstd"
         },
         {
             "name": "file",
-            "script": ""
+            "script": "file"
         },
         {
             "name": "readline",
-            "script": ""
+            "script": "readline"
         },
         {
             "name": "m4",
-            "script": ""
+            "script": "m4"
         },
         {
             "name": "bc",
-            "script": ""
+            "script": "bc"
         },
         {
             "name": "flex",
-            "script": ""
+            "script": "flex"
         },
         {
             "name": "tcl",
-            "script": ""
+            "script": "tcl"
         },
         {
             "name": "expect",
-            "script": ""
+            "script": "expect"
         },
         {
             "name": "dejagnu",
-            "script": ""
+            "script": "dejagnu"
         },
         {
             "name": "binutils",
-            "script": ""
+            "script": "binutils"
         },
         {
             "name": "gmp",
-            "script": ""
+            "script": "gmp"
         },
         {
             "name": "mpfr",
-            "script": ""
+            "script": "mpfr"
         },
         {
             "name": "mpc",
-            "script": ""
+            "script": "mpc"
         },
         {
             "name": "attr",
-            "script": ""
+            "script": "attr"
         },
         {
             "name": "acl",
-            "script": ""
+            "script": "acl"
         },
         {
             "name": "libcap",
-            "script": ""
+            "script": "libcap"
         },
         {
             "name": "shadow",
-            "script": ""
+            "script": "shadow"
         },
         {
             "name": "gcc",
-            "script": ""
+            "script": "gcc"
         },
         {
             "name": "pkg-config",
-            "script": ""
+            "script": "pkg_config"
         },
         {
             "name": "ncurses",
-            "script": ""
+            "script": "ncurses"
         },
         {
             "name": "sed",
-            "script": ""
+            "script": "sed"
         },
         {
             "name": "psmisc",
-            "script": ""
+            "script": "psmisc"
         },
         {
             "name": "gettext",
-            "script": ""
+            "script": "gettext"
         },
         {
             "name": "bison",
-            "script": ""
+            "script": "bison"
         },
         {
             "name": "grep",
-            "script": ""
+            "script": "grep"
         },
         {
             "name": "bash",
-            "script": ""
+            "script": "bash"
         },
         {
             "name": "libtool",
-            "script": ""
+            "script": "libtool"
         },
         {
             "name": "gdbm",
-            "script": ""
+            "script": "gdbm"
         },
         {
             "name": "gperf",
-            "script": ""
+            "script": "gperf"
         },
         {
             "name": "expat",
-            "script": ""
+            "script": "expat"
         },
         {
             "name": "inetutils",
-            "script": ""
+            "script": "inetutils"
         },
         {
             "name": "less",
-            "script": ""
+            "script": "less"
         },
         {
             "name": "perl",
-            "script": ""
+            "script": "perl"
         },
         {
             "name": "XML-parser",
-            "script": ""
+            "script": "xml_parser"
         },
         {
             "name": "inttool",
-            "script": ""
+            "script": "inttool"
         },
         {
             "name": "autoconf",
-            "script": ""
+            "script": "autoconf"
         },
         {
             "name": "automake",
-            "script": ""
+            "script": "automake"
         },
         {
             "name": "openssl",
-            "script": ""
+            "script": "openssl"
         },
         {
             "name": "kmod",
-            "script": ""
+            "script": "kmod"
         },
         {
             "name": "elfutils",
-            "script": ""
+            "script": "elfutils"
         },
         {
             "name": "libffi",
-            "script": ""
+            "script": "libffi"
         },
         {
             "name": "python",
-            "script": ""
+            "script": "python"
         },
         {
             "name": "wheel",
-            "script": ""
+            "script": "wheel"
         },
         {
             "name": "ninja",
-            "script": ""
+            "script": "ninja"
         },
         {
             "name": "meson",
-            "script": ""
+            "script": "meson"
         },
         {
-            "name": "coreutils",
-            "script": ""
+            "name": "coreutils*xz",
+            "script": "coreutils"
         },
         {
             "name": "check",
-            "script": ""
+            "script": "check"
         },
         {
             "name": "diffutils",
-            "script": ""
+            "script": "diffutils"
         },
         {
             "name": "gawk",
-            "script": ""
+            "script": "gawk"
         },
         {
             "name": "findutils",
-            "script": ""
+            "script": "findutils"
         },
         {
             "name": "groff",
-            "script": ""
+            "script": "groff"
         },
         {
             "name": "grub",
-            "script": ""
+            "script": "grub"
         },
         {
             "name": "gzip",
-            "script": ""
+            "script": "gzip"
         },
         {
             "name": "iproute",
-            "script": ""
+            "script": "iproute"
         },
         {
-            "name": "kbd",
-            "script": ""
+            "name": "kbd*gz",
+            "script": "kbd"
         },
         {
             "name": "libpipeline",
-            "script": ""
+            "script": "libpipeline"
         },
         {
             "name": "make",
-            "script": ""
+            "script": "make"
         },
         {
             "name": "patch",
-            "script": ""
+            "script": "patch"
         },
         {
             "name": "tar",
-            "script": ""
+            "script": "tar"
         },
         {
             "name": "texinfo",
-            "script": ""
+            "script": "texinfo"
         },
         {
             "name": "vim",
-            "script": ""
+            "script": "vim"
         },
         {
             "name": "eudev",
-            "script": ""
+            "script": "eudev"
         },
         {
             "name": "man-db",
-            "script": ""
+            "script": "man_db"
         },
         {
             "name": "procps-ng",
-            "script": ""
+            "script": "procps-ng"
         },
         {
             "name": "util-linux",
-            "script": ""
+            "script": "util_linux"
         },
         {
             "name": "e2fsprogs",
-            "script": ""
+            "script": "e2fsprogs"
         },
         {
             "name": "sysklogd",
-            "script": ""
+            "script": "sysklogd"
         },
         {
-            "name": "sysvinit",
-            "script": ""
+            "name": "sysvinit*xz",
+            "script": "sysvinit"
         }
     ]
 }
