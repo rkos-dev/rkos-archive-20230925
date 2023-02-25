@@ -1,14 +1,18 @@
 use log::info;
 use std::error::Error;
 use std::fs;
+use std::fs::File;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 use std::result::Result;
 
 use glob::glob;
+use std::process::Stdio;
 
 fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
+    let file = File::create("/root/log.log").unwrap();
+    let stdio = Stdio::from(file);
     let abs_path = fs::canonicalize(dir.as_path()).unwrap();
     let filename = match script_path.to_str() {
         Some(v) => v,
@@ -16,9 +20,11 @@ fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
     };
     let output = Command::new("/bin/bash")
         .current_dir(abs_path)
+        .arg("e")
         .arg(filename)
+        .stdout(stdio)
         .status()
-        .expect("error");
+        .unwrap();
     output.success()
 }
 
@@ -79,16 +85,17 @@ pub fn install_package(
     //        .arg(cmd)
     //        .status()
     //        .expect("error");
-    let output = Command::new("tar")
+
+    let output = Command::new("/usr/bin/tar")
         .arg("xvf")
         .arg(package_path)
         .arg("-C")
-        .arg("sources")
+        .arg(package_target_path.clone())
         .output()
         .expect("error");
     let out = String::from_utf8(output.stdout).unwrap();
 
-    info!("{}", out);
+    //info!("{}", out);
 
     //解压好的程序包路径
     let target_path = match glob(&(package_target_path + &package_name + "*/"))?
@@ -125,7 +132,10 @@ pub fn install_package(
     fs::remove_dir_all(target_path.clone()).unwrap();
 
     match status {
-        true => Ok(true),
+        true => {
+            info!("Package {:?} install success", package_name.clone());
+            Ok(true)
+        }
         false => Err(format!("Package {:?} install failed", target_path).into()),
     }
 }
