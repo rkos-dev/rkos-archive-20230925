@@ -52,7 +52,9 @@ else
     echo "export MAKEFLAGS='-j$CPUS'" >> /root/.bash_profile
 fi
 
-echo "FORCE_UNSAFE_CONFIGURE=1" >> /root/.bash_profile
+echo "export FORCE_UNSAFE_CONFIGURE=1" >> /root/.bash_profile
+
+echo "export NINJAJOBS=4" >> /root/.bash_profile
 
 
 source /root/.bash_profile

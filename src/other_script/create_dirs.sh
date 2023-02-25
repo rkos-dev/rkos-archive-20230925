@@ -2,10 +2,10 @@ cd $LFS
 mkdir -v $LFS/sources
 chmod -v a+wt $LFS/sources
 
-mkdir -pv $LFS/{etc,var}
+mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
 
 for i in bin lib sbin; do
-  ln -sv /usr/$i $LFS/$i
+  ln -sv usr/$i $LFS/$i
 done
 
 case $(uname -m) in
@@ -15,3 +15,4 @@ esac
 mkdir -pv $LFS/tools
 ln -sv $LFS/tools /
 
+cp -r sources/* $LFS/sources/
