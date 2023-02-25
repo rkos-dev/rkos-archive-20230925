@@ -47,22 +47,21 @@ impl CompilingCrossToolChain {
         };
     }
 
-    fn new_install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
+    fn before_chroot_install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
         let mut package_install_status = HashMap::new();
         let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
         let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
-        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
         info!(
-            "{:?} {:?} {:?}",
-            &cross_compile_toolchains, &cross_compile_packages, &after_chroot_packages
+            "{:?} {:?}",
+            &cross_compile_toolchains, &cross_compile_packages
         );
         for i in cross_compile_toolchains {
             let res = utils::install_package(
                 i.name.clone(),
                 "cross_compile_script/".to_owned(),
                 i.script.clone(),
-                "sources/".to_owned(),
-                "sources/".to_owned(),
+                "/mnt/lfs/sources/".to_owned(),
+                "/mnt/lfs/sources/".to_owned(),
             );
             match res {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
@@ -78,8 +77,8 @@ impl CompilingCrossToolChain {
                 i.name.clone(),
                 "cross_compile_script/".to_owned(),
                 i.script.clone(),
-                "sources/".to_owned(),
-                "sources/".to_owned(),
+                "/mnt/lfs/sources/".to_owned(),
+                "/mnt/lfs/sources".to_owned(),
             );
             match res {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
@@ -90,22 +89,7 @@ impl CompilingCrossToolChain {
                 }
             };
         }
-        //        for i in after_chroot_packages {
-        //            let res = utils::install_package(
-        //                i.name.clone(),
-        //                "cross_compile_script/".to_owned(),
-        //                i.script.clone(),
-        //                "sources/".to_owned(),
-        //                "sources/".to_owned(),
-        //            );
-        //            match res {
-        //                Ok(v) => package_install_status.insert(i.script.clone(), v),
-        //                Err(e) => {
-        //                    error!("{:?}", e);
-        //                    package_install_status.insert(i.script.clone(), false)
-        //                }
-        //            };
-        //        }
+
         for (k, v) in package_install_status {
             info!("{} : {}", k, v);
         }
@@ -113,8 +97,35 @@ impl CompilingCrossToolChain {
         Ok(())
     }
 
+    fn after_chroot_install_packages(&self) -> Result<(), std::io::Error> {
+        let mut package_install_status = HashMap::new();
+        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        info!("{:?}", after_chroot_packages);
+        for i in after_chroot_packages {
+            let res = utils::install_package(
+                i.name.clone(),
+                "cross_compile_script/".to_owned(),
+                i.script.clone(),
+                "sources/".to_owned(),
+                "sources/".to_owned(),
+            );
+            match res {
+                Ok(v) => package_install_status.insert(i.script.clone(), v),
+                Err(e) => {
+                    error!("{:?}", e);
+                    package_install_status.insert(i.script.clone(), false)
+                }
+            };
+        }
+        Ok(())
+    }
+
     fn check_data(&self, package_name: String) {
-        //检测命令的状态就可以
+        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
+        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
+        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        let script_path = "cross_compile_script";
+        let sources_path = "sources";
     }
 
     fn delete_package(&self, package_path: PathBuf) -> std::io::Result<()> {
@@ -144,7 +155,7 @@ impl TaskTrait for CompilingCrossToolChain {
         info!("start install {}", lfs_env);
 
         //        self.install_packages(lfs_env).unwrap();
-        self.new_install_packages(lfs_env).unwrap();
+        self.before_chroot_install_packages(lfs_env).unwrap();
 
         Retval::new(())
     }
