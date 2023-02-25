@@ -182,7 +182,7 @@
         },
         {
             "name": "elfutils",
-            "script": "elfutils"
+            "script": "libelf"
         },
         {
             "name": "libffi",
