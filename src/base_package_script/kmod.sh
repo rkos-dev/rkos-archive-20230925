@@ -4,6 +4,7 @@
             --with-xz              \
             --with-zstd            \
             --with-zlib
+
 make
 make install
 

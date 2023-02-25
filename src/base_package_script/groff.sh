@@ -1,4 +1,4 @@
-#TODO:PAGE格式还是需要调整一下
 PAGE=A4 ./configure --prefix=/usr
-make
+export MAKEFLAGS='j1'
+make -j1
 make install

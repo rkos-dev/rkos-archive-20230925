@@ -13,12 +13,7 @@ cd build
         --enable-64-bit-bfd
 
 
-    if [ "$?" -eq 1 ];
-    then
-        exit $?
-    fi
-
-    make && make DESTDIR=$LFS install
+make && make DESTDIR=$LFS install
 
 rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.{a,la}
 

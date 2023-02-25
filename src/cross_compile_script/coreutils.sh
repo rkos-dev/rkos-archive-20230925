@@ -4,10 +4,6 @@
             --enable-install-program=hostname \
             --enable-no-install-program=kill,uptime
 
-if [ "$?" -eq 1 ];
-then
-    exit $?
-fi
 
 make && make DESTDIR=$LFS install
 

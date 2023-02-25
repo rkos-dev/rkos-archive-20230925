@@ -1,8 +1,10 @@
 tar -xf ../tcl8.6.12-html.tar.gz --strip-components=1
+
 SRCDIR=$(pwd)
 cd unix
 ./configure --prefix=/usr           \
             --mandir=/usr/share/man
+
 make
 
 sed -e "s|$SRCDIR/unix|/usr/lib|" \
@@ -23,9 +25,14 @@ sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.2|/usr/lib/itcl4.2.2|" \
 unset SRCDIR
 
 make install 
+
 chmod -v u+w /usr/lib/libtcl8.6.so
+
 make install-private-headers
+
 ln -sfv tclsh8.6 /usr/bin/tclsh
+
 mv /usr/share/man/man3/{Thread,Tcl_Thread}.3
+
 mkdir -v -p /usr/share/doc/tcl-8.6.12
 cp -v -r  ../html/* /usr/share/doc/tcl-8.6.12

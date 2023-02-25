@@ -16,6 +16,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 
 mkdir -v build 
 cd build
+
 ../configure                                       \
     --build=$(../config.guess)                     \
     --host=$LFS_TGT                                \
@@ -34,10 +35,6 @@ cd build
     --disable-libvtv                               \
     --enable-languages=c,c++
 
-if [ "$?" -eq 1 ];
-then
-    exit $?
-fi
 
 make && make DESTDIR=$LFS install
 

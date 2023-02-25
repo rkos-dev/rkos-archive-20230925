@@ -1,19 +1,29 @@
 patch -Np1 -i ../base_patches/glibc-2.36-fhs-1.patch
+
 mkdir -v build && cd build
+
 echo "rootsbindir=/usr/sbin" > configparms
+
 ../configure --prefix=/usr                            \
              --disable-werror                         \
              --enable-kernel=3.2                      \
              --enable-stack-protector=strong          \
              --with-headers=/usr/include              \
              libc_cv_slibdir=/usr/lib
+
 make
+
 touch /etc/ld.so.conf
+
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
+
 make install
+
 sed '/RTLDLIST=/s@/usr@@g' -i /usr/bin/ldd
+
 cp -v ../nscd/nscd.conf /etc/nscd.conf
 mkdir -pv /var/cache/nscd
+
 mkdir -pv /usr/lib/locale
 localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
@@ -50,9 +60,10 @@ localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
 localedef -i zh_CN -f GB18030 zh_CN.GB18030
 localedef -i zh_HK -f BIG5-HKSCS zh_HK.BIG5-HKSCS
 localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
-make localedata/install-locales
+
 localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 localedef -i ja_JP -f SHIFT_JIS ja_JP.SJIS 2> /dev/null || true
+
 cat > /etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
 
@@ -87,9 +98,7 @@ cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
 zic -d $ZONEINFO -p America/New_York
 unset ZONEINFO
 
-//TODO:需要调整
-tzselect
-ln -sfv /usr/share/zoneinfo/<xxx> /etc/localtime
+ln -sfv /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 cat > /etc/ld.so.conf << "EOF"
 # Begin /etc/ld.so.conf
