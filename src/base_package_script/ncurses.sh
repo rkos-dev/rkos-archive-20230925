@@ -7,7 +7,9 @@
             --enable-pc-files       \
             --enable-widec          \
             --with-pkg-config-libdir=/usr/lib/pkgconfig
+
 make
+
 make DESTDIR=$PWD/dest install
 install -vm755 dest/usr/lib/libncursesw.so.6.3 /usr/lib
 rm -v  dest/usr/lib/libncursesw.so.6.3

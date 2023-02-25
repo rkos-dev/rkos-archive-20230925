@@ -18,10 +18,6 @@ popd
             --disable-stripping          \
             --enable-widec
 
-if [ "$?" -eq 1 ];
-then
-    exit $?
-fi
 
 make && make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
 

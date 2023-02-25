@@ -22,10 +22,6 @@ echo "rootsbindir=/usr/sbin" > configparms
       --with-headers=$LFS/usr/include    \
       libc_cv_slibdir=/usr/lib
 
-if [ "$?" -eq 1 ];
-then
-    exit $?
-fi
 
 make && make DESTDIR=$LFS install
 

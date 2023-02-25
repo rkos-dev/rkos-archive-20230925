@@ -8,5 +8,6 @@
             --disable-rlogin     \
             --disable-rsh        \
             --disable-servers
+
 make && make install
 mv -v /usr/{,s}bin/ifconfig

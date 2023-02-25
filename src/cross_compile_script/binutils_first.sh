@@ -7,10 +7,6 @@ cd build
              --enable-gprofng=no \
              --disable-werror
 
-if [ "$?" -eq 1 ];
-then
-    exit $?
-fi
 
 make && make install
 
