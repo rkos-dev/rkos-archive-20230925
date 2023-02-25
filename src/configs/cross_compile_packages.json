@@ -5,12 +5,12 @@
             "script": "binutils_first"
         },
         {
-            "name": "gcc",
-            "script": "gcc_first"
-        },
-        {
             "name": "linux",
             "script": "linux_headers_api"
+        },
+        {
+            "name": "gcc",
+            "script": "gcc_first"
         },
         {
             "name": "glibc",
@@ -89,6 +89,10 @@
         {
             "name": "gcc",
             "script": "gcc_second"
+        },
+        {
+            "name": "rust",
+            "script": "rust"
         }
     ],
     "after_chroot_packages": [
