@@ -22,7 +22,7 @@ cp /root/.bash_profile{,.TGT_origin}
 if [ $LFS_TGT ]; then
     echo "LFS_TGT=$LFS_TGT"
 else
-    echo "export LFS_TGT=$(uname -m)-pc-linux-gnu" >> /root/.bash_profile
+    echo "export LFS_TGT=$(uname -m)-rkos-linux-gnu" >> /root/.bash_profile
 fi
 
 #设定LC_ALL，PATH，CONFIG_FILE的环境变量
@@ -35,7 +35,7 @@ fi
 
 PATH=/usr/bin
 if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
-PATH=$LFS/tools/bin:$PATH
+PATH=/tools/bin:$PATH
 echo "export PATH=$PATH" >> /root/.bash_profile
 
 if [ $CONFIG_FILE ];then
@@ -54,7 +54,7 @@ fi
 
 echo "export FORCE_UNSAFE_CONFIGURE=1" >> /root/.bash_profile
 
-echo "export NINJAJOBS=4" >> /root/.bash_profile
+echo "export NINJAJOBS=$CPUS" >> /root/.bash_profile
 
 
 source /root/.bash_profile
