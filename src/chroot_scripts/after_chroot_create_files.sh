@@ -1,5 +1,5 @@
-
 ln -sv /proc/self/mounts /etc/mtab
+
 cat > /etc/hosts << EOF
 127.0.0.1  localhost $(hostname)
 ::1        localhost
