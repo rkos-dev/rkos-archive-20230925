@@ -1,12 +1,16 @@
+use clap::Parser;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
 use log::{debug, error, info, trace, warn};
 use std::collections::HashMap;
 use std::env;
 
+mod build_lfs_sys;
 mod build_temp_toolchain;
 mod prepare_host_sys;
 mod utils;
 mod vars;
+use cmd_lib::*;
+use std::path::PathBuf;
 
 struct OutputLfsImg {}
 impl TaskTrait for OutputLfsImg {
@@ -45,27 +49,33 @@ struct DagNodes {
 }
 
 fn main() {
-    //    log4rs::init_file("configs/log4rs.yaml", Default::default()).unwrap();
     init_logger(None);
-    //    let t1 = TaskWrapper::new(prepare_host_sys::PreparingSoftware {}, "Task 1");
-    let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
-    let mut dag_nodes = vec![t1];
+    let prepare = TaskWrapper::new(prepare_host_sys::Prepare {}, "Prepare");
+    let compile_temp_packages = TaskWrapper::new(
+        build_temp_toolchain::CompilingCrossToolChain {},
+        "Compile temp packages",
+    );
+    let build_base_system = TaskWrapper::new(
+        build_lfs_sys::InstallBasicSystemSoftware {},
+        "Build base system",
+    );
+    //let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
+    let mut dag_nodes = vec![prepare, compile_temp_packages, build_base_system];
 
-    //
-    //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
-    //let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
-    //
+    ////let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
+    ////let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
+
     let mut dagrs = DagEngine::new();
-    //TODO:python-doc需要调整包名，libstdc++需要调整包名，tcl-doc需要调整包名，zlib包会随着版本更新
-    //而链接失效，libstdc++只需要下载gcc之后copy一份成为libstdc++就可以
-    //python tcl 解决了 明天需要确认
+    ////TODO:python-doc需要调整包名，libstdc++需要调整包名，tcl-doc需要调整包名，zlib包会随着版本更新
+    ////而链接失效，libstdc++只需要下载gcc之后copy一份成为libstdc++就可以
+    ////python tcl 解决了 明天需要确认
 
-    //t2.exec_after(&[&t1]);
-    //t2.input_from(&[&t1]);
+    ////t2.exec_after(&[&t1]);
+    ////t2.input_from(&[&t1]);
 
-    //dagrs.add_tasks(vec![t1, t2]);
     dagrs.add_tasks(dag_nodes);
     assert!(dagrs.run().unwrap());
+
     let current_dir = env::current_dir().unwrap();
     info!("{:?}", current_dir);
 }
