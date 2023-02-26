@@ -21,8 +21,10 @@ cd  build
     --prefix=$LFS/tools       \
     --with-glibc-version=2.36 \
     --with-sysroot=$LFS       \
+    --with-newlib             \
     --without-headers         \
     --disable-nls             \
+    --disable-shared          \
     --disable-multilib        \
     --disable-decimal-float   \
     --disable-threads         \
@@ -31,8 +33,8 @@ cd  build
     --disable-libquadmath     \
     --disable-libssp          \
     --disable-libvtv          \
+    --disable-libstdcxx       \
     --enable-languages=c,c++
-
 
 make && make install 
 
