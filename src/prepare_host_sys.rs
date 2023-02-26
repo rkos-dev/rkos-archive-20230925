@@ -3,26 +3,43 @@ extern crate dagrs;
 
 use dagrs::RunType;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, RunScript, TaskTrait, TaskWrapper};
+use glob::glob;
 use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
-use nix::mount;
 
-#[macro_use]
 use goto::gpoint;
 
-use log::{error, info};
+use cmd_lib::*;
+use log::{info, warn};
 use std::collections::HashMap;
 use std::fs;
-use std::path::Path;
-use std::path::PathBuf;
 use std::process::Command;
 
 use crate::{utils, vars};
 
-// TODO:将所有本阶段合并统一管理
+pub struct Prepare {}
+impl TaskTrait for Prepare {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        let prepare_env = TaskWrapper::new(PreparingEnv {}, "PREPARE ENV");
+        let mut check_env = TaskWrapper::new(PreparingEnv {}, "CHECK ENV");
+        let prepare_disk = TaskWrapper::new(PreparingDisk {}, "PREPARE DISK");
+        let prepare_software = TaskWrapper::new(PreparingSoftware {}, "PREPARE DISK");
 
+        check_env.exec_after(&[&prepare_env]);
+
+        let mut dag_nodes = vec![prepare_env, check_env, prepare_disk, prepare_software];
+
+        let mut dagrs = DagEngine::new();
+        dagrs.add_tasks(dag_nodes);
+        assert!(dagrs.run().unwrap());
+
+        Retval::empty()
+    }
+}
+
+struct PreparingSoftware {}
 impl PreparingSoftware {
     //目前使用脚本替代该部分，计划弃用或者完全使用rust
-    fn preparing_host_software(&self) {
+    fn prepare_env(&self) {
         //        let packages = &vars::HOST_PACKAGES;
         //        let mut cmd: String = vars::BASE_CONFIG.host_install_cmd.clone();
         //        for package in &packages.host_packages {
@@ -83,14 +100,14 @@ impl PreparingSoftware {
                     break 'begin;
                 }
 
-                match utils::download("sources".to_owned(), i.url.clone()){
+                match utils::download(vars::BASE_CONFIG.package_target_path.clone(), i.url.clone()){
                     Ok(v)=>{
                         match v{
-                            true=>{pack_status.insert(&i.name,v);break 'begin},
-                            false=>{continue 'begin},
+                            true=>{flag=0;pack_status.insert(&i.name,v);break 'begin},
+                            false=>{flag+=1;continue 'begin},
                         }
                     },
-                    Err(_e)=>{continue 'begin;}
+                    Err(_e)=>{flag+=1;continue 'begin;}
                 }
             ];
             //            info!("{:?}", i);
@@ -116,11 +133,11 @@ impl PreparingSoftware {
 
                     Ok(v)=>{
                         match v{
-                            true=>{pack_status.insert(&i.name,v);break 'begin},
-                            false=>{continue 'begin},
+                            true=>{flag=0;pack_status.insert(&i.name,v);break 'begin},
+                            false=>{flag+=1;continue 'begin},
                         }
                     },
-                    Err(_e)=>{continue 'begin;}
+                    Err(_e)=>{flag+=1;continue 'begin;}
                 }
             ];
             //let output = Command::new("wget")
@@ -136,20 +153,18 @@ impl PreparingSoftware {
             info!("{} : {}", k, v);
         }
     }
+    fn check(&self) {}
 }
 
-pub struct PreparingSoftware {}
 impl TaskTrait for PreparingSoftware {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        //        self.preparing_host_software();
         self.preparing_base_software();
-        //        self.check();
-
+        self.check();
         Retval::new(())
     }
 }
 
-pub struct PreparingEnv {}
+struct PreparingEnv {}
 impl TaskTrait for PreparingEnv {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         let script = RunScript::new("other_script/prepare_env.sh", RunType::SH);
@@ -159,7 +174,7 @@ impl TaskTrait for PreparingEnv {
     }
 }
 
-pub struct PreparingDisk {}
+struct PreparingDisk {}
 impl TaskTrait for PreparingDisk {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         let script = RunScript::new("other_script/create_dirs.sh", RunType::SH);
@@ -169,12 +184,110 @@ impl TaskTrait for PreparingDisk {
     }
 }
 
-pub struct CheckEnv {}
+struct CheckEnv {
+    lfs: String,
+    lfs_tgt: String,
+    path: String,
+    lc_all: String,
+    config_file: String,
+    makeflags: String,
+    force_unsafe_configure: i32,
+    ninjajobs: i32,
+}
 impl TaskTrait for CheckEnv {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let script = RunScript::new("other_script/version-check.sh", RunType::SH);
-        let res = script.exec(None);
-        info!("{:?}", res);
+        let env = CheckEnv {
+            lfs: vars::BASE_CONFIG.lfs_env.clone(),
+            lfs_tgt: "x86_64-rkos-linux-gnu".to_owned(),
+            path: "/tools/bin:/usr/bin".to_owned(),
+            lc_all: "POSIX".to_owned(),
+            config_file: vars::BASE_CONFIG.lfs_env.clone() + "/usr/share/config.site",
+            makeflags: "'-j4'".to_owned(),
+            force_unsafe_configure: 1,
+            ninjajobs: 4,
+        };
+
+        match utils::env_status("LFS".to_owned()) {
+            Ok(v) => {
+                info!("Get LFS env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found LFS env : {}", e);
+                let value = &env.lfs;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("LFS_TGT".to_owned()) {
+            Ok(v) => {
+                info!("Get LFS_TGT env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found LFS_TGT env : {}", e);
+                let value = &env.lfs_tgt;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("LC_ALL".to_owned()) {
+            Ok(v) => {
+                info!("Get LC_ALL env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found LC_ALL env : {}", e);
+                let value = &env.lc_all;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("CONFIG_FILE".to_owned()) {
+            Ok(v) => {
+                info!("Get CONFIG_FILE env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found CONFIG_FILE env : {}", e);
+                let value = &env.config_file;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("PATH".to_owned()) {
+            Ok(v) => {
+                info!("Get PATH env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found PATH env : {}", e);
+                let value = &env.path;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("MAKEFLAGS".to_owned()) {
+            Ok(v) => {
+                info!("Get MAKEFLAGS env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found MAKEFLAGS env : {}", e);
+                let value = &env.makeflags;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("FORCE_UNSAFE_CONFIGURE".to_owned()) {
+            Ok(v) => {
+                info!("Get FORCE_UNSAFE_CONFIGURE env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found FORCE_UNSAFE_CONFIGURE env : {}", e);
+                let value = &env.force_unsafe_configure;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+        match utils::env_status("NINJAJOBS".to_owned()) {
+            Ok(v) => {
+                info!("Get NINJAJOBS env : {}", v);
+            }
+            Err(e) => {
+                warn!("Nou found NINJAJOBS env : {}", e);
+                let value = &env.ninjajobs;
+                run_cmd!(echo $value>>/root/.bash_profile).unwrap();
+            }
+        }
+
         Retval::empty()
     }
 }
