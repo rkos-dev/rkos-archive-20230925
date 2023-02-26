@@ -1,3 +1,4 @@
+use clap::{Parser, Subcommand};
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -6,6 +7,52 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
 
+#[derive(Parser)]
+#[command(name = "rkos_builder")]
+#[command(author = "xyyy <xyyy1420@gmail>")]
+#[command(version = "0.0.1")]
+pub struct Cli {
+    pub name: Option<String>,
+
+    #[arg(short, long)]
+    pub start: bool,
+
+    #[arg(short, long)]
+    pub restart: bool,
+
+    #[arg(short, long, value_name = "DIR")]
+    pub config: Option<PathBuf>,
+
+    #[arg(short,long,action=clap::ArgAction::Count)]
+    pub debug: u8,
+}
+
+//TODO:使用命令行来解析目录
+//    let cli = vars::Cli::parse();
+//
+//    if let start = cli.start {
+//        println!("start {}", start);
+//    }
+//
+//    if let restart = cli.restart {
+//        println!("restart");
+//    }
+//
+//    if let Some(name) = cli.name.as_deref() {
+//        println!("value for name: {name}");
+//    }
+//
+//    if let Some(config_path) = cli.config.as_deref() {
+//        println!("value for config {}", config_path.display());
+//    }
+//
+//    match cli.debug {
+//        0 => println!("debug mod is off"),
+//        1 => println!("debug mod is kind of on"),
+//        2 => println!("debug mod is on"),
+//        _ => println!("do not be crazy"),
+//    }
+//
 lazy_static! {
     pub static ref ROOT_DIR: PathBuf = env::current_dir().unwrap();
     pub static ref BASE_CONFIG: BaseConfig = {
@@ -88,6 +135,8 @@ pub struct BaseConfig {
     pub host_packages: String,
     pub cross_compile_packages: String,
     pub package_sources_path: String,
+    pub package_target_path: String,
+    pub patches_target_path: String,
     pub config_path: String,
     pub cross_compile_script_path: String,
     pub base_compile_script_path: String,
