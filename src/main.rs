@@ -52,15 +52,20 @@ fn main() {
     init_logger(None);
     let prepare = TaskWrapper::new(prepare_host_sys::Prepare {}, "Prepare");
     let compile_temp_packages = TaskWrapper::new(
-        build_temp_toolchain::CompilingCrossToolChain {},
+        build_temp_toolchain::CompileTempPackages {},
         "Compile temp packages",
     );
-    let build_base_system = TaskWrapper::new(
-        build_lfs_sys::InstallBasicSystemSoftware {},
-        "Build base system",
-    );
+    let enter_fakeroot = TaskWrapper::new(utils::EnterFakeroot {}, "Enter fakeroot");
+    let mut build_base_system =
+        TaskWrapper::new(build_lfs_sys::BuildBaseSystem {}, "Build base system");
+    //    let config_system=TaskWrapper::new(config_sys::ConfigSys{},"Config new system");
     //let t1 = TaskWrapper::new(build_temp_toolchain::CompilingCrossToolChain {}, "Task 1");
-    let mut dag_nodes = vec![prepare, compile_temp_packages, build_base_system];
+
+    //    let mut dag_nodes = vec![prepare, compile_temp_packages, build_base_system];
+
+    build_base_system.exec_after(&[&enter_fakeroot]);
+
+    let mut dag_nodes = vec![enter_fakeroot];
 
     ////let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingDisk {}, "Task 2");
     ////let mut t2 = TaskWrapper::new(prepare_host_sys::PreparingNewFileSystem {}, "task 2");
@@ -82,30 +87,30 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use crate::vars;
-
-    #[test]
-    fn package_test() {
-        let base_path =
-            "/home/jxy/workspace/all_record/openEuler_pro_1/pro/src/lfs_pro/src/".to_string();
-        let base_packages = vars::parse_json::<vars::BasePackages>(
-            &(base_path.clone() + "configs/base_packages.json"),
-        );
-        let cross_packages = vars::parse_json::<vars::CrossCompilePackages>(
-            &(base_path.clone() + "configs/cross_compile_packages.json"),
-        );
-        let base_config =
-            vars::parse_json::<vars::BaseConfig>(&(base_path.clone() + "configs/base_config.json"));
-        assert!(base_packages.is_ok());
-        assert!(cross_packages.is_ok());
-        assert!(base_config.is_ok());
+    use std::env::current_dir;
+    use std::error::Error;
+    use std::ffi::OsStr;
+    use std::path::PathBuf;
+    use std::{env, fs};
+    fn test_walk_dir(path: PathBuf) -> Result<(), Box<dyn Error>> {
+        let current_dir = path;
+        println!("current_dir : {:?}", current_dir);
+        for entry in fs::read_dir(current_dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            let metadata = fs::metadata(&path)?;
+            if metadata.is_dir() {
+                if Some(OsStr::new(".git")) != path.file_name() {
+                    println!("{:?}", &path.file_name());
+                    test_walk_dir(path);
+                }
+            }
+        }
+        Ok(())
     }
-
     #[test]
-    fn static_vars_test() {
-        let _base_config = &vars::BASE_CONFIG;
-        let _base_packages = &vars::BASE_PACKAGES;
-        let _cross_packages = &vars::CROSS_COMPILE_PACKAGES;
-        let _host_packages = &vars::HOST_PACKAGES;
+    fn call_test_walk_dir() {
+        let current_dir = env::current_dir().unwrap();
+        test_walk_dir(current_dir);
     }
 }
