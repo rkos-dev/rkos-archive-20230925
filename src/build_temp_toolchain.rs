@@ -12,31 +12,6 @@ use std::os::unix::fs::chroot;
 use std::path::PathBuf;
 use std::process::Command;
 
-fn exec_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    let abs_path = fs::canonicalize(dir.as_path()).unwrap();
-    let filename = match script_path.to_str() {
-        Some(v) => v,
-        None => panic!("cannot turn to str"),
-    };
-    let output = Command::new("/bin/bash")
-        .current_dir(abs_path)
-        .arg(filename)
-        .status()
-        .expect("error");
-    output.success()
-}
-
-fn exec_chroot_script(script_path: PathBuf) -> bool {
-    let output = Command::new("ls")
-        .env_clear()
-        .env("PATH", "/bin")
-        .env("PATH", "/sbin")
-        .env("HOME", "/root")
-        .status()
-        .expect("error");
-    output.success()
-}
-
 pub struct CompileTempPackages {}
 impl TaskTrait for CompileTempPackages {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
@@ -52,6 +27,11 @@ impl TaskTrait for CompileTempPackages {
 
         let mut clean_system = TaskWrapper::new(CleanUpAndSaveTempSystem {}, "Clean up");
 
+        compile_toolchains.exec_after(&[&check_system_env]);
+        enter_chroot.exec_after(&[&compile_toolchains]);
+        install_other_packages.exec_after(&[&enter_chroot]);
+        clean_system.exec_after(&[&compile_toolchains, &enter_chroot, &install_other_packages]);
+
         let dag_nodes = vec![
             check_system_env,
             compile_toolchains,
@@ -59,12 +39,6 @@ impl TaskTrait for CompileTempPackages {
             install_other_packages,
             clean_system,
         ];
-
-        compile_toolchains.exec_after(&[&check_system_env]);
-        enter_chroot.exec_after(&[&compile_toolchains]);
-        install_other_packages.exec_after(&[&enter_chroot]);
-        clean_system.exec_after(&[&compile_toolchains, &enter_chroot, &install_other_packages]);
-
         let mut dagrs = DagEngine::new();
         dagrs.add_tasks(dag_nodes);
         assert!(dagrs.run().unwrap());
@@ -72,6 +46,7 @@ impl TaskTrait for CompileTempPackages {
     }
 }
 
+//检查lfs环境变量
 pub struct CheckEnv {}
 impl TaskTrait for CheckEnv {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
@@ -83,6 +58,7 @@ impl TaskTrait for CheckEnv {
     }
 }
 
+//编译交叉工具链以及chroot前的其他工具
 pub struct CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
     fn check_system_env(&self) -> Result<String, env::VarError> {
@@ -116,7 +92,7 @@ impl CompilingCrossToolChain {
             //                "/mnt/lfs/sources/".to_owned(),
             //                "/mnt/lfs/sources/".to_owned(),
             //            );
-            let res = utils::install_package(pack_i);
+            let res = utils::install_package(pack_i, false);
             match res {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
                 Err(e) => {
@@ -141,7 +117,7 @@ impl CompilingCrossToolChain {
                 package_source_path: "/mnt/lfs/sources/".to_owned(),
                 package_target_path: "/mnt/lfs/sources/".to_owned(),
             };
-            let res = utils::install_package(pack_i);
+            let res = utils::install_package(pack_i, false);
             match res {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
                 Err(e) => {
@@ -172,7 +148,6 @@ impl CompilingCrossToolChain {
         Ok(())
     }
 }
-
 impl TaskTrait for CompilingCrossToolChain {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         let lfs_env = "/mnt/lfs".to_string();
@@ -181,10 +156,39 @@ impl TaskTrait for CompilingCrossToolChain {
         //        self.install_packages(lfs_env).unwrap();
         self.before_chroot_install_packages(lfs_env).unwrap();
 
-        Retval::new(())
+        Retval::empty()
     }
 }
 
+//准备chroot后的环境
+struct AfterChroot {}
+impl TaskTrait for AfterChroot {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        //       let create_script_path: PathBuf = ["chroot_scripts", "after_chroot_create_dirs.sh"]
+        //           .iter()
+        //           .collect();
+        let status = utils::exec_chroot_script(
+            ["after_chroot_create_dirs.sh"].iter().collect(),
+            ["/chroot_scripts"].iter().collect(),
+        );
+        //        let status = exec_chroot_script(create_script_path);
+        assert!(status);
+        let status = utils::exec_chroot_script(
+            ["after_chroot_create_files.sh"].iter().collect(),
+            ["/chroot_scripts"].iter().collect(),
+        );
+        assert!(status);
+
+        //let create_script_path: PathBuf = ["chroot_scripts", "after_chroot_create_files.sh"]
+        //    .iter()
+        //    .collect();
+        //let status = exec_chroot_script(create_script_path);
+        //assert!(status);
+        Retval::empty()
+    }
+}
+
+// chroot之后安装临时工具
 struct AfterChrootInstall {}
 impl AfterChrootInstall {
     fn after_chroot_install_packages(&self) -> Result<(), std::io::Error> {
@@ -199,7 +203,7 @@ impl AfterChrootInstall {
                 package_source_path: "/sources/".to_owned(),
                 package_target_path: "/sources/".to_owned(),
             };
-            let res = utils::install_package(pack_i);
+            let res = utils::install_package(pack_i, true);
             match res {
                 Ok(v) => package_install_status.insert(i.script.clone(), v),
                 Err(e) => {
@@ -221,56 +225,21 @@ impl TaskTrait for AfterChrootInstall {
     }
 }
 
+// 进入chroot环境，并准备好第一次进入chroot环境后的配置
 struct EnterChroot {}
-impl EnterChroot {
-    fn prepare_chroot_chmod(&self) -> bool {
-        let chmod_script_path = "chroot_scripts/chown.sh";
-        let output = Command::new("/bin/bash")
-            .arg(chmod_script_path)
-            .status()
-            .expect("error");
-        output.success()
-    }
-    fn prepare_virt_fsys(&self) -> bool {
-        let prepare_virtual_fsys = "chroot_scripts/prepare_vir_filesystem.sh";
-        let output = Command::new("/bin/bash")
-            .arg(prepare_virtual_fsys)
-            .status()
-            .expect("error");
-        output.success()
-    }
-
-    fn enter_chroot(&self) -> std::io::Result<()> {
-        chroot("/mnt/lfs")?;
-        std::env::set_current_dir("/")?;
-        Ok(())
-    }
-    fn create_dirs(&self) -> bool {
-        let create_script_path: PathBuf = ["chroot_scripts", "after_chroot_create_dirs.sh"]
-            .iter()
-            .collect();
-        let status = exec_chroot_script(create_script_path);
-        status
-    }
-    fn create_files(&self) -> bool {
-        let create_script_path: PathBuf = ["chroot_scripts", "after_chroot_create_files.sh"]
-            .iter()
-            .collect();
-        let status = exec_chroot_script(create_script_path);
-        status
-    }
-}
 impl TaskTrait for EnterChroot {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let status = self.prepare_chroot_chmod();
-        assert!(status);
-        let status = self.prepare_virt_fsys();
-        assert!(status);
-        self.enter_chroot();
-        let status = self.create_dirs();
-        assert!(status);
-        let status = self.create_files();
-        assert!(status);
+        let chroot = TaskWrapper::new(utils::EnterFakeroot {}, "Chroot");
+        let mut after_chroot = TaskWrapper::new(AfterChroot {}, "After chroot config");
+
+        after_chroot.exec_after(&[&chroot]);
+
+        let dag_nodes = vec![chroot, after_chroot];
+        let mut dag = DagEngine::new();
+
+        dag.add_tasks(dag_nodes);
+
+        assert!(dag.run().unwrap());
 
         //修改临时环境目录的所有者
         //挂载内核文件系统
@@ -280,10 +249,11 @@ impl TaskTrait for EnterChroot {
         // - set 目录到/
         // - 删除所有env
         // - 重新设定HOME PATH
-        Retval::new(())
+        Retval::empty()
     }
 }
 
+//清理环境临时工具等
 struct CleanUpAndSaveTempSystem {}
 impl TaskTrait for CleanUpAndSaveTempSystem {
     //清理临时工具

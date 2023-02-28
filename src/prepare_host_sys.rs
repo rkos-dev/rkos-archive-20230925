@@ -7,6 +7,7 @@ use glob::glob;
 use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
 
 use goto::gpoint;
+use walkdir::WalkDir;
 
 use cmd_lib::*;
 use log::{info, warn};
@@ -19,8 +20,9 @@ use crate::{utils, vars};
 pub struct Prepare {}
 impl TaskTrait for Prepare {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        let backup_bash_profile = TaskWrapper::new(BackupBashProfile {}, "Back up bash profile");
         let prepare_env = TaskWrapper::new(PreparingEnv {}, "PREPARE ENV");
-        let mut check_env = TaskWrapper::new(PreparingEnv {}, "CHECK ENV");
+        let mut check_env = TaskWrapper::new(CheckEnv {}, "CHECK ENV");
         let prepare_disk = TaskWrapper::new(PreparingDisk {}, "PREPARE DISK");
         let prepare_software = TaskWrapper::new(PreparingSoftware {}, "PREPARE DISK");
 
@@ -32,6 +34,16 @@ impl TaskTrait for Prepare {
         dagrs.add_tasks(dag_nodes);
         assert!(dagrs.run().unwrap());
 
+        Retval::empty()
+    }
+}
+
+struct BackupBashProfile {}
+impl TaskTrait for BackupBashProfile {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        let src_path = "/root/.bash_profile";
+        let target_path = "/root/.bash_profile.bak";
+        fs::rename(src_path, target_path).unwrap();
         Retval::empty()
     }
 }
@@ -90,6 +102,18 @@ impl PreparingSoftware {
 
         let all_packages = &vars::ALL_PACKAGES.all_packages;
         let patches = &vars::ALL_PACKAGES.package_patches;
+        //        let prepare_download_packages = HashMap::new();
+        //        let prepare_download_patches = HashMap::new();
+        //        for package in WalkDir::new("/mnt/lfs/sources") {
+        //            let package = package.unwrap();
+        //            println!("{}", package.path().display());
+        //        }
+        //
+        //        for patches in WalkDir::new("/mnt/lfs/sources/base_patches") {
+        //            let patches = patches.unwrap();
+        //            println!("{}", patches.path().display());
+        //        }
+
         let mut pack_status = HashMap::new();
         for i in all_packages {
             let mut flag = 0;
@@ -184,7 +208,7 @@ impl TaskTrait for PreparingDisk {
     }
 }
 
-struct CheckEnv {
+struct Env {
     lfs: String,
     lfs_tgt: String,
     path: String,
@@ -194,9 +218,11 @@ struct CheckEnv {
     force_unsafe_configure: i32,
     ninjajobs: i32,
 }
+
+struct CheckEnv {}
 impl TaskTrait for CheckEnv {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let env = CheckEnv {
+        let env = Env {
             lfs: vars::BASE_CONFIG.lfs_env.clone(),
             lfs_tgt: "x86_64-rkos-linux-gnu".to_owned(),
             path: "/tools/bin:/usr/bin".to_owned(),
