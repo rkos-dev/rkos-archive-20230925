@@ -22,6 +22,7 @@ chown -v -R root:root \
     /usr/lib/gcc/$(gcc -dumpmachine)/12.2.0/include{,-fixed}
 
 ln -svr /usr/bin/cpp /usr/lib
+
 ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/12.2.0/liblto_plugin.so \
         /usr/lib/bfd-plugins/
 
@@ -37,6 +38,6 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/12.2.0/liblto_plugin.so \
 #grep found dummy.log
 #
 #rm -v dummy.c a.out dummy.log
-#mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 
