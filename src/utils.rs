@@ -1,10 +1,11 @@
 use cmd_lib::*;
 use dagrs::{DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use log::info;
+use log::{error, info, warn};
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::fs::File;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 use std::result::Result;
@@ -13,7 +14,10 @@ use glob::glob;
 use std::os::unix::fs::chroot;
 use std::process::Stdio;
 
+use crate::vars::BASE_CONFIG;
+
 pub struct InstallInfo {
+    pub dir_name: String,
     pub package_name: String,
     pub script_name: String,
     pub script_path: String,
@@ -21,67 +25,151 @@ pub struct InstallInfo {
     pub package_target_path: String,
 }
 
-pub struct EnterFakeroot {}
-impl TaskTrait for EnterFakeroot {
+pub struct EnterChroot {}
+impl ProgramEndingFlag for EnterChroot {}
+impl TaskTrait for EnterChroot {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let chmod_script_path = "chroot_scripts/chown.sh";
-        let output = Command::new("/bin/bash")
+        self.check_flag();
+        //        let chmod_script_path = "chroot_scripts/chown.sh";
+        let chmod_script_path: PathBuf = [
+            &BASE_CONFIG.scripts_path.root,
+            &BASE_CONFIG.scripts_path.chroot,
+            "target_path_chown.sh",
+        ]
+        .iter()
+        .collect();
+
+        match Command::new("/bin/bash")
+            .arg("-e")
             .arg(chmod_script_path)
             .status()
-            .expect("error");
-        assert!(output.success());
+        {
+            Ok(v) => match v.success() {
+                true => {}
+                false => {
+                    self.try_set_flag(false);
+                }
+            },
+            Err(e) => {
+                error!("Failed chown target path , Err msg：{}", e);
+                self.try_set_flag(false);
+            }
+        };
 
-        let output = Command::new("/bin/bash")
-            .arg("chroot_scripts/prepare_vir_filesystem.sh")
+        let mount_virt_fsystem: PathBuf = [
+            &BASE_CONFIG.scripts_path.root,
+            &BASE_CONFIG.scripts_path.chroot,
+            "mount_vfsys.sh",
+        ]
+        .iter()
+        .collect();
+        match Command::new("/bin/bash")
+            .arg("-e")
+            .arg(mount_virt_fsystem)
             .status()
-            .unwrap();
-        assert!(output.success());
+        {
+            Ok(v) => match v.success() {
+                true => {}
+                false => {
+                    self.try_set_flag(false);
+                }
+            },
+            Err(e) => {
+                error!("Failed mount virt file system , Err msg：{}", e);
+                self.try_set_flag(false);
+            }
+        };
 
-        chroot("/mnt/lfs").unwrap();
-        std::env::set_current_dir("/").unwrap();
-
-        exec_chroot_script(["ls.sh"].iter().collect(), ["/"].iter().collect());
+        match chroot("/mnt/lfs") {
+            Ok(_v) => {
+                info!("success chroot to /mnt/lfs ");
+            }
+            Err(e) => {
+                error!("chroot to /mnt/lfs failed , Err msg {}", e);
+                self.try_set_flag(false);
+            }
+        }
+        match std::env::set_current_dir("/") {
+            Ok(_v) => {
+                info!("success chroot to /mnt/lfs ");
+            }
+            Err(e) => {
+                error!("Set current dir failed , Err msg {}", e);
+                self.try_set_flag(false);
+            }
+        }
 
         Retval::empty()
     }
 }
 
 pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    let file = File::create("/root/log.log").unwrap();
-    let stdio = Stdio::from(file);
-    let abs_path = fs::canonicalize(dir.as_path()).unwrap();
-    let filename = match script_path.to_str() {
-        Some(v) => v,
-        None => panic!("cannot turn to str"),
+    //日志输出文件
+    let stdout_file = match File::create("/root/log.log") {
+        Ok(v) => v,
+        Err(_e) => return false,
     };
-    let output = Command::new("/bin/bash")
+
+    let stderr_file = match stdout_file.try_clone() {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let stdio = Stdio::from(stdout_file);
+    let stderr = Stdio::from(stderr_file);
+    //取绝对路径
+    let abs_path = match fs::canonicalize(dir.as_path()) {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let output = match Command::new("/bin/bash")
         .current_dir(abs_path)
         .env_clear()
         .env("PATH", "/usr/bin:/usr/sbin")
         .env("HOME", "/root")
         .env("TERM", "$TERM")
-        .arg(filename)
+        .arg("-e")
+        .arg(script_path)
         .stdout(stdio)
+        .stderr(stderr)
         .status()
-        .unwrap();
+    {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
     output.success()
 }
 
 fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    let file = File::create("/root/log.log").unwrap();
-    let stdio = Stdio::from(file);
-    let abs_path = fs::canonicalize(dir.as_path()).unwrap();
-    let filename = match script_path.to_str() {
-        Some(v) => v,
-        None => panic!("cannot turn to str"),
+    let stdout_file = match File::create("/root/log.log") {
+        Ok(v) => v,
+        Err(_e) => return false,
     };
-    let output = Command::new("/bin/bash")
+    let stderr_file = match stdout_file.try_clone() {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let stdio = Stdio::from(stdout_file);
+    let stderr = Stdio::from(stderr_file);
+    let abs_path = match fs::canonicalize(dir.as_path()) {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let output = match Command::new("/bin/bash")
         .current_dir(abs_path)
-        .arg("e")
-        .arg(filename)
+        .arg("-e")
+        .arg(script_path)
         .stdout(stdio)
+        .stderr(stderr)
         .status()
-        .unwrap();
+    {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
     output.success()
 }
 
@@ -98,13 +186,6 @@ pub fn download(target_path: String, url: String) -> Result<bool, Box<dyn Error>
     Ok(output.success())
 }
 
-//pub fn install_package(
-//    package_name: String,
-//    script_path: String,
-//    script_name: String,
-//    package_source_path: String,
-//    package_target_path: String,
-//) -> Result<bool, Box<dyn Error>> {
 pub fn install_package(
     package_info: InstallInfo,
     chroot_flag: bool,
@@ -114,14 +195,17 @@ pub fn install_package(
     //软件包相对工作目录的路径
     let package_path =
         match glob(&(package_info.package_source_path.clone() + &package_info.package_name + "*"))?
-            //        match glob(&package_full_path)?
-            //let package_path = match glob(&("sources/".to_owned() + &package_name + "*"))
             .filter_map(Result::ok)
             .next()
         {
             Some(v) => v,
             None => return Err(format!("Not found package {:?}", package_info.package_name).into()),
         };
+
+    info!(
+        "Package name : {:?} ; Package path : {:?} ;",
+        &package_info.package_name, &package_path,
+    );
 
     //预先准备的脚本文件路径
     let script_full_path =
@@ -139,7 +223,7 @@ pub fn install_package(
     );
 
     let output = Command::new("/usr/bin/tar")
-        .arg("xvf")
+        .arg("xf")
         .arg(package_path)
         .arg("-C")
         .arg(package_info.package_target_path.clone())
@@ -147,11 +231,11 @@ pub fn install_package(
         .expect("error");
     let out = String::from_utf8(output.stdout).unwrap();
 
-    //info!("{}", out);
+    info!("{}", out);
 
     //解压好的程序包路径
     let target_path =
-        match glob(&(package_info.package_target_path + &package_info.package_name + "*/"))?
+        match glob(&(package_info.package_target_path + &package_info.dir_name + "*/"))?
             //    let target_path = match glob(&("sources/".to_owned() + &package_name + "*/"))
             .filter_map(Result::ok)
             .next()
@@ -180,7 +264,7 @@ pub fn install_package(
     //脚本文件名字
     let fin_script_name = match script_target_path.file_name() {
         Some(v) => v,
-        None => return Err("err".into()),
+        None => return Err("get filename failed".into()),
     };
 
     let status = match chroot_flag {
@@ -190,7 +274,6 @@ pub fn install_package(
     //let status = exec_build_script(fin_script_name.into(), target_path.clone());
 
     fs::remove_dir_all(target_path.clone()).unwrap();
-    assert!(status);
 
     match status {
         true => {
@@ -201,5 +284,48 @@ pub fn install_package(
             Ok(true)
         }
         false => Err(format!("Package {:?} install failed", target_path).into()),
+    }
+}
+
+pub fn delete_failed_download_pack(target_pack_name: &str, target_path: &str) {
+    match glob(&(target_path.to_string() + target_pack_name)) {
+        Ok(v) => {
+            match v.filter_map(Result::ok).next() {
+                Some(v) => fs::remove_file(v),
+                None => {
+                    return;
+                } //None => panic!("Not found target path {:?}", package_name),
+            };
+        }
+        Err(_e) => {}
+    }
+}
+
+pub fn check_download_before(target_pack_name: &str, target_path: &str) -> bool {
+    match glob(&(target_path.to_string() + target_pack_name)) {
+        Ok(v) => match v.filter_map(Result::ok).next() {
+            Some(v) => true,
+            None => false,
+        },
+        Err(_e) => false,
+    }
+}
+
+pub trait ProgramEndingFlag {
+    fn check_flag(&self) {
+        let target_path = Path::new("./stop");
+        if target_path.exists() {
+            panic!("Program Ending");
+        }
+    }
+    fn try_set_flag(&self, flag: bool) {
+        let target_path = Path::new("./stop");
+        match flag {
+            false => {
+                File::create(target_path);
+                panic!("Program Ending");
+            }
+            true => (),
+        }
     }
 }
