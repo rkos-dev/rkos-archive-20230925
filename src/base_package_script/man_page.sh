@@ -1,1 +1,0 @@
-make prefix=/usr install
