@@ -25,6 +25,88 @@ pub struct InstallInfo {
     pub package_target_path: String,
 }
 
+pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
+    //日志输出文件
+    let stdout_file = match File::create("/root/log.log") {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let stderr_file = match stdout_file.try_clone() {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let stdio = Stdio::from(stdout_file);
+    let stderr = Stdio::from(stderr_file);
+    //取绝对路径
+    let abs_path = match fs::canonicalize(dir.as_path()) {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let output = match Command::new("/bin/bash")
+        .current_dir(abs_path)
+        .env_clear()
+        .env("PATH", "/usr/bin:/usr/sbin:/root/.cargo/bin")
+        .env("HOME", "/root")
+        .env("TERM", "$TERM")
+        .env("MAKEFLAGS", "-j8")
+        .env("NINJAJOBS", "8")
+        .arg("-e")
+        .arg(script_path)
+        .stdout(stdio)
+        .stderr(stderr)
+        .status()
+    {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    output.success()
+}
+
+fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
+    let stdout_file = match File::create("/root/log.log") {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+    let stderr_file = match stdout_file.try_clone() {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let stdio = Stdio::from(stdout_file);
+    let stderr = Stdio::from(stderr_file);
+    let abs_path = match fs::canonicalize(dir.as_path()) {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+
+    let output = match Command::new("/bin/bash")
+        .current_dir(abs_path)
+        .env("MAKEFLAGS", "-j8")
+        .arg("-e")
+        .arg(script_path)
+        .stdout(stdio)
+        .stderr(stderr)
+        .status()
+    {
+        Ok(v) => v,
+        Err(_e) => return false,
+    };
+    output.success()
+}
+
+//FIXME:看情况是否需要单独的配置步骤
+pub struct ConfigChrootEnv {}
+impl ProgramEndingFlag for ConfigChrootEnv {}
+impl TaskTrait for ConfigChrootEnv {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        Retval::empty()
+    }
+}
+
 pub struct EnterChroot {}
 impl ProgramEndingFlag for EnterChroot {}
 impl TaskTrait for EnterChroot {
@@ -101,76 +183,6 @@ impl TaskTrait for EnterChroot {
 
         Retval::empty()
     }
-}
-
-pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    //日志输出文件
-    let stdout_file = match File::create("/root/log.log") {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    let stderr_file = match stdout_file.try_clone() {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    let stdio = Stdio::from(stdout_file);
-    let stderr = Stdio::from(stderr_file);
-    //取绝对路径
-    let abs_path = match fs::canonicalize(dir.as_path()) {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    let output = match Command::new("/bin/bash")
-        .current_dir(abs_path)
-        .env_clear()
-        .env("PATH", "/usr/bin:/usr/sbin")
-        .env("HOME", "/root")
-        .env("TERM", "$TERM")
-        .arg("-e")
-        .arg(script_path)
-        .stdout(stdio)
-        .stderr(stderr)
-        .status()
-    {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    output.success()
-}
-
-fn exec_build_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    let stdout_file = match File::create("/root/log.log") {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-    let stderr_file = match stdout_file.try_clone() {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    let stdio = Stdio::from(stdout_file);
-    let stderr = Stdio::from(stderr_file);
-    let abs_path = match fs::canonicalize(dir.as_path()) {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-
-    let output = match Command::new("/bin/bash")
-        .current_dir(abs_path)
-        .arg("-e")
-        .arg(script_path)
-        .stdout(stdio)
-        .stderr(stderr)
-        .status()
-    {
-        Ok(v) => v,
-        Err(_e) => return false,
-    };
-    output.success()
 }
 
 pub fn env_status(env: String) -> Result<String, bool> {
@@ -313,7 +325,7 @@ pub fn check_download_before(target_pack_name: &str, target_path: &str) -> bool 
 
 pub trait ProgramEndingFlag {
     fn check_flag(&self) {
-        let target_path = Path::new("./stop");
+        let target_path = Path::new("stop");
         if target_path.exists() {
             panic!("Program Ending");
         }
