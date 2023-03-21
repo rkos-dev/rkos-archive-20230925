@@ -6,7 +6,9 @@ use std::env;
 use std::fs;
 
 mod build_lfs_sys;
+mod build_rust_packages;
 mod build_temp_toolchain;
+mod config_sys;
 mod prepare_host_sys;
 mod utils;
 mod vars;
@@ -18,20 +20,13 @@ struct OutputLfsImg {}
 impl TaskTrait for OutputLfsImg {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::new(())
-        // TODO: 导出img文件
-    }
-}
 
-struct CreateVmBack {}
-
-impl TaskTrait for CreateVmBack {
-    fn run(&self, mut input: Inputval, _env: EnvVar) -> Retval {
-        // TODO:调用kvm api每个阶段都创建一个备份
-        Retval::new(())
+        // TODO: 导出合适的镜像
     }
 }
 
 #[warn(dead_code)]
+/// 初始化
 fn init() {
     let stop_flag_path = Path::new("./stop");
     if stop_flag_path.exists() {
@@ -102,6 +97,22 @@ fn main() {
     //清理系统
     let mut clean_up_system = TaskWrapper::new(build_lfs_sys::CleanUpSystem {}, "Clean up system");
 
+    //配置系统
+    let mut config_fstab = TaskWrapper::new(config_sys::Fstab {}, "Config fstab");
+    let mut config_inputrc = TaskWrapper::new(config_sys::Inputrc {}, "Config inputrc");
+    let mut config_network = TaskWrapper::new(config_sys::Network {}, "Config network");
+    let mut config_profile = TaskWrapper::new(config_sys::Profile {}, "Config profile");
+    let mut config_rcsite = TaskWrapper::new(config_sys::RcSite {}, "Config rc_site");
+    let mut config_shell = TaskWrapper::new(config_sys::Shell {}, "Config shell");
+    let mut config_sysvinit = TaskWrapper::new(config_sys::Sysvinit {}, "Config sysvinit");
+    let mut config_time = TaskWrapper::new(config_sys::Time {}, "Config time");
+
+    //安装内核和rust支持
+    let mut build_rust_packages = TaskWrapper::new(
+        build_rust_packages::InstallRustSupportPackages {},
+        "Build rust support package and kernel",
+    );
+
     let mut dagrs = DagEngine::new();
     let mut dag_nodes: Vec<TaskWrapper> = Vec::new();
 
@@ -142,13 +153,46 @@ fn main() {
             dag_nodes.push(install_other_packages);
             dag_nodes.push(clean_system);
         }
-        vars::BuildOption::BuildBackPackages => {
+        vars::BuildOption::BuildBasePackages => {
+            enter_chroot.exec_after(&[&check_env]);
+            install_packages.exec_after(&[&enter_chroot]);
+            dag_nodes.push(check_env);
+            dag_nodes.push(enter_chroot);
             dag_nodes.push(install_packages);
         }
         vars::BuildOption::CleanUp => {
             dag_nodes.push(remove_debug_symbol);
         }
-        vars::BuildOption::ConfigTargetSystem => {}
+        vars::BuildOption::ConfigTargetSystem => {
+            enter_chroot.exec_after(&[&check_env]);
+            config_fstab.exec_after(&[&enter_chroot]);
+            config_inputrc.exec_after(&[&enter_chroot]);
+            config_network.exec_after(&[&enter_chroot]);
+            config_profile.exec_after(&[&enter_chroot]);
+            config_rcsite.exec_after(&[&enter_chroot]);
+            config_shell.exec_after(&[&enter_chroot]);
+            config_sysvinit.exec_after(&[&enter_chroot]);
+            config_time.exec_after(&[&enter_chroot]);
+
+            dag_nodes.push(check_env);
+            dag_nodes.push(enter_chroot);
+            dag_nodes.push(config_fstab);
+            dag_nodes.push(config_inputrc);
+            dag_nodes.push(config_network);
+            dag_nodes.push(config_profile);
+            dag_nodes.push(config_rcsite);
+            dag_nodes.push(config_shell);
+            dag_nodes.push(config_sysvinit);
+            dag_nodes.push(config_time);
+        }
+        vars::BuildOption::BuildRustSupportPackageAndKernel => {
+            enter_chroot.exec_after(&[&check_env]);
+            build_rust_packages.exec_after(&[&enter_chroot]);
+
+            dag_nodes.push(check_env);
+            dag_nodes.push(enter_chroot);
+            dag_nodes.push(build_rust_packages);
+        }
     }
 
     match &cli.operate {
@@ -158,10 +202,6 @@ fn main() {
         vars::StartMode::Reset => {}
     };
     assert!(dagrs.run().unwrap());
-
-    ////TODO:python-doc需要调整包名，libstdc++需要调整包名，tcl-doc需要调整包名，zlib包会随着版本更新
-    ////而链接失效，libstdc++只需要下载gcc之后copy一份成为libstdc++就可以
-    ////python tcl 解决了 明天需要确认
 
     ////t2.exec_after(&[&t1]);
     ////t2.input_from(&[&t1]);
