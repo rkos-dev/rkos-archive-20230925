@@ -43,7 +43,8 @@ pub enum BuildOption {
     HostConfig,
     PackageDownload,
     BuildTempToolchains,
-    BuildBackPackages,
+    BuildBasePackages,
+    BuildRustSupportPackageAndKernel,
     ConfigTargetSystem,
     CleanUp,
 }
@@ -70,6 +71,15 @@ lazy_static! {
             Err(e) => panic!("Cannot load all packages , Err msg: {}",e),
         }
     };
+    pub static ref RUST_SUPPORT_PACKAGES: RustSupportPackages = {
+//        let temp = parse_json("configs/cross_compile_packages.json");
+        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.rust_support_packages].iter().collect());
+        match temp {
+            Ok(v) => v,
+            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}",e),
+        }
+    };
+
     pub static ref CROSS_COMPILE_PACKAGES: CrossCompilePackages = {
 //        let temp = parse_json("configs/cross_compile_packages.json");
         let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.temp_toolchains].iter().collect());
@@ -99,6 +109,7 @@ pub struct ScriptsPath {
     pub root: String,
     pub build_base_packages: String,
     pub build_temp_toolchains: String,
+    pub build_rust_support_packages: String,
     pub chroot: String,
     pub clean: String,
     pub prepare: String,
@@ -112,6 +123,7 @@ pub struct Configs {
     pub package_info: String,
     pub base_packages: String,
     pub temp_toolchains: String,
+    pub rust_support_packages: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -153,6 +165,18 @@ pub struct BasePackagesInfo {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BasePackages {
     pub base_packages: Vec<BasePackagesInfo>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RustSupportPackageInfo {
+    pub name: String,
+    pub package_name: String,
+    pub script: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RustSupportPackages {
+    pub rust_support_packages: Vec<RustSupportPackageInfo>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
