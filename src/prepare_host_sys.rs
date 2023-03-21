@@ -53,6 +53,7 @@ impl TaskTrait for SourceProfile {
 pub struct PreparingSoftware {}
 impl utils::ProgramEndingFlag for PreparingSoftware {}
 impl PreparingSoftware {
+    /// 下载软件包和软件包补丁
     fn preparing_base_software(&self) {
         //软件包和补丁列表
         let all_packages = &vars::ALL_PACKAGES.all_packages;
@@ -235,43 +236,6 @@ impl PreparingEnv {
         }
     }
     fn check() {}
-}
-
-//如果前一个节点backup了profile，会返回false，所以在这里需要重新生成env，否则忽略就好
-//TODO:直接改成rust实现，从读出，插入bash_profile，然后在这里设定env
-//BUG:该部分已经弃用，需要删除
-impl TaskTrait for PreparingEnv {
-    fn run(&self, mut input: Inputval, _env: EnvVar) -> Retval {
-        self.check_flag();
-        match input.get::<bool>(0).unwrap() {
-            true => {
-                return Retval::empty();
-            }
-            false => {
-                let bash_profile_file = File::create("/root/.bash_profile").unwrap();
-                let script_path = vars::BASE_CONFIG.scripts_path.root.clone()
-                    + &vars::BASE_CONFIG.scripts_path.prepare
-                    + "prepare_host_env.sh";
-                //        let script = RunScript::new("other_script/prepare_env.sh", RunType::SH);
-                let stdout_file = File::create("/root/prepare.log").unwrap();
-
-                let stderr_file = stdout_file.try_clone().unwrap();
-
-                match Command::new("/bin/bash")
-                    .arg("-e")
-                    .arg(script_path)
-                    .stdout(stdout_file)
-                    .stderr(stderr_file)
-                    .status()
-                {
-                    Ok(_v) => (),
-                    Err(_e) => self.try_set_flag(false),
-                };
-            }
-        }
-
-        Retval::empty()
-    }
 }
 
 //准备宿主机目标安装分区的目录
