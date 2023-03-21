@@ -1,7 +1,7 @@
 extern crate dagrs;
 
 use dagrs::{DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use log::info;
+use log::{error, info};
 use std::collections::HashMap;
 use std::process::Command;
 
@@ -9,27 +9,6 @@ use crate::{
     utils::{self, InstallInfo, ProgramEndingFlag},
     vars,
 };
-
-pub struct BuildBaseSystem {}
-impl utils::ProgramEndingFlag for BuildBaseSystem {}
-impl TaskTrait for BuildBaseSystem {
-    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        self.check_flag();
-        let install_packages = TaskWrapper::new(InstallBasicSystemSoftware {}, "Install Packages");
-        let mut remove_debug_symbol = TaskWrapper::new(RemoveDebugSymbol {}, "Remove debug symbol");
-        let mut clean_up_system = TaskWrapper::new(CleanUpSystem {}, "Clean up system");
-
-        remove_debug_symbol.exec_after(&[&install_packages]);
-        clean_up_system.exec_after(&[&remove_debug_symbol]);
-
-        let dag_node = vec![install_packages, remove_debug_symbol, clean_up_system];
-
-        let mut dag = DagEngine::new();
-        dag.add_tasks(dag_node);
-        assert!(dag.run().unwrap());
-        Retval::empty()
-    }
-}
 
 pub struct InstallBasicSystemSoftware {}
 impl utils::ProgramEndingFlag for InstallBasicSystemSoftware {}
@@ -52,11 +31,19 @@ impl TaskTrait for InstallBasicSystemSoftware {
                 package_source_path: vars::BASE_CONFIG.path.package_source.clone(),
                 package_target_path: vars::BASE_CONFIG.path.package_build.clone(),
             };
-            if let Ok(v) = utils::install_package(package_info, true) {
-                system_pack_status.insert(package.script.clone(), v);
-            } else {
-                system_pack_status.insert(package.script.clone(), false);
-                self.try_set_flag(false);
+            match utils::install_package(package_info, true) {
+                Ok(v) => {
+                    system_pack_status.insert(package.script.clone(), v);
+                }
+                Err(e) => {
+                    system_pack_status.insert(package.script.clone(), false);
+                    error!(
+                        "package {} install failed Err msg: {}",
+                        package.name.clone(),
+                        e
+                    );
+                    self.try_set_flag(false);
+                }
             }
         }
         for (pack_name, pack_status) in system_pack_status {
