@@ -1,153 +1,148 @@
 {
-  "cross_compile_toolchains": [
-    {
-      "name": "binutils",
-      "package_name": "binutils",
-      "script": "binutils_first"
-    },
-    {
-      "name": "linux",
-      "package_name": "linux",
-      "script": "linux_headers_api"
-    },
-    {
-      "name": "gcc",
-      "package_name": "gcc",
-      "script": "gcc_first"
-    },
-    {
-      "name": "glibc",
-      "package_name": "glibc",
-      "script": "glibc"
-    },
-    {
-      "name": "gcc",
-      "package_name": "gcc",
-      "script": "libstdc++"
-    }
-  ],
-  "cross_compile_packages": [
-    {
-      "name": "m4",
-      "package_name": "m4",
-      "script": "m4"
-    },
-    {
-      "name": "ncurses",
-      "package_name": "ncurses",
-      "script": "ncurses"
-    },
-    {
-      "name": "bash",
-      "package_name": "bash",
-      "script": "bash"
-    },
-    {
-      "name": "coreutils",
-      "package_name": "coreutils",
-      "script": "coreutils"
-    },
-    {
-      "name": "diffutils",
-      "package_name": "diffutils",
-      "script": "diffutils"
-    },
-    {
-      "name": "file",
-      "package_name": "file",
-      "script": "file"
-    },
-    {
-      "name": "findutils",
-      "package_name": "findutils",
-      "script": "findutils"
-    },
-    {
-      "name": "gawk",
-      "package_name": "gawk",
-      "script": "gawk"
-    },
-    {
-      "name": "grep",
-      "package_name": "grep",
-      "script": "grep"
-    },
-    {
-      "name": "gzip",
-      "package_name": "gzip",
-      "script": "gzip"
-    },
-    {
-      "name": "make",
-      "package_name": "make",
-      "script": "make"
-    },
-    {
-      "name": "patch",
-      "package_name": "patch",
-      "script": "patch"
-    },
-    {
-      "name": "sed",
-      "package_name": "sed",
-      "script": "sed"
-    },
-    {
-      "name": "tar",
-      "package_name": "tar",
-      "script": "tar"
-    },
-    {
-      "name": "xz",
-      "package_name": "xz",
-      "script": "xz"
-    },
-    {
-      "name": "binutils",
-      "package_name": "binutils",
-      "script": "binutils_second"
-    },
-    {
-      "name": "gcc",
-      "package_name": "gcc",
-      "script": "gcc_second"
-    },
-    {
-      "name": "rust",
-      "package_name": "rust",
-      "script": "rust"
-    }
-  ],
-  "after_chroot_packages": [
-    {
-      "name": "gettext",
-      "package_name": "gettext",
-      "script": "gettext"
-    },
-    {
-      "name": "bison",
-      "package_name": "bison",
-      "script": "bison"
-    },
-    {
-      "name": "perl",
-      "package_name": "perl",
-      "script": "perl"
-    },
-    {
-      "name": "Python",
-      "package_name": "Python",
-      "script": "python"
-    },
-    {
-      "name": "texinfo",
-      "package_name": "texinfo",
-      "script": "texinfo"
-    },
-    {
-      "name": "util-linux",
-      "package_name": "util-linux",
-      "script": "util-linux"
-    }
-  ]
+    "cross_compile_toolchains": [
+        {
+            "name": "binutils",
+            "package_name": "binutils",
+            "script": "binutils_first"
+        },
+        {
+            "name": "linux",
+            "package_name": "linux",
+            "script": "linux_headers_api"
+        },
+        {
+            "name": "gcc",
+            "package_name": "gcc",
+            "script": "gcc_first"
+        },
+        {
+            "name": "glibc",
+            "package_name": "glibc",
+            "script": "glibc"
+        },
+        {
+            "name": "gcc",
+            "package_name": "gcc",
+            "script": "libstdc++"
+        }
+    ],
+    "cross_compile_packages": [
+        {
+            "name": "m4",
+            "package_name": "m4",
+            "script": "m4"
+        },
+        {
+            "name": "ncurses",
+            "package_name": "ncurses",
+            "script": "ncurses"
+        },
+        {
+            "name": "bash",
+            "package_name": "bash",
+            "script": "bash"
+        },
+        {
+            "name": "coreutils",
+            "package_name": "coreutils",
+            "script": "coreutils"
+        },
+        {
+            "name": "diffutils",
+            "package_name": "diffutils",
+            "script": "diffutils"
+        },
+        {
+            "name": "file",
+            "package_name": "file",
+            "script": "file"
+        },
+        {
+            "name": "findutils",
+            "package_name": "findutils",
+            "script": "findutils"
+        },
+        {
+            "name": "gawk",
+            "package_name": "gawk",
+            "script": "gawk"
+        },
+        {
+            "name": "grep",
+            "package_name": "grep",
+            "script": "grep"
+        },
+        {
+            "name": "gzip",
+            "package_name": "gzip",
+            "script": "gzip"
+        },
+        {
+            "name": "make",
+            "package_name": "make",
+            "script": "make"
+        },
+        {
+            "name": "patch",
+            "package_name": "patch",
+            "script": "patch"
+        },
+        {
+            "name": "sed",
+            "package_name": "sed",
+            "script": "sed"
+        },
+        {
+            "name": "tar",
+            "package_name": "tar",
+            "script": "tar"
+        },
+        {
+            "name": "xz",
+            "package_name": "xz",
+            "script": "xz"
+        },
+        {
+            "name": "binutils",
+            "package_name": "binutils",
+            "script": "binutils_second"
+        },
+        {
+            "name": "gcc",
+            "package_name": "gcc",
+            "script": "gcc_second"
+        }
+    ],
+    "after_chroot_packages": [
+        {
+            "name": "gettext",
+            "package_name": "gettext",
+            "script": "gettext"
+        },
+        {
+            "name": "bison",
+            "package_name": "bison",
+            "script": "bison"
+        },
+        {
+            "name": "perl",
+            "package_name": "perl",
+            "script": "perl"
+        },
+        {
+            "name": "Python",
+            "package_name": "Python",
+            "script": "python"
+        },
+        {
+            "name": "texinfo",
+            "package_name": "texinfo",
+            "script": "texinfo"
+        },
+        {
+            "name": "util-linux",
+            "package_name": "util-linux",
+            "script": "util-linux"
+        }
+    ]
 }
