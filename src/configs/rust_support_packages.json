@@ -1,0 +1,14 @@
+{
+    "rust_support_packages": [
+        {
+            "name": "coreutils",
+            "package_name": "0.0.17",
+            "script": "coreutils"
+        },
+        {
+            "name": "kernel",
+            "package_name": "linux",
+            "script": "kernel"
+        }
+    ]
+}
