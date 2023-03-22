@@ -13,8 +13,8 @@ mod prepare_host_sys;
 mod utils;
 mod vars;
 use cmd_lib::*;
+use requestty::Question;
 use std::path::Path;
-use std::path::PathBuf;
 
 struct OutputLfsImg {}
 impl TaskTrait for OutputLfsImg {
@@ -37,8 +37,20 @@ fn init() {
 }
 
 fn main() {
-    init();
     init_logger(None);
+
+    //    println!(
+    //        "{:#?}",
+    //        vars::get_uuid(vars::DISK_INFO["target_boot_part"].clone(), true)
+    //    );
+    //    println!(
+    //        "{:#?}",
+    //        vars::get_uuid(vars::DISK_INFO["target_root_partition"].clone(), false)
+    //    );
+    //
+    //    return;
+
+    init();
     let cli = vars::Cli::parse();
 
     //检测是否在必要的工作目录下
@@ -112,6 +124,8 @@ fn main() {
         build_rust_packages::InstallRustSupportPackages {},
         "Build rust support package and kernel",
     );
+
+    let mut grub_install = TaskWrapper::new(config_sys::ConfigGrub {}, "Install grub");
 
     let mut dagrs = DagEngine::new();
     let mut dag_nodes: Vec<TaskWrapper> = Vec::new();
@@ -192,6 +206,14 @@ fn main() {
             dag_nodes.push(check_env);
             dag_nodes.push(enter_chroot);
             dag_nodes.push(build_rust_packages);
+        }
+        vars::BuildOption::InstallGrub => {
+            enter_chroot.exec_after(&[&check_env]);
+            grub_install.exec_after(&[&enter_chroot]);
+
+            dag_nodes.push(check_env);
+            dag_nodes.push(enter_chroot);
+            dag_nodes.push(grub_install);
         }
     }
 
