@@ -7,8 +7,8 @@ cat > /etc/fstab << "EOF"
 # 文件系统     挂载点       类型     选项                转储  检查
 #                                                              顺序
 
-/dev/<xxx>     /            <fff>    defaults            1     1
-/dev/<yyy>     swap         swap     pri=1               0     0
+UUID=$1      /            ext4     defaults            1     1
+UUID=$2      /boot        vfat     defaults            1     1
 proc           /proc        proc     nosuid,noexec,nodev 0     0
 sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
 devpts         /dev/pts     devpts   gid=5,mode=620      0     0
