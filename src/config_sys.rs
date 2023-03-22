@@ -4,7 +4,7 @@ use crate::utils;
 use crate::utils::ProgramEndingFlag;
 use crate::vars;
 use dagrs::{init_logger, DagEngine, DagError, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use log::info;
+use log::{error, info};
 use std::fs::File;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
@@ -208,12 +208,24 @@ impl TaskTrait for Time {
     }
 }
 
+//TODO:kernel 部分如果按照单独的安装，还是需要有按照软件安装的流程，所以先放到软件的部分，后续再优
+//化
 pub struct InstallKernel {}
 impl utils::ProgramEndingFlag for InstallKernel {}
 impl TaskTrait for InstallKernel {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         self.check_flag();
-        //TODO: 覆盖kernel配置，执行kernel编译脚本，移动kernel文件，结束
+        let script_path: PathBuf = [
+            &vars::BASE_CONFIG.scripts_path.root,
+            &vars::BASE_CONFIG.scripts_path.sysconfig,
+            "config_kernel.sh",
+        ]
+        .iter()
+        .collect();
+        match exec_config_script(script_path) {
+            true => (),
+            false => self.try_set_flag(false),
+        };
 
         Retval::empty()
     }
@@ -228,11 +240,46 @@ impl TaskTrait for ConfigGrub {
         let script_path: PathBuf = [
             &vars::BASE_CONFIG.scripts_path.root,
             &vars::BASE_CONFIG.scripts_path.sysconfig,
-            "config_time.sh",
+            "config_grub.sh",
         ]
         .iter()
         .collect();
-        match exec_config_script(script_path) {
+
+        let stdout_file = match File::create("/root/grub.log") {
+            Ok(v) => v,
+            Err(_e) => panic!(),
+        };
+
+        let stderr_file = match stdout_file.try_clone() {
+            Ok(v) => v,
+            Err(_e) => panic!(),
+        };
+
+        let stdout = Stdio::from(stdout_file);
+        let stderr = Stdio::from(stderr_file);
+
+        let output = match Command::new("/bin/bash")
+            .env_clear()
+            .env("PATH", "/usr/bin:/usr/sbin")
+            .env("HOME", "/root")
+            .env("TERM", "$TERM")
+            .arg("-e")
+            .arg(script_path)
+            .arg(vars::BOOT_UUID.clone())
+            .arg(vars::ROOT_PARTUUID.clone())
+            .stdout(stdout)
+            .stderr(stderr)
+            .status()
+        {
+            Ok(v) => v,
+            Err(e) => {
+                error!("Exec grub install script failed {}", e);
+                self.try_set_flag(false);
+                panic!();
+            }
+        };
+
+        match output.success() {
             true => (),
             false => self.try_set_flag(false),
         };
