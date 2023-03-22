@@ -1,13 +1,17 @@
 use clap::{Parser, ValueEnum};
 use lazy_static::lazy_static;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::env;
 use std::error::Error;
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{BufRead, BufReader, Cursor};
 use std::path::PathBuf;
+use std::process::{Command, Stdio};
 
-use log::info;
+use log::{error, info};
+use requestty::{Answer, Answers, Question};
 
 #[derive(Parser)]
 #[command(name = "rkos_builder")]
@@ -46,10 +50,16 @@ pub enum BuildOption {
     BuildBasePackages,
     BuildRustSupportPackageAndKernel,
     ConfigTargetSystem,
+    InstallGrub,
     CleanUp,
 }
 
 lazy_static! {
+    pub static ref DISK_INFO:Answers=req_user_input();
+    pub static ref BOOT_PARTUUID:String=get_uuid(DISK_INFO["target_boot_part"].clone(), false);
+    pub static ref BOOT_UUID:String=get_uuid(DISK_INFO["target_boot_part"].clone(), true);
+    pub static ref ROOT_PARTUUID:String=get_uuid(DISK_INFO["target_root_part"].clone(), false);
+    pub static ref ROOT_UUID:String=get_uuid(DISK_INFO["target_root_part"].clone(), true);
     pub static ref ROOT_DIR: PathBuf = env::current_dir().unwrap();
     pub static ref BASE_CONFIG: BaseConfig = {
         let temp = parse_json(["configs", "base_configs.json"].iter().collect());
@@ -219,4 +229,71 @@ pub fn parse_json<T: serde::de::DeserializeOwned>(
     let reader = BufReader::new(file);
     let value: T = serde_json::from_reader(reader)?;
     Ok(value)
+}
+
+pub fn req_user_input() -> Answers {
+    let option = get_blkid_output();
+
+    let questions = vec![
+        Question::select("target_boot_part")
+            .message("Which partition you want to use as a boot partition?")
+            .choices(option.clone())
+            .build(),
+        Question::select("target_root_part")
+            .message("Which partition you want to use as a root partition?")
+            .choices(option.clone())
+            .build(),
+    ];
+
+    match requestty::prompt(questions) {
+        Ok(v) => return v,
+        Err(e) => {
+            error!("Failed get user input");
+            panic!();
+        }
+    }
+}
+
+pub fn get_blkid_output() -> Vec<String> {
+    let blkid = String::from_utf8(Command::new("blkid").output().unwrap().stdout);
+    let mut lines: Vec<String> = Vec::new();
+    match blkid {
+        Ok(v) => {
+            let cursor = Cursor::new(v.as_bytes());
+            for line in cursor.lines().into_iter() {
+                if let Ok(v) = line {
+                    lines.push(v);
+                }
+            }
+        }
+        Err(e) => error!("Cannot get blkid output Err msg: {}", e),
+    }
+    lines
+}
+
+pub fn get_uuid(value: Answer, uuid: bool) -> String {
+    match uuid {
+        true => {
+            if let Answer::ListItem(s) = value {
+                let pattern = Regex::new("UUID=\"(.*?)\"").unwrap();
+                for cap in pattern.captures_iter(&s.text) {
+                    return cap[1].to_string();
+                }
+                return "NULL".to_string();
+            } else {
+                return "NULL".to_string();
+            }
+        }
+        false => {
+            if let Answer::ListItem(s) = value {
+                let pattern = Regex::new("PARTUUID=\"(.*?)\"").unwrap();
+                for cap in pattern.captures_iter(&s.text) {
+                    return cap[1].to_string();
+                }
+                return "NULL".to_string();
+            } else {
+                return "NULL".to_string();
+            }
+        }
+    }
 }
