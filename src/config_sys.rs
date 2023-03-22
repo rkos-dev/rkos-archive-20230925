@@ -52,11 +52,46 @@ impl TaskTrait for Fstab {
         ]
         .iter()
         .collect();
-        info! {"{:?}",script_path};
-        match exec_config_script(script_path) {
-            true => {}
+
+        let stdout_file = match File::create("/root/config.log") {
+            Ok(v) => v,
+            Err(_e) => panic!(),
+        };
+
+        let stderr_file = match stdout_file.try_clone() {
+            Ok(v) => v,
+            Err(_e) => panic!(),
+        };
+
+        let stdout = Stdio::from(stdout_file);
+        let stderr = Stdio::from(stderr_file);
+
+        let output = match Command::new("/bin/bash")
+            .env_clear()
+            .env("PATH", "/usr/bin:/usr/sbin")
+            .env("HOME", "/root")
+            .env("TERM", "$TERM")
+            .arg("-e")
+            .arg(script_path)
+            .arg(vars::ROOT_UUID.clone())
+            .arg(vars::BOOT_UUID.clone())
+            .stdout(stdout)
+            .stderr(stderr)
+            .status()
+        {
+            Ok(v) => v,
+            Err(e) => {
+                error!("Exec fstab config script failed {}", e);
+                self.try_set_flag(false);
+                panic!();
+            }
+        };
+
+        match output.success() {
+            true => (),
             false => self.try_set_flag(false),
         };
+
         Retval::empty()
     }
 }
