@@ -6,7 +6,7 @@ cat > /etc/hosts << EOF
 EOF
 
 cat > /etc/passwd << "EOF"
-root:x:0:0:root:/root:/bin/bash
+root:root:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/usr/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/usr/bin/false
 messagebus:x:18:18:D-Bus Message Daemon User:/run/dbus:/usr/bin/false

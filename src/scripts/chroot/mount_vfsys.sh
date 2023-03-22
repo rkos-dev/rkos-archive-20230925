@@ -7,4 +7,3 @@ mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
     mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
-mkdir /mnt/lfs/root

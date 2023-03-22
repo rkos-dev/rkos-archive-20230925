@@ -1,3 +1,4 @@
+swapon /dev/vdc
 tar -xf ../llvm-cmake-15.0.7.src.tar.xz &&
 sed '/LLVM_COMMON_CMAKE_UTILS/s@../cmake@cmake-15.0.7.src@' \
     -i CMakeLists.txt
@@ -5,8 +6,8 @@ sed '/LLVM_COMMON_CMAKE_UTILS/s@../cmake@cmake-15.0.7.src@' \
 tar -xf ../clang-15.0.7.src.tar.xz -C tools &&
 mv tools/clang-15.0.7.src tools/clang
 
-tar -xf ../lld-15.0.7.src.tar.xz -C tools &&
-mv tools/lld-15.0.7.src tools/lld
+#tar -xf ../lld-15.0.7.src.tar.xz -C tools &&
+#mv tools/lld-15.0.7.src tools/lld
 
 grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 patch -Np2 -d tools/clang <../base_patches/clang-15.0.7-enable_default_ssp-1.patch
@@ -27,8 +28,6 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr               \
       -DCLANG_DEFAULT_PIE_ON_LINUX=ON           \
       -Wno-dev -G Ninja ..                      &&
 ninja
-
-ninja docs-clang-html docs-clang-man
 
 ninja install &&
 cp bin/FileCheck /usr/bin
