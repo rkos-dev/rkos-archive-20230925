@@ -33,3 +33,4 @@ ff02::2   ip6-allrouters
 EOF
 
 
+/usr/sbin/make-ca -g
