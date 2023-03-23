@@ -1,0 +1,426 @@
+{
+  "all_packages": [
+    {
+      "name": "acl",
+      "url": "https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.xz"
+    },
+    {
+      "name": "attr",
+      "url": "https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz"
+    },
+    {
+      "name": "autoconf",
+      "url": "https://mirrors.ustc.edu.cn/gnu/autoconf/autoconf-2.71.tar.xz"
+    },
+    {
+      "name": "automake",
+      "url": "https://mirrors.ustc.edu.cn/gnu/automake/automake-1.16.5.tar.xz"
+    },
+    {
+      "name": "bash",
+      "url": "https://mirrors.ustc.edu.cn/gnu/bash/bash-5.1.16.tar.gz"
+    },
+    {
+      "name": "bc",
+      "url": "https://ghproxy.com/https://github.com/gavinhoward/bc/releases/download/6.0.1/bc-6.0.1.tar.xz"
+    },
+    {
+      "name": "binutils",
+      "url": "https://mirrors.ustc.edu.cn/gnu/binutils/binutils-2.39.tar.xz"
+    },
+    {
+      "name": "bison",
+      "url": "https://mirrors.ustc.edu.cn/gnu/bison/bison-3.8.2.tar.xz"
+    },
+    {
+      "name": "bzip2",
+      "url": "https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
+    },
+    {
+      "name": "check",
+      "url": "https://ghproxy.com/https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz"
+    },
+    {
+      "name": "coreutils",
+      "url": "https://mirrors.ustc.edu.cn/gnu/coreutils/coreutils-9.1.tar.xz"
+    },
+    {
+      "name": "rust",
+      "url": "https://static.rust-lang.org/dist/rust-1.67.1-x86_64-unknown-linux-gnu.tar.gz"
+    },
+    {
+      "name": "coreutils_rust",
+      "url": "https://ghproxy.com/https://github.com/uutils/coreutils/archive/refs/tags/0.0.17.tar.gz"
+    },
+    {
+      "name": "dejagnu",
+      "url": "https://mirrors.ustc.edu.cn/gnu/dejagnu/dejagnu-1.6.3.tar.gz"
+    },
+    {
+      "name": "diffutils",
+      "url": "https://mirrors.ustc.edu.cn/gnu/diffutils/diffutils-3.8.tar.xz"
+    },
+    {
+      "name": "e2fsprogs",
+      "url": "https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.46.5/e2fsprogs-1.46.5.tar.gz"
+    },
+    {
+      "name": "elfutils",
+      "url": "https://sourceware.org/ftp/elfutils/0.187/elfutils-0.187.tar.bz2"
+    },
+    {
+      "name": "eudev",
+      "url": "https://ghproxy.com/https://github.com/eudev-project/eudev/releases/download/v3.2.11/eudev-3.2.11.tar.gz"
+    },
+    {
+      "name": "expat",
+      "url": "https://sourceforge.net/projects/expat/files/expat/2.5.0/expat-2.5.0.tar.xz"
+    },
+    {
+      "name": "expect",
+      "url": "https://prdownloads.sourceforge.net/expect/expect5.45.4.tar.gz"
+    },
+    {
+      "name": "file",
+      "url": "https://astron.com/pub/file/file-5.42.tar.gz"
+    },
+    {
+      "name": "findutils",
+      "url": "https://mirrors.ustc.edu.cn/gnu/findutils/findutils-4.9.0.tar.xz"
+    },
+    {
+      "name": "flex",
+      "url": "https://ghproxy.com/https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz"
+    },
+    {
+      "name": "gawk",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gawk/gawk-5.1.1.tar.xz"
+    },
+    {
+      "name": "gcc",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gcc/gcc-12.2.0/gcc-12.2.0.tar.xz"
+    },
+    {
+      "name": "gdbm",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gdbm/gdbm-1.23.tar.gz"
+    },
+    {
+      "name": "gettext",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gettext/gettext-0.21.tar.xz"
+    },
+    {
+      "name": "glibc",
+      "url": "https://mirrors.ustc.edu.cn/gnu/glibc/glibc-2.36.tar.xz"
+    },
+    {
+      "name": "gmp",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gmp/gmp-6.2.1.tar.xz"
+    },
+    {
+      "name": "gperf",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gperf/gperf-3.1.tar.gz"
+    },
+    {
+      "name": "grep",
+      "url": "https://mirrors.ustc.edu.cn/gnu/grep/grep-3.7.tar.xz"
+    },
+    {
+      "name": "groff",
+      "url": "https://mirrors.ustc.edu.cn/gnu/groff/groff-1.22.4.tar.gz"
+    },
+    {
+      "name": "grub",
+      "url": "https://mirrors.ustc.edu.cn/gnu/grub/grub-2.06.tar.xz"
+    },
+    {
+      "name": "gzip",
+      "url": "https://mirrors.ustc.edu.cn/gnu/gzip/gzip-1.12.tar.xz"
+    },
+    {
+      "name": "iana-etc",
+      "url": "https://ghproxy.com/https://github.com/Mic92/iana-etc/releases/download/20220812/iana-etc-20220812.tar.gz"
+    },
+    {
+      "name": "inetutils",
+      "url": "https://mirrors.ustc.edu.cn/gnu/inetutils/inetutils-2.4.tar.xz"
+    },
+    {
+      "name": "intltool",
+      "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz"
+    },
+    {
+      "name": "iproute2",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/utils/net/iproute2/iproute2-6.2.0.tar.xz"
+    },
+    {
+      "name": "kbd",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/utils/kbd/kbd-2.5.1.tar.gz"
+    },
+    {
+      "name": "kmod",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/utils/kernel/kmod/kmod-30.tar.gz"
+    },
+    {
+      "name": "less",
+      "url": "https://www.greenwoodsoftware.com/less/less-590.tar.gz"
+    },
+    {
+      "name": "lfs-bootscripts",
+      "url": "https://www.linuxfromscratch.org/lfs/downloads/11.2/lfs-bootscripts-20220723.tar.xz"
+    },
+    {
+      "name": "libcap",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/libs/security/linux-privs/libcap2/libcap-2.67.tar.xz"
+    },
+    {
+      "name": "libffi",
+      "url": "https://ghproxy.com/https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz"
+    },
+    {
+      "name": "libpipeline",
+      "url": "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.6.tar.gz"
+    },
+    {
+      "name": "libtool",
+      "url": "https://mirrors.ustc.edu.cn/gnu/libtool/libtool-2.4.7.tar.xz"
+    },
+    {
+      "name": "linux",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/kernel/v6.x/linux-6.1.tar.gz"
+    },
+    {
+      "name": "m4",
+      "url": "https://mirrors.ustc.edu.cn/gnu/m4/m4-1.4.19.tar.xz"
+    },
+    {
+      "name": "make",
+      "url": "https://mirrors.ustc.edu.cn/gnu/make/make-4.3.tar.gz"
+    },
+    {
+      "name": "man-db",
+      "url": "https://download-mirror.savannah.gnu.org/releases/man-db/man-db-2.10.0.tar.xz"
+    },
+    {
+      "name": "man-pages",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/docs/man-pages/man-pages-6.03.tar.xz"
+    },
+    {
+      "name": "meson",
+      "url": "https://ghproxy.com/https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz"
+    },
+    {
+      "name": "mpc",
+      "url": "https://mirrors.ustc.edu.cn/gnu/mpc/mpc-1.2.1.tar.gz"
+    },
+    {
+      "name": "mpfr",
+      "url": "https://mirrors.ustc.edu.cn/gnu/mpfr/mpfr-4.1.0.tar.xz"
+    },
+    {
+      "name": "ncurses",
+      "url": "https://invisible-mirror.net/archives/ncurses/ncurses-6.3.tar.gz"
+    },
+    {
+      "name": "ninja",
+      "url": "https://github.com/ninja-build/ninja/archive/v1.11.0/ninja-1.11.0.tar.gz"
+    },
+    {
+      "name": "openssl",
+      "url": "https://www.openssl.org/source/openssl-3.0.5.tar.gz"
+    },
+    {
+      "name": "patch",
+      "url": "https://mirrors.ustc.edu.cn/gnu/patch/patch-2.7.6.tar.xz"
+    },
+    {
+      "name": "perl",
+      "url": "http://mirrors.ustc.edu.cn/CPAN/src/5.0/perl-5.36.0.tar.xz"
+    },
+    {
+      "name": "pkg-config",
+      "url": "https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz"
+    },
+    {
+      "name": "procps",
+      "url": "https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-4.0.0.tar.xz"
+    },
+    {
+      "name": "psmisc",
+      "url": "https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.5.tar.xz"
+    },
+    {
+      "name": "python",
+      "url": "https://www.python.org/ftp/python/3.10.6/Python-3.10.6.tar.xz"
+    },
+    {
+      "name": "readline",
+      "url": "https://mirrors.ustc.edu.cn/gnu/readline/readline-8.1.2.tar.gz"
+    },
+    {
+      "name": "sed",
+      "url": "https://mirrors.ustc.edu.cn/gnu/sed/sed-4.8.tar.xz"
+    },
+    {
+      "name": "shadow",
+      "url": "https://ghproxy.com/https://github.com/shadow-maint/shadow/releases/download/4.12.2/shadow-4.12.2.tar.xz"
+    },
+    {
+      "name": "sysklogd",
+      "url": "https://www.infodrom.org/projects/sysklogd/download/sysklogd-1.5.1.tar.gz"
+    },
+    {
+      "name": "sysvinit",
+      "url": "https://download.savannah.gnu.org/releases/sysvinit/sysvinit-3.04.tar.xz"
+    },
+    {
+      "name": "tar",
+      "url": "https://mirrors.ustc.edu.cn/gnu/tar/tar-1.34.tar.xz"
+    },
+    {
+      "name": "tcl",
+      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz"
+    },
+    {
+      "name": "texinfo",
+      "url": "https://mirrors.ustc.edu.cn/gnu/texinfo/texinfo-6.8.tar.xz"
+    },
+    {
+      "name": "tzdata",
+      "url": "https://www.iana.org/time-zones/repository/releases/tzdata2022c.tar.gz"
+    },
+    {
+      "name": "udev-lfs",
+      "url": "https://anduin.linuxfromscratch.org/LFS/udev-lfs-20171102.tar.xz"
+    },
+    {
+      "name": "util-linux",
+      "url": "https://mirrors.ustc.edu.cn/kernel.org/linux/utils/util-linux/v2.38/util-linux-2.38.1.tar.gz"
+    },
+    {
+      "name": "vim",
+      "url": "https://anduin.linuxfromscratch.org/LFS/vim-9.0.0228.tar.gz"
+    },
+    {
+      "name": "wheel",
+      "url": "https://anduin.linuxfromscratch.org/LFS/wheel-0.37.1.tar.gz"
+    },
+    {
+      "name": "XML-Parser",
+      "url": "http://mirrors.ustc.edu.cn/CPAN/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz"
+    },
+    {
+      "name": "xz",
+      "url": "https://tukaani.org/xz/xz-5.2.6.tar.xz"
+    },
+    {
+      "name": "zlib",
+      "url": "https://www.zlib.net/zlib-1.2.13.tar.gz"
+    },
+    {
+      "name": "zstd",
+      "url": "https://ghproxy.com/https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz"
+    },
+    {
+      "name": "libxml2",
+      "url": "https://download.gnome.org/sources/libxml2/2.10/libxml2-2.10.3.tar.xz"
+    },
+    {
+      "name": "nghttp",
+      "url": "https://ghproxy.com/https://github.com/nghttp2/nghttp2/releases/download/v1.52.0/nghttp2-1.52.0.tar.xz"
+    },
+    {
+      "name": "libuv",
+      "url": " https://dist.libuv.org/dist/v1.44.2/libuv-v1.44.2.tar.gz"
+    },
+    {
+      "name": "lzo",
+      "url": "https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz"
+    },
+    {
+      "name": "nettle",
+      "url": "https://mirrors.ustc.edu.cn/gnu/nettle/nettle-3.8.1.tar.gz"
+    },
+    {
+      "name": "valgrind",
+      "url": "https://sourceware.org/pub/valgrind/valgrind-3.20.0.tar.bz2"
+    },
+    {
+      "name": "libarchive",
+      "url": "https://ghproxy.com/https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.xz"
+    },
+    {
+      "name": "curl",
+      "url": "https://curl.se/download/curl-7.88.1.tar.xz"
+    },
+    {
+      "name": "make-ca",
+      "url": "https://ghproxy.com/https://github.com/lfs-book/make-ca/releases/download/v1.12/make-ca-1.12.tar.xz"
+    },
+    {
+      "name": "cmake",
+      "url": "https://cmake.org/files/v3.25/cmake-3.25.2.tar.gz"
+    },
+    {
+      "name": "p11-kit",
+      "url": "https://ghproxy.com/https://github.com/p11-glue/p11-kit/releases/download/0.24.1/p11-kit-0.24.1.tar.xz"
+    },
+    {
+      "name": "libtasn1",
+      "url": "https://mirrors.ustc.edu.cn/gnu/libtasn1/libtasn1-4.19.0.tar.gz"
+    },
+    {
+      "name": "llvm",
+      "url": " https://ghproxy.com/https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/llvm-15.0.7.src.tar.xz"
+    },
+    {
+      "name": "llvm_cmake",
+      "url": "https://anduin.linuxfromscratch.org/BLFS/llvm/llvm-cmake-15.0.7.src.tar.xz"
+    },
+    {
+      "name": "clang",
+      "url": "https://ghproxy.com/https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/clang-15.0.7.src.tar.xz"
+    },
+    {
+      "name": "lld",
+      "url": "http://ghproxy.com/https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/lld-15.0.7.src.tar.xz"
+    },
+    {
+      "name": "dhcpcd",
+      "url": "https://roy.marples.name/downloads/dhcpcd/dhcpcd-9.4.1.tar.xz"
+    },
+    {
+      "name": "blfs-bootscript",
+      "url": "https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20230101.tar.xz"
+    }
+  ],
+  "package_patches": [
+    {
+      "name": "bzip2_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/bzip2-1.0.8-install_docs-1.patch"
+    },
+    {
+      "name": "coreutils_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/coreutils-9.1-i18n-1.patch"
+    },
+    {
+      "name": "glibc_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/glibc-2.36-fhs-1.patch"
+    },
+    {
+      "name": "kbd_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/kbd-2.5.1-backspace-1.patch"
+    },
+    {
+      "name": "sysvinit_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/sysvinit-3.04-consolidated-1.patch"
+    },
+    {
+      "name": "zstd_patch",
+      "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/zstd-1.5.2-upstream_fixes-1.patch"
+    },
+    {
+      "name": "clang_patch",
+      "url": "https://www.linuxfromscratch.org/patches/blfs/11.3/clang-15.0.7-enable_default_ssp-1.patch"
+    }
+  ]
+}

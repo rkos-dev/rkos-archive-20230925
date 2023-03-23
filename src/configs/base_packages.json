@@ -2,299 +2,443 @@
     "base_packages": [
         {
             "name": "man-page",
+            "package_name": "man-pages",
             "script": "man_page"
         },
         {
-            "name": "inna-etc",
-            "script": "inna_etc"
+            "name": "iana-etc",
+            "package_name": "iana-etc",
+            "script": "iana_etc"
         },
         {
             "name": "glibc",
+            "package_name": "glibc",
             "script": "glibc"
         },
         {
             "name": "zlib",
+            "package_name": "zlib",
             "script": "zlib"
         },
         {
             "name": "bzip2",
+            "package_name": "bzip2",
             "script": "bzip2"
         },
         {
             "name": "xz",
+            "package_name": "xz",
             "script": "xz"
         },
         {
             "name": "zstd",
+            "package_name": "zstd",
             "script": "zstd"
         },
         {
             "name": "file",
+            "package_name": "file",
             "script": "file"
         },
         {
             "name": "readline",
+            "package_name": "readline",
             "script": "readline"
         },
         {
             "name": "m4",
+            "package_name": "m4",
             "script": "m4"
         },
         {
             "name": "bc",
+            "package_name": "bc",
             "script": "bc"
         },
         {
             "name": "flex",
+            "package_name": "flex",
             "script": "flex"
         },
         {
             "name": "tcl",
+            "package_name": "tcl8",
             "script": "tcl"
         },
         {
             "name": "expect",
+            "package_name": "expect",
             "script": "expect"
         },
         {
             "name": "dejagnu",
+            "package_name": "dejagnu",
             "script": "dejagnu"
         },
         {
             "name": "binutils",
+            "package_name": "binutils",
             "script": "binutils"
         },
         {
             "name": "gmp",
+            "package_name": "gmp",
             "script": "gmp"
         },
         {
             "name": "mpfr",
+            "package_name": "mpfr",
             "script": "mpfr"
         },
         {
             "name": "mpc",
+            "package_name": "mpc",
             "script": "mpc"
         },
         {
             "name": "attr",
+            "package_name": "attr",
             "script": "attr"
         },
         {
             "name": "acl",
+            "package_name": "acl",
             "script": "acl"
         },
         {
             "name": "libcap",
+            "package_name": "libcap",
             "script": "libcap"
         },
         {
             "name": "shadow",
+            "package_name": "shadow",
             "script": "shadow"
         },
         {
             "name": "gcc",
+            "package_name": "gcc",
             "script": "gcc"
         },
         {
             "name": "pkg-config",
+            "package_name": "pkg-config",
             "script": "pkg_config"
         },
         {
             "name": "ncurses",
+            "package_name": "ncurses",
             "script": "ncurses"
         },
         {
             "name": "sed",
+            "package_name": "sed",
             "script": "sed"
         },
         {
             "name": "psmisc",
+            "package_name": "psmisc",
             "script": "psmisc"
         },
         {
             "name": "gettext",
+            "package_name": "gettext",
             "script": "gettext"
         },
         {
             "name": "bison",
+            "package_name": "bison",
             "script": "bison"
         },
         {
             "name": "grep",
+            "package_name": "grep",
             "script": "grep"
         },
         {
             "name": "bash",
+            "package_name": "bash",
             "script": "bash"
         },
         {
             "name": "libtool",
+            "package_name": "libtool",
             "script": "libtool"
         },
         {
             "name": "gdbm",
+            "package_name": "gdbm",
             "script": "gdbm"
         },
         {
             "name": "gperf",
+            "package_name": "gperf",
             "script": "gperf"
         },
         {
             "name": "expat",
+            "package_name": "expat",
             "script": "expat"
         },
         {
             "name": "inetutils",
+            "package_name": "inetutils",
             "script": "inetutils"
         },
         {
             "name": "less",
+            "package_name": "less",
             "script": "less"
         },
         {
             "name": "perl",
+            "package_name": "perl",
             "script": "perl"
         },
         {
-            "name": "XML-parser",
+            "name": "XML-Parser",
+            "package_name": "XML-Parser",
             "script": "xml_parser"
         },
         {
-            "name": "inttool",
-            "script": "inttool"
+            "name": "intltool",
+            "package_name": "intltool",
+            "script": "intltool"
         },
         {
             "name": "autoconf",
+            "package_name": "autoconf",
             "script": "autoconf"
         },
         {
             "name": "automake",
+            "package_name": "automake",
             "script": "automake"
         },
         {
             "name": "openssl",
+            "package_name": "openssl",
             "script": "openssl"
         },
         {
             "name": "kmod",
+            "package_name": "kmod",
             "script": "kmod"
         },
         {
             "name": "elfutils",
-            "script": "elfutils"
+            "package_name": "elfutils",
+            "script": "libelf"
         },
         {
             "name": "libffi",
+            "package_name": "libffi",
             "script": "libffi"
         },
         {
-            "name": "python",
+            "name": "Python",
+            "package_name": "Python",
             "script": "python"
         },
         {
             "name": "wheel",
+            "package_name": "wheel",
             "script": "wheel"
         },
         {
             "name": "ninja",
+            "package_name": "ninja",
             "script": "ninja"
         },
         {
             "name": "meson",
+            "package_name": "meson",
             "script": "meson"
         },
         {
-            "name": "coreutils",
-            "script": "coreutils"
-        },
-        {
             "name": "check",
+            "package_name": "check",
             "script": "check"
         },
         {
             "name": "diffutils",
+            "package_name": "diffutils",
             "script": "diffutils"
         },
         {
             "name": "gawk",
+            "package_name": "gawk",
             "script": "gawk"
         },
         {
             "name": "findutils",
+            "package_name": "findutils",
             "script": "findutils"
         },
         {
             "name": "groff",
+            "package_name": "groff",
             "script": "groff"
         },
         {
             "name": "grub",
+            "package_name": "grub",
             "script": "grub"
         },
         {
             "name": "gzip",
+            "package_name": "gzip",
             "script": "gzip"
         },
         {
             "name": "iproute",
+            "package_name": "iproute2",
             "script": "iproute"
         },
         {
             "name": "kbd",
+            "package_name": "kbd",
             "script": "kbd"
         },
         {
             "name": "libpipeline",
+            "package_name": "libpipeline",
             "script": "libpipeline"
         },
         {
             "name": "make",
-            "script": "make"
+            "package_name": "make",
+            "script": "make.sh"
         },
         {
             "name": "patch",
+            "package_name": "patch",
             "script": "patch"
         },
         {
             "name": "tar",
+            "package_name": "tar",
             "script": "tar"
         },
         {
             "name": "texinfo",
+            "package_name": "texinfo",
             "script": "texinfo"
         },
         {
             "name": "vim",
+            "package_name": "vim",
             "script": "vim"
         },
         {
+            "name": "libxml2",
+            "package_name": "libxml2",
+            "script": "libxml2"
+        },
+        {
+            "name": "nghttp",
+            "package_name": "nghttp",
+            "script": "nghttp"
+        },
+        {
+            "name": "libuv",
+            "package_name": "libuv",
+            "script": "libuv"
+        },
+        {
+            "name": "nettle",
+            "package_name": "nettle",
+            "script": "nettle"
+        },
+        {
+            "name": "lzo",
+            "package_name": "lzo",
+            "script": "lzo"
+        },
+        {
+            "name": "libarchive",
+            "package_name": "libarchive",
+            "script": "libarchive"
+        },
+        {
+            "name": "libtasn",
+            "package_name": "libtasn",
+            "script": "libtasn"
+        },
+        {
+            "name": "p11",
+            "package_name": "p11",
+            "script": "p11"
+        },
+        {
+            "name": "make-ca",
+            "package_name": "make-ca",
+            "script": "make-ca"
+        },
+        {
+            "name": "curl",
+            "package_name": "curl",
+            "script": "curl"
+        },
+        {
+            "name": "cmake",
+            "package_name": "cmake",
+            "script": "cmake"
+        },
+        {
+            "name": "llvm",
+            "package_name": "llvm",
+            "script": "llvm"
+        },
+        {
             "name": "eudev",
+            "package_name": "eudev",
             "script": "eudev"
         },
         {
             "name": "man-db",
+            "package_name": "man-db",
             "script": "man_db"
         },
         {
             "name": "procps-ng",
-            "script": "procps-ng"
+            "package_name": "procps-ng",
+            "script": "procps_ng"
         },
         {
             "name": "util-linux",
+            "package_name": "util-linux",
             "script": "util_linux"
         },
         {
             "name": "e2fsprogs",
+            "package_name": "e2fsprogs",
             "script": "e2fsprogs"
         },
         {
             "name": "sysklogd",
+            "package_name": "sysklogd",
             "script": "sysklogd"
         },
         {
             "name": "sysvinit",
+            "package_name": "sysvinit",
             "script": "sysvinit"
+        },
+        {
+            "name": "dhcpcd",
+            "package_name": "dhcpcd",
+            "script": "dhcpcd"
+        },
+        {
+            "name": "blfs-bootscripts",
+            "package_name": "blfs-bootscripts",
+            "script": "blfs-bootscripts"
+        },
+        {
+            "name": "lfs_bootscript",
+            "package_name": "lfs-bootscripts",
+            "script": "lfs-bootscripts"
         }
     ]
 }

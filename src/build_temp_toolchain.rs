@@ -1,44 +1,30 @@
 extern crate dagrs;
 
 use crate::utils;
+use crate::utils::ProgramEndingFlag;
 use crate::vars;
-use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use glob::glob;
+use clap::Parser;
+use dagrs::{EnvVar, Inputval, Retval, TaskTrait};
 use log::{error, info};
 use std::collections::HashMap;
 use std::env;
-use std::fs;
-use std::os::unix::fs::chroot;
-use std::path::PathBuf;
-use std::process::Command;
+use std::error::Error;
 
-fn exec_script(script_path: PathBuf, dir: PathBuf) -> bool {
-    let abs_path = fs::canonicalize(dir.as_path()).unwrap();
-    let filename = match script_path.to_str() {
-        Some(v) => v,
-        None => panic!("cannot turn to str"),
-    };
-    let output = Command::new("/bin/bash")
-        .current_dir(abs_path)
-        .arg(filename)
-        .status()
-        .expect("error");
-    output.success()
+pub struct PackageInput {}
+impl utils::ProgramEndingFlag for PackageInput {}
+impl TaskTrait for PackageInput {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        let cli = vars::Cli::parse();
+        let user_input = cli.package_name;
+        Retval::new(user_input)
+    }
 }
 
-fn exec_chroot_script(script_path: PathBuf) -> bool {
-    let output = Command::new("ls")
-        .env_clear()
-        .env("PATH", "/bin")
-        .env("PATH", "/sbin")
-        .env("HOME", "/root")
-        .status()
-        .expect("error");
-    output.success()
-}
-
+//编译交叉工具链以及chroot前的其他工具
 pub struct CompilingCrossToolChain {}
+impl utils::ProgramEndingFlag for CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
+    //再次检查LFS变量
     fn check_system_env(&self) -> Result<String, env::VarError> {
         let lfs_env = "LFS";
         let status = match env::var(lfs_env) {
@@ -47,183 +33,204 @@ impl CompilingCrossToolChain {
         };
     }
 
-    fn new_install_packages(&self, lfs_env: String) -> Result<(), std::io::Error> {
+    fn before_chroot_install_packages(&self) -> Result<(), Box<dyn Error>> {
         let mut package_install_status = HashMap::new();
         let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
         let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
-        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
         info!(
-            "{:?} {:?} {:?}",
-            &cross_compile_toolchains, &cross_compile_packages, &after_chroot_packages
+            "waiting for {:?} {:?}",
+            &cross_compile_toolchains, &cross_compile_packages
         );
-        for i in cross_compile_toolchains {
-            let res = utils::install_package(
-                i.name.clone(),
-                "cross_compile_script/".to_owned(),
-                i.script.clone(),
-                "sources/".to_owned(),
-                "sources/".to_owned(),
-            );
+        //安装临时工具链
+        for package in cross_compile_toolchains {
+            let pack_install_info = utils::InstallInfo {
+                dir_name: package.name.clone(),
+                package_name: package.package_name.clone(),
+                script_name: package.script.clone(),
+                script_path: vars::BASE_CONFIG.scripts_path.root.clone()
+                    + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
+                //                script_path: "cross_compile_script/".to_owned(),
+                package_source_path: vars::BASE_CONFIG.path.install_path.clone()
+                    + &vars::BASE_CONFIG.path.package_source,
+                //                package_source_path: "/mnt/lfs/sources/".to_owned(),
+                package_target_path: vars::BASE_CONFIG.path.install_path.clone()
+                    + &vars::BASE_CONFIG.path.package_build,
+                //                package_target_path: "/mnt/lfs/sources/".to_owned(),
+            };
+
+            let res = utils::install_package(pack_install_info, false);
             match res {
-                Ok(v) => package_install_status.insert(i.script.clone(), v),
+                Ok(v) => package_install_status.insert(package.script.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(i.script.clone(), false);
-                    return Ok(());
+                    package_install_status.insert(package.script.clone(), false);
+                    return Err(format!("Failed install package {}", &package.name).into());
                 }
             };
         }
-        for i in cross_compile_packages {
-            let res = utils::install_package(
-                i.name.clone(),
-                "cross_compile_script/".to_owned(),
-                i.script.clone(),
-                "sources/".to_owned(),
-                "sources/".to_owned(),
-            );
+        //安装临时工具
+        for package in cross_compile_packages {
+            let pack_install_info = utils::InstallInfo {
+                dir_name: package.name.clone(),
+                package_name: package.package_name.clone(),
+                script_name: package.script.clone(),
+                script_path: vars::BASE_CONFIG.scripts_path.root.clone()
+                    + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
+                //                script_path: "cross_compile_script/".to_owned(),
+                package_source_path: vars::BASE_CONFIG.path.install_path.clone()
+                    + &vars::BASE_CONFIG.path.package_source,
+                //                package_source_path: "/mnt/lfs/sources/".to_owned(),
+                package_target_path: vars::BASE_CONFIG.path.install_path.clone()
+                    + &vars::BASE_CONFIG.path.package_build,
+                //                package_target_path: "/mnt/lfs/sources/".to_owned(),
+            };
+            let res = utils::install_package(pack_install_info, false);
             match res {
-                Ok(v) => package_install_status.insert(i.script.clone(), v),
+                Ok(v) => package_install_status.insert(package.script.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(i.script.clone(), false);
-                    return Ok(());
+                    package_install_status.insert(package.script.clone(), false);
+                    return Err(format!("Failed install package {}", &package.name).into());
                 }
             };
         }
-        //        for i in after_chroot_packages {
-        //            let res = utils::install_package(
-        //                i.name.clone(),
-        //                "cross_compile_script/".to_owned(),
-        //                i.script.clone(),
-        //                "sources/".to_owned(),
-        //                "sources/".to_owned(),
-        //            );
-        //            match res {
-        //                Ok(v) => package_install_status.insert(i.script.clone(), v),
-        //                Err(e) => {
-        //                    error!("{:?}", e);
-        //                    package_install_status.insert(i.script.clone(), false)
-        //                }
-        //            };
-        //        }
-        for (k, v) in package_install_status {
-            info!("{} : {}", k, v);
+
+        for (pack_name, pack_status) in package_install_status {
+            info!("{} : {}", pack_name, pack_status);
+            //FIXME:下面一句没必要，和上面的逻辑还有重复的地方
+            assert!(pack_status);
         }
 
         Ok(())
     }
 
+    //TODO:检查安装状态
     fn check_data(&self, package_name: String) {
-        //检测命令的状态就可以
-    }
-
-    fn delete_package(&self, package_path: PathBuf) -> std::io::Result<()> {
-        fs::remove_dir_all(package_path)?;
-        Ok(())
+        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
+        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
+        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        let script_path = "cross_compile_script";
+        let sources_path = "sources";
     }
 }
 impl TaskTrait for CompilingCrossToolChain {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        //首先确认LFS环境变量，bash是否是正在用的shell，sh是否指向bash，awk是否指向gawk，yacc是否指向bison
-        //获取所有安装软件的包名按顺序插入列表
-        //判断软件包是否存在，如果存在
-        //解压缩软件包，并push到包目录，然后执行安装脚本
-        //判断输出是否正常，软件包安装是否正常
-        //删除软件包
-        //否则下载软件包然后重复上述过程
-        //        let lfs_env = match self.check_system_env() {
-        //            Ok(v) => v,
-        //            Err(e) => {
-        //                error!("LFS_ENV ERROR : {}", e);
-        //                //TODO:使用错误常量来定义错误
-        //                std::process::exit(1);
-        //            }
-        //        };
+        self.check_flag();
+        match self.before_chroot_install_packages() {
+            Ok(_v) => {
+                info!("cross compile toolchain install success!");
+            }
+            Err(_e) => self.try_set_flag(false),
+        }
 
-        let lfs_env = "/mnt/lfs".to_string();
-        info!("start install {}", lfs_env);
-
-        //        self.install_packages(lfs_env).unwrap();
-        self.new_install_packages(lfs_env).unwrap();
-
-        Retval::new(())
+        Retval::empty()
     }
 }
 
-struct EnterChroot {}
-impl EnterChroot {
-    fn prepare_chroot_chmod(&self) -> bool {
-        let chmod_script_path = "enter_chroot_scripts/chown.sh";
-        let output = Command::new("/bin/bash")
-            .arg(chmod_script_path)
-            .status()
-            .expect("error");
-        output.success()
+//准备chroot后的环境
+
+pub struct AfterChroot {}
+impl utils::ProgramEndingFlag for AfterChroot {}
+impl TaskTrait for AfterChroot {
+    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
+        self.check_flag();
+        let status = utils::exec_chroot_script(
+            ["create_dirs.sh"].iter().collect(),
+            //            ["/chroot_scripts"].iter().collect(),
+            [
+                &vars::BASE_CONFIG.scripts_path.root,
+                &vars::BASE_CONFIG.scripts_path.chroot,
+            ]
+            .iter()
+            .collect(),
+        );
+
+        self.try_set_flag(status);
+        let status = utils::exec_chroot_script(
+            ["create_files.sh"].iter().collect(),
+            //["/chroot_scripts"].iter().collect(),
+            [
+                &vars::BASE_CONFIG.scripts_path.root,
+                &vars::BASE_CONFIG.scripts_path.chroot,
+            ]
+            .iter()
+            .collect(),
+        );
+        self.try_set_flag(status);
+
+        Retval::empty()
     }
-    fn prepare_virt_fsys(&self) -> bool {
-        let prepare_virtual_fsys = "enter_chroot_scripts/prepare_vir_filesystem.sh";
-        let output = Command::new("/bin/bash")
-            .arg(prepare_virtual_fsys)
-            .status()
-            .expect("error");
-        output.success()
-        //脚本来实现
-    }
-    fn enter_chroot(&self) -> std::io::Result<()> {
-        chroot("/mnt/lfs")?;
-        std::env::set_current_dir("/")?;
+}
+
+// chroot之后安装临时工具
+pub struct AfterChrootInstall {}
+impl utils::ProgramEndingFlag for AfterChrootInstall {}
+impl AfterChrootInstall {
+    fn after_chroot_install_packages(&self) -> Result<(), Box<dyn Error>> {
+        let mut package_install_status = HashMap::new();
+        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        info!("{:?}", after_chroot_packages);
+        for packages in after_chroot_packages {
+            let pack_build_info = utils::InstallInfo {
+                dir_name: packages.name.clone(),
+                package_name: packages.package_name.clone(),
+                script_name: packages.script.clone(),
+                //                script_path: "cross_compile_script/".to_owned(),
+                script_path: vars::BASE_CONFIG.scripts_path.root.clone()
+                    + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
+                //                package_source_path: "/sources/".to_owned(),
+                package_source_path: vars::BASE_CONFIG.path.package_source.clone(),
+                package_target_path: vars::BASE_CONFIG.path.package_build.clone(),
+            };
+            let res = utils::install_package(pack_build_info, true);
+            match res {
+                Ok(v) => package_install_status.insert(packages.script.clone(), v),
+                Err(e) => {
+                    error!("{:?}", e);
+                    package_install_status.insert(packages.script.clone(), false);
+                    return Err(format!("Failed install package {}", &packages.name).into());
+                }
+            };
+        }
+        for (k, v) in package_install_status {
+            info!("{} {}", k, v);
+            assert!(v);
+        }
         Ok(())
     }
-    fn create_path(&self) -> bool {
-        let created_script_path: PathBuf = ["enter_chroot_scripts", "created_script.sh"]
-            .iter()
-            .collect();
-        let status = exec_chroot_script(created_script_path);
-        status
-    }
 }
-impl TaskTrait for EnterChroot {
+
+//安装其他的临时工具链
+impl TaskTrait for AfterChrootInstall {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let status = self.prepare_chroot_chmod();
-        assert!(status);
-        let status = self.prepare_virt_fsys();
-        assert!(status);
-        self.enter_chroot();
-        let status = self.create_path();
-        assert!(status);
-
-        //修改临时环境目录的所有者
-        //挂载内核文件系统
-        //移动所有文件
-        //进入chroot环境
-        // - 本体chroot
-        // - set 目录到/
-        // - 删除所有env
-        // - 重新设定HOME PATH
-        Retval::new(())
+        self.check_flag();
+        if let Ok(v) = self.after_chroot_install_packages() {
+            return Retval::empty();
+        } else {
+            self.try_set_flag(false);
+            panic!("Cannot installl packages in chroot env");
+        }
     }
 }
 
-struct CompileTempPackages {}
-impl TaskTrait for CompileTempPackages {
-    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        //获取所有安装软件的包名按顺序插入列表
-        //判断软件包是否存在，如果存在
-        //解压缩软件包，并push到包目录，然后执行安装脚本
-        //判断输出是否正常，软件包安装是否正常
-        //删除软件包
-        //否则下载软件包然后重复上述过程
-
-        Retval::new(())
-    }
-}
-
-struct CleanUpAndSaveTempSystem {}
+//清理环境临时工具等
+pub struct CleanUpAndSaveTempSystem {}
+impl utils::ProgramEndingFlag for CleanUpAndSaveTempSystem {}
 impl TaskTrait for CleanUpAndSaveTempSystem {
-    //清理临时工具
-    //备份系统
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
-        let hello_dagrs = String::from("Hello Dagrs!");
-        Retval::new(hello_dagrs)
+        self.check_flag();
+        let status = utils::exec_chroot_script(
+            ["remove_temp_file.sh"].iter().collect(),
+            //            ["/chroot_scripts"].iter().collect(),
+            [
+                &vars::BASE_CONFIG.scripts_path.root,
+                &vars::BASE_CONFIG.scripts_path.chroot,
+            ]
+            .iter()
+            .collect(),
+        );
+
+        self.try_set_flag(status);
+        Retval::empty()
     }
 }
