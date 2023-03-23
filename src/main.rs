@@ -28,6 +28,7 @@ impl TaskTrait for OutputLfsImg {
 #[warn(dead_code)]
 /// 初始化
 fn init() {
+    let _init_disk_info = vars::DISK_INFO.clone();
     let stop_flag_path = Path::new("./stop");
     if stop_flag_path.exists() {
         if let Err(e) = fs::remove_file(stop_flag_path) {
@@ -37,21 +38,10 @@ fn init() {
 }
 
 fn main() {
-    init_logger(None);
-
-    //    println!(
-    //        "{:#?}",
-    //        vars::get_uuid(vars::DISK_INFO["target_boot_part"].clone(), true)
-    //    );
-    //    println!(
-    //        "{:#?}",
-    //        vars::get_uuid(vars::DISK_INFO["target_root_partition"].clone(), false)
-    //    );
-    //
-    //    return;
+    let cli = vars::Cli::parse();
 
     init();
-    let cli = vars::Cli::parse();
+    init_logger(None);
 
     //检测是否在必要的工作目录下
     let current_dir = env::current_dir().unwrap();
@@ -136,11 +126,51 @@ fn main() {
 
             prepare_software.exec_after(&[&prepare_dirs]);
 
+            compile_toolchains.exec_after(&[&prepare_software]);
+            enter_chroot.exec_after(&[&compile_toolchains]);
+            after_chroot.exec_after(&[&enter_chroot]);
+            install_other_packages.exec_after(&[&after_chroot]);
+            clean_system.exec_after(&[&install_other_packages]);
+
+            install_packages.exec_after(&[&clean_system]);
+
+            remove_debug_symbol.exec_after(&[&install_packages]);
+
+            config_fstab.exec_after(&[&remove_debug_symbol]);
+            config_inputrc.exec_after(&[&remove_debug_symbol]);
+            config_network.exec_after(&[&remove_debug_symbol]);
+            config_profile.exec_after(&[&remove_debug_symbol]);
+            config_rcsite.exec_after(&[&remove_debug_symbol]);
+            config_shell.exec_after(&[&remove_debug_symbol]);
+            config_sysvinit.exec_after(&[&remove_debug_symbol]);
+            config_time.exec_after(&[&remove_debug_symbol]);
+
+            build_rust_packages.exec_after(&[&config_network]);
+
+            grub_install.exec_after(&[&build_rust_packages]);
+
             dag_nodes.push(check_env);
 
             dag_nodes.push(prepare_dirs);
 
             dag_nodes.push(prepare_software);
+            dag_nodes.push(compile_toolchains);
+            dag_nodes.push(enter_chroot);
+            dag_nodes.push(after_chroot);
+            dag_nodes.push(install_other_packages);
+            dag_nodes.push(clean_system);
+            dag_nodes.push(install_packages);
+            dag_nodes.push(remove_debug_symbol);
+            dag_nodes.push(config_fstab);
+            dag_nodes.push(config_inputrc);
+            dag_nodes.push(config_network);
+            dag_nodes.push(config_profile);
+            dag_nodes.push(config_rcsite);
+            dag_nodes.push(config_shell);
+            dag_nodes.push(config_sysvinit);
+            dag_nodes.push(config_time);
+            dag_nodes.push(build_rust_packages);
+            dag_nodes.push(grub_install);
         }
 
         vars::BuildOption::HostConfig => {
@@ -221,15 +251,11 @@ fn main() {
         vars::StartMode::Start => {
             dagrs.add_tasks(dag_nodes);
         }
-        vars::StartMode::Reset => {}
+        vars::StartMode::Reset => {
+            //TODO:增加reset系统的部分
+        }
     };
     assert!(dagrs.run().unwrap());
-
-    ////t2.exec_after(&[&t1]);
-    ////t2.input_from(&[&t1]);
-
-    //    dagrs.add_tasks(test_dag_nodes);
-    //    assert!(dagrs.run().unwrap());
 }
 
 #[cfg(test)]
