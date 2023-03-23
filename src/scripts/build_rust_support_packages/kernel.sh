@@ -14,11 +14,13 @@ make CC=clang allnoconfig /config-6.1
 
 make CC=clang
 
-cp -iv arch/x86_64/boot/bzImage /boot/vmlinuz-6.1-rkos-0.0.1
+make CC=clang modules_install
 
-cp -iv System.map /boot/System.map-6.1
+cp -v arch/x86_64/boot/bzImage /boot/vmlinuz-6.1-rkos-0.0.1
 
-cp -iv .config /boot/config-6.1
+cp -v System.map /boot/System.map-6.1
+
+cp -v .config /boot/config-6.1
 
 
 install -d /usr/share/doc/linux-6.1
