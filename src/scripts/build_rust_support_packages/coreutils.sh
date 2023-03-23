@@ -1,8 +1,13 @@
-curl --proto '=https' --tlsv1.2 -ssf https://sh.rustup.rs | sh
+curl -o rust.sh --proto '=https' --tlsv1.2 -ssf https://sh.rustup.rs 
+
+chmod +x rust.sh
+
+./rust.sh -y
 
 rustup install 1.62.0
 
-make
+rustup default 1.62.0
+
 
 make PREFIX=/usr SKIP_UTILS='kill uptime' install
 
