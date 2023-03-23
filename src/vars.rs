@@ -255,7 +255,7 @@ pub fn req_user_input() -> Answers {
 }
 
 pub fn get_blkid_output() -> Vec<String> {
-    let blkid = String::from_utf8(Command::new("blkid").output().unwrap().stdout);
+    let blkid = String::from_utf8(Command::new("/usr/bin/blkid").output().unwrap().stdout);
     let mut lines: Vec<String> = Vec::new();
     match blkid {
         Ok(v) => {
