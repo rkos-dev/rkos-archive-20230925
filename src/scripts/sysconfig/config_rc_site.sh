@@ -6,9 +6,9 @@ cat > /etc/sysconfig/rc.site << "EOF"
 
 # Distro Information
 # These values, if specified here, override the defaults
-#DISTRO="Rust linux distro" # The distro name
-#DISTRO_CONTACT="xyyy1420@gmail.com" # Bug report address
-#DISTRO_MINI="RKOS" # Short name used in filenames for distro config
+DISTRO="Rust linux distro" # The distro name
+DISTRO_CONTACT="xyyy1420@gmail.com" # Bug report address
+DISTRO_MINI="RKOS" # Short name used in filenames for distro config
 
 # Define custom colors used in messages printed to the screen
 
@@ -21,32 +21,32 @@ cat > /etc/sysconfig/rc.site << "EOF"
 # not affect framebuffer consoles
 
 # These values, if specified here, override the defaults
-#BRACKET="\\033[1;34m" # Blue
-#FAILURE="\\033[1;31m" # Red
-#INFO="\\033[1;36m"    # Cyan
-#NORMAL="\\033[0;39m"  # Grey
-#SUCCESS="\\033[1;32m" # Green
-#WARNING="\\033[1;33m" # Yellow
+BRACKET="\\033[1;34m" # Blue
+FAILURE="\\033[1;31m" # Red
+INFO="\\033[1;36m"    # Cyan
+NORMAL="\\033[0;39m"  # Grey
+SUCCESS="\\033[1;32m" # Green
+WARNING="\\033[1;33m" # Yellow
 
 # Use a colored prefix
 # These values, if specified here, override the defaults
-#BMPREFIX="      "
-#SUCCESS_PREFIX="${SUCCESS}  *  ${NORMAL} "
-#FAILURE_PREFIX="${FAILURE}*****${NORMAL} "
-#WARNING_PREFIX="${WARNING} *** ${NORMAL} "
+BMPREFIX="      "
+SUCCESS_PREFIX="${SUCCESS}  *  ${NORMAL} "
+FAILURE_PREFIX="${FAILURE}*****${NORMAL} "
+WARNING_PREFIX="${WARNING} *** ${NORMAL} "
 
 # Manually seet the right edge of message output (characters)
 # Useful when resetting console font during boot to override
 # automatic screen width detection
-#COLUMNS=120
+COLUMNS=120
 
 # Interactive startup
 #IPROMPT="yes" # Whether to display the interactive boot prompt
 #itime="3"    # The amount of time (in seconds) to display the prompt
 
 # The total length of the distro welcome string, without escape codes
-#wlen=$(echo "Welcome to ${DISTRO}" | wc -c )
-#welcome_message="Welcome to ${INFO}${DISTRO}${NORMAL}"
+wlen=$(echo "Welcome to ${DISTRO}" | wc -c )
+welcome_message="Welcome to ${INFO}${DISTRO}${NORMAL}"
 
 # The total length of the interactive string, without escape codes
 #ilen=$(echo "Press 'I' to enter interactive startup" | wc -c )
