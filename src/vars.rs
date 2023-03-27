@@ -2,13 +2,12 @@ use clap::{Parser, ValueEnum};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Cursor};
 use std::path::PathBuf;
-use std::process::{Command, Stdio};
+use std::process::Command;
 
 use log::{error, info};
 use requestty::{Answer, Answers, Question};
@@ -241,14 +240,14 @@ pub fn req_user_input() -> Answers {
             .build(),
         Question::select("target_root_part")
             .message("Which partition you want to use as a root partition?")
-            .choices(option.clone())
+            .choices(option)
             .build(),
     ];
 
     match requestty::prompt(questions) {
-        Ok(v) => return v,
+        Ok(v) => v,
         Err(e) => {
-            error!("Failed get user input");
+            error!("Failed get user input Err msg : {}", e);
             panic!();
         }
     }
@@ -259,12 +258,16 @@ pub fn get_blkid_output() -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();
     match blkid {
         Ok(v) => {
+            //TODO:确认flatten的方式是否可行
             let cursor = Cursor::new(v.as_bytes());
-            for line in cursor.lines().into_iter() {
-                if let Ok(v) = line {
-                    lines.push(v);
-                }
+            for line in cursor.lines().into_iter().flatten() {
+                lines.push(line);
             }
+            //            for line in cursor.lines().into_iter() {
+            //                if let Ok(v) = line {
+            //                    lines.push(v);
+            //                }
+            //            }
         }
         Err(e) => error!("Cannot get blkid output Err msg: {}", e),
     }
@@ -276,23 +279,29 @@ pub fn get_uuid(value: Answer, uuid: bool) -> String {
         true => {
             if let Answer::ListItem(s) = value {
                 let pattern = Regex::new("UUID=\"(.*?)\"").unwrap();
-                for cap in pattern.captures_iter(&s.text) {
+                if let Some(cap) = pattern.captures_iter(&s.text).next() {
                     return cap[1].to_string();
                 }
-                return "NULL".to_string();
+                //                for cap in pattern.captures_iter(&s.text) {
+                //                    return cap[1].to_string();
+                //                }
+                "NULL".to_string()
             } else {
-                return "NULL".to_string();
+                "NULL".to_string()
             }
         }
         false => {
             if let Answer::ListItem(s) = value {
                 let pattern = Regex::new("PARTUUID=\"(.*?)\"").unwrap();
-                for cap in pattern.captures_iter(&s.text) {
+                if let Some(cap) = pattern.captures_iter(&s.text).next() {
                     return cap[1].to_string();
                 }
-                return "NULL".to_string();
+                //                for cap in pattern.captures_iter(&s.text) {
+                //                    return cap[1].to_string();
+                //                }
+                "NULL".to_string()
             } else {
-                return "NULL".to_string();
+                "NULL".to_string()
             }
         }
     }
