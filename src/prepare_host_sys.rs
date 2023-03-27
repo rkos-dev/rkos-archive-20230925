@@ -1,11 +1,12 @@
 extern crate dagrs;
 //extern crate sys_mount;
 
-use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, RunScript, TaskTrait, TaskWrapper};
-use glob::glob;
+use dagrs::{EnvVar, Inputval, Retval, TaskTrait};
+
+#[allow(unused)]
 use libparted::{Device, Disk, FileSystemType, Partition, PartitionFlag, PartitionType};
 
-use goto::gpoint;
+#[allow(unused)]
 use walkdir::WalkDir;
 
 use cmd_lib::*;
@@ -19,6 +20,7 @@ use std::process::Command;
 use crate::utils::ProgramEndingFlag;
 use crate::{utils, vars};
 
+#[allow(unused)]
 pub struct CleanOldConfig {}
 impl TaskTrait for CleanOldConfig {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
@@ -32,6 +34,7 @@ impl TaskTrait for CleanOldConfig {
 impl utils::ProgramEndingFlag for CleanOldConfig {}
 
 //TODO:添加全局重置脚本
+#[allow(unused)]
 pub struct ResetAllSystemConfig {}
 impl TaskTrait for ResetAllSystemConfig {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
@@ -39,13 +42,6 @@ impl TaskTrait for ResetAllSystemConfig {
         // reset target dirs
         // reset system auto mount
         //
-        Retval::empty()
-    }
-}
-
-pub struct SourceProfile {}
-impl TaskTrait for SourceProfile {
-    fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::empty()
     }
 }
@@ -71,40 +67,41 @@ impl PreparingSoftware {
                 continue;
             }
 
-            gpoint!['begin:
-                // 每次进入重试就删除原本下载的数据，否则会出现命名问题
-                utils::delete_failed_download_pack(&package.name, &vars::BASE_CONFIG.path.package_build);
-                //最大重试次数5
-                if try_download_times>=5{
-                    try_download_times=0;
-                    pack_status.insert(&package.name,false);
-                    break 'begin;
-                }
-
-                match utils::download(vars::BASE_CONFIG.path.package_build.clone(), package.url.clone()){
-                    Ok(v)=>{
-                        match v{
-                            true=>{
+            while try_download_times < 5 {
+                utils::delete_failed_download_pack(
+                    &package.name,
+                    &vars::BASE_CONFIG.path.package_build,
+                );
+                match utils::download(
+                    vars::BASE_CONFIG.path.package_build.clone(),
+                    package.url.clone(),
+                ) {
+                    Ok(v) => {
+                        match v {
+                            true => {
                                 //下载成功
-                                try_download_times=0;
-                                pack_status.insert(&package.name,v);
-                                break 'begin
-                            },
-                            false=>{
+                                try_download_times = 0;
+                                pack_status.insert(&package.name, v);
+                                break;
+                            }
+                            false => {
                                 //下载失败，重试
-                                try_download_times+=1;
-                                continue 'begin
-                            },
+                                try_download_times += 1;
+                                continue;
+                            }
                         }
-                    },
-                    Err(_e)=>{
+                    }
+                    Err(_e) => {
                         //下载命令执行失败，重试
                         //FIXME:下载命令执行失败应该print命令然后终止
-                        try_download_times+=1;
-                        continue 'begin;
+                        try_download_times += 1;
+                        continue;
                     }
                 }
-            ];
+            }
+            if try_download_times == 5 {
+                pack_status.insert(&package.name, false);
+            }
         }
 
         //下载补丁
@@ -122,27 +119,36 @@ impl PreparingSoftware {
                 continue;
             }
 
-            gpoint!['begin:
+            while try_download_times < 5 {
                 //大于5次，下载失败
-                if try_download_times>=5{
-                    try_download_times=0;
-                    pack_status.insert(&patch.name,false);
-                    break 'begin;
-                }
 
                 //TODO:调整成由var配置的部分
                 //并且添加对patches的存在性判断
-                match utils::download(vars::BASE_CONFIG.path.package_source.clone()+&vars::BASE_CONFIG.path.package_patches, patch.url.clone()){
-
-                    Ok(v)=>{
-                        match v{
-                            true=>{try_download_times=0; pack_status.insert(&patch.name,v);break 'begin},
-                            false=>{try_download_times+=1;continue 'begin},
+                match utils::download(
+                    vars::BASE_CONFIG.path.package_source.clone()
+                        + &vars::BASE_CONFIG.path.package_patches,
+                    patch.url.clone(),
+                ) {
+                    Ok(v) => match v {
+                        true => {
+                            try_download_times = 0;
+                            pack_status.insert(&patch.name, v);
+                            break;
+                        }
+                        false => {
+                            try_download_times += 1;
+                            continue;
                         }
                     },
-                    Err(_e)=>{try_download_times+=1;continue 'begin;}
+                    Err(_e) => {
+                        try_download_times += 1;
+                        continue;
+                    }
                 }
-            ];
+            }
+            if try_download_times == 5 {
+                pack_status.insert(&patch.name, false);
+            }
         }
 
         for (package_name, download_status) in pack_status {
@@ -168,7 +174,7 @@ impl TaskTrait for BackupBashProfile {
         self.check_flag();
         match input.get::<bool>(0).unwrap() {
             //无需备份返回true
-            true => return Retval::new(true),
+            true => Retval::new(true),
             false => {
                 //需要备份返回false
                 let src_path = "/root/.bash_profile";
@@ -183,9 +189,9 @@ impl TaskTrait for BackupBashProfile {
                     }
                 }
 
-                return Retval::new(false);
+                Retval::new(false)
             }
-        };
+        }
     }
 }
 
@@ -193,6 +199,7 @@ impl TaskTrait for BackupBashProfile {
 pub struct PreparingEnv {}
 impl utils::ProgramEndingFlag for PreparingEnv {}
 impl PreparingEnv {
+    #[allow(unused)]
     fn prepare_env(&self) {
         //        let packages = &vars::HOST_PACKAGES;
         //        let mut cmd: String = vars::BASE_CONFIG.host_install_cmd.clone();
@@ -235,6 +242,7 @@ impl PreparingEnv {
             }
         }
     }
+    #[allow(unused)]
     fn check() {}
 }
 

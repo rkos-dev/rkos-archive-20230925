@@ -71,6 +71,7 @@ nbd
 ndisc6
 nfs-utils
 nilfs-utils
+nmap
 ntfs-3g
 nvme-cli
 open-iscsi
@@ -104,6 +105,7 @@ systemd-resolvconf
 tcpdump
 terminus-font
 testdisk
+tmux
 tpm2-tss
 udftools
 usb_modeswitch
@@ -137,3 +139,4 @@ texinfo
 xz
 python3
 wget
+zsh

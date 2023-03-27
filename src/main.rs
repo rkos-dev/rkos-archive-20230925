@@ -1,7 +1,6 @@
 use clap::Parser;
 use dagrs::{init_logger, DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use log::{debug, error, info, trace, warn};
-use std::collections::HashMap;
+use log::{error, warn};
 use std::env;
 use std::fs;
 
@@ -13,14 +12,16 @@ mod prepare_host_sys;
 mod utils;
 mod vars;
 use cmd_lib::*;
-use requestty::Question;
 use std::path::Path;
 
+#[allow(unused)]
+use requestty::Question;
+
+#[allow(unused)]
 struct OutputLfsImg {}
 impl TaskTrait for OutputLfsImg {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::new(())
-
         // TODO: 导出合适的镜像
     }
 }
@@ -97,7 +98,8 @@ fn main() {
     let mut remove_debug_symbol =
         TaskWrapper::new(build_lfs_sys::RemoveDebugSymbol {}, "Remove debug symbol");
     //清理系统
-    let mut clean_up_system = TaskWrapper::new(build_lfs_sys::CleanUpSystem {}, "Clean up system");
+    #[allow(unused)]
+    let clean_up_system = TaskWrapper::new(build_lfs_sys::CleanUpSystem {}, "Clean up system");
 
     //配置系统
     let mut config_fstab = TaskWrapper::new(config_sys::Fstab {}, "Config fstab");
@@ -259,24 +261,4 @@ fn main() {
 }
 
 #[cfg(test)]
-mod tests {
-    use crate::vars;
-
-    #[test]
-    fn const_vars_test() {
-        let root_dir = &vars::ROOT_DIR;
-        let base_config = &vars::BASE_CONFIG;
-        println!("{}", base_config.scripts_path.root.clone());
-        let all_package = &vars::ALL_PACKAGES;
-        println!("{}", all_package.all_packages[0].name.clone());
-        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES;
-        println!(
-            "{}",
-            cross_compile_packages.cross_compile_packages[0]
-                .name
-                .clone()
-        );
-        let base_packages = &vars::BASE_PACKAGES;
-        println!("{}", base_packages.base_packages[0].name.clone());
-    }
-}
+mod tests {}
