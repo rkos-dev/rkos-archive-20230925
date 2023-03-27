@@ -1,6 +1,6 @@
 extern crate dagrs;
 
-use dagrs::{DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
+use dagrs::{EnvVar, Inputval, Retval, TaskTrait};
 use log::{error, info};
 use std::collections::HashMap;
 
