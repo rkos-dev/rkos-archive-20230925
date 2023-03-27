@@ -1,6 +1,6 @@
 use cmd_lib::*;
-use dagrs::{DagEngine, EnvVar, Inputval, Retval, TaskTrait, TaskWrapper};
-use log::{error, info, warn};
+use dagrs::{EnvVar, Inputval, Retval, TaskTrait};
+use log::{error, info};
 use std::env;
 use std::error::Error;
 use std::fs;
@@ -289,10 +289,7 @@ pub fn install_package(
 
     match status {
         true => {
-            info!(
-                "Package {:?} install success",
-                package_info.package_name.clone()
-            );
+            info!("Package {:?} install success", package_info.package_name);
             Ok(true)
         }
         false => Err(format!("Package {:?} install failed", target_path).into()),
@@ -302,12 +299,9 @@ pub fn install_package(
 pub fn delete_failed_download_pack(target_pack_name: &str, target_path: &str) {
     match glob(&(target_path.to_string() + target_pack_name)) {
         Ok(v) => {
-            match v.filter_map(Result::ok).next() {
-                Some(v) => fs::remove_file(v),
-                None => {
-                    return;
-                } //None => panic!("Not found target path {:?}", package_name),
-            };
+            if let Some(v) = v.filter_map(Result::ok).next() {
+                fs::remove_file(v).unwrap()
+            }
         }
         Err(_e) => {}
     }
@@ -315,10 +309,7 @@ pub fn delete_failed_download_pack(target_pack_name: &str, target_path: &str) {
 
 pub fn check_download_before(target_pack_name: &str, target_path: &str) -> bool {
     match glob(&(target_path.to_string() + target_pack_name)) {
-        Ok(v) => match v.filter_map(Result::ok).next() {
-            Some(v) => true,
-            None => false,
-        },
+        Ok(v) => v.filter_map(Result::ok).next().is_some(),
         Err(_e) => false,
     }
 }
@@ -334,7 +325,8 @@ pub trait ProgramEndingFlag {
         let target_path = Path::new("./stop");
         match flag {
             false => {
-                File::create(target_path);
+                //FIXME:直接unwrap虽然可以，但是不太美观
+                File::create(target_path).unwrap();
                 panic!("Program Ending");
             }
             true => (),
