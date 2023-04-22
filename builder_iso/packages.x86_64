@@ -140,3 +140,5 @@ xz
 python3
 wget
 zsh
+git
+rust
