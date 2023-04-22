@@ -41,6 +41,7 @@ mkarchiso -v -w work/ -o out/ ./
   * 如果没有自动运行或者运行错误则手动执行指令 ```archinstall --config user_configuration.json --creds user_credentials.json --disk_layouts user_disk_layout.json```
   * 安装完毕后会提示是否进入chroot环境，这里选择no然后reboot即可
   * 宿主机环境安装好后需要手动挂载交换分区
+  * 宿主机用户名 root 密码 root
 
 * 自动化脚本（Comming soon）
 
