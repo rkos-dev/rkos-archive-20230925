@@ -17,19 +17,21 @@ use std::path::Path;
 #[allow(unused)]
 use requestty::Question;
 
+// TODO: 配置导出镜像
 #[allow(unused)]
 struct OutputLfsImg {}
 impl TaskTrait for OutputLfsImg {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         Retval::new(())
-        // TODO: 导出合适的镜像
     }
 }
 
 #[warn(dead_code)]
 /// 初始化
 fn init() {
+    //TODO:目标分区检查，防止破坏宿主机系统
     let _init_disk_info = vars::DISK_INFO.clone();
+    //删除已经存在的stop标志
     let stop_flag_path = Path::new("./stop");
     if stop_flag_path.exists() {
         if let Err(e) = fs::remove_file(stop_flag_path) {
@@ -39,9 +41,13 @@ fn init() {
 }
 
 fn main() {
+    //解析cli指令
     let cli = vars::Cli::parse();
 
+    //初始化
     init();
+
+    //初始化日志处理
     init_logger(None);
 
     //检测是否在必要的工作目录下
@@ -97,7 +103,8 @@ fn main() {
     //删除debug的符号
     let mut remove_debug_symbol =
         TaskWrapper::new(build_lfs_sys::RemoveDebugSymbol {}, "Remove debug symbol");
-    //清理系统
+
+    //TODO:清理系统
     #[allow(unused)]
     let clean_up_system = TaskWrapper::new(build_lfs_sys::CleanUpSystem {}, "Clean up system");
 
@@ -117,11 +124,13 @@ fn main() {
         "Build rust support package and kernel",
     );
 
+    //安装grub启动
     let mut grub_install = TaskWrapper::new(config_sys::ConfigGrub {}, "Install grub");
 
     let mut dagrs = DagEngine::new();
     let mut dag_nodes: Vec<TaskWrapper> = Vec::new();
 
+    //全流程顺序构建
     match &cli.build_option {
         vars::BuildOption::Build => {
             prepare_dirs.exec_after(&[&check_env]);
@@ -182,9 +191,11 @@ fn main() {
 
             dag_nodes.push(prepare_dirs);
         }
+
         vars::BuildOption::PackageDownload => {
             dag_nodes.push(prepare_software);
         }
+
         vars::BuildOption::BuildTempToolchains => {
             compile_toolchains.exec_after(&[&check_env]);
             enter_chroot.exec_after(&[&compile_toolchains]);
@@ -199,6 +210,7 @@ fn main() {
             dag_nodes.push(install_other_packages);
             dag_nodes.push(clean_system);
         }
+
         vars::BuildOption::BuildBasePackages => {
             enter_chroot.exec_after(&[&check_env]);
             install_packages.exec_after(&[&enter_chroot]);
@@ -206,9 +218,11 @@ fn main() {
             dag_nodes.push(enter_chroot);
             dag_nodes.push(install_packages);
         }
+
         vars::BuildOption::CleanUp => {
             dag_nodes.push(remove_debug_symbol);
         }
+
         vars::BuildOption::ConfigTargetSystem => {
             enter_chroot.exec_after(&[&check_env]);
             config_fstab.exec_after(&[&enter_chroot]);
@@ -231,6 +245,7 @@ fn main() {
             dag_nodes.push(config_sysvinit);
             dag_nodes.push(config_time);
         }
+
         vars::BuildOption::BuildRustSupportPackageAndKernel => {
             enter_chroot.exec_after(&[&check_env]);
             build_rust_packages.exec_after(&[&enter_chroot]);
@@ -239,6 +254,7 @@ fn main() {
             dag_nodes.push(enter_chroot);
             dag_nodes.push(build_rust_packages);
         }
+
         vars::BuildOption::InstallGrub => {
             enter_chroot.exec_after(&[&check_env]);
             grub_install.exec_after(&[&enter_chroot]);
@@ -254,7 +270,7 @@ fn main() {
             dagrs.add_tasks(dag_nodes);
         }
         vars::StartMode::Reset => {
-            //TODO:增加reset系统的部分
+            //TODO:增加reset部分
         }
     };
     assert!(dagrs.run().unwrap());
