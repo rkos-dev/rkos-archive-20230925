@@ -16,22 +16,28 @@ Rust King OS - Linux Distro of Rust Programing Language
 - 运行version-check.sh查看输出，判断是否存在软件包缺失等问题
 
 - 构建宿主系统，并使用kvm启动宿主系统
-
-- 挂载目标分区
+- 挂载swap分区
     ```
-    mkdir -pv /mnt/lfs
-    mkdir -pv /mnt/lfs/boot
-    cp /etc/fstab{,.DISK_origin}
-    echo "/dev/vdb1 /mnt/lfs/boot vfat defaults 1 1" >> /etc/fstab
-    echo "/dev/vdb2 /mnt/lfs ext4 defaults 1 1" >> /etc/fstab
-    mount -a
-    systemctl daemon-reload
+    mkswap /dev/vdc1
+    swapon /dev/vdc1
+    ```
+
+- 安装git、rust、clang
+    ```
+    pacman -S git rust clang parted
     ```
 
 - 编译构建工具
+    ```
+    git clone https://github.com/open-rust-initiative/rkos
+    cd ./rkos
+    cargo build --release
+    ```
 
 - 将配置文件(configs,scripts,config-6.1,umount.sh)以及运行程序(rkos-builder)置于宿主系统目标分区（/mnt/lfs/）下
-
+    ```
+    cp -r src/configs src/scripts src/config-6.1 src/umount.sh target/release/rkos-builder /mnt/lfs/
+    ```
 - 运行rkos-builder --help 查看指令，并按选项流程构建
 
 - 构建完成后在主机上压缩目标分区qcow2镜像，镜像目录在宿主机kvm镜像存放的位置处
@@ -68,6 +74,13 @@ Rust King OS - Linux Distro of Rust Programing Language
 
 - 运行version-check.sh查看输出，判断是否存在软件包缺失等问题
 
+- 安装qemu镜像相关工具
+
+    ```
+    qemu-img
+    nbd
+    ```
+
 - 创建一个大小为30G的qcow2镜像
 
     ```
@@ -79,12 +92,17 @@ Rust King OS - Linux Distro of Rust Programing Language
     ```
     sudo modprobe nbd max_part=16
     qemu-nbd -c /dev/nbdx vda.qocw2
+
     sudo parted /dev/nbdx mklabel msdos
     sudo parted /dev/nbdx mkpart primary fat32 0% 200M
     sudo parted /dev/nbdx mkpart primary ext4 200M 100%
+
     sudo mkfs.vfat /dev/nbdxp1
     sudo mkfs.ext4 /dev/nbdxp2
+
+    mkdir /mnt/lfs
     sudo mount /dev/nbdxp1 /mnt/lfs
+
     mkdir /mnt/lfs/boot
     sudo mount /dev/nbdxp2 /mnt/lfs/boot
 
