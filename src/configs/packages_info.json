@@ -386,7 +386,7 @@
     },
     {
       "name": "dhcpcd",
-      "url": "https://roy.marples.name/downloads/dhcpcd/dhcpcd-9.4.1.tar.xz"
+      "url": "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v9.5.1/dhcpcd-9.5.1.tar.xz"
     },
     {
       "name": "blfs-bootscript",
