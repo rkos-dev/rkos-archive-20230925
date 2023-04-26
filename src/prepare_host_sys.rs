@@ -50,6 +50,26 @@ pub struct PreparingSoftware {}
 impl utils::ProgramEndingFlag for PreparingSoftware {}
 impl PreparingSoftware {
     /// 下载软件包和软件包补丁
+    #[allow(unused)]
+    fn download_packages(&self) {
+        let all_packages = &vars::ALL_PACKAGES.all_packages;
+        let all_patches = &vars::ALL_PACKAGES.package_patches;
+        let mut dls = Vec::new();
+
+        for package in all_packages {
+            dls.push(package.url.as_str());
+            //TODO:!!!!!
+        }
+        for patch in all_patches {
+            dls.push(patch.url.as_str());
+        }
+        info!("{:?}", dls);
+        let status = utils::new_downlaod("./source".to_string(), &dls[..]);
+        match status {
+            Ok(v) => info!("ok"),
+            Err(e) => error!("error {:?}", e),
+        }
+    }
     fn preparing_base_software(&self) {
         //软件包和补丁列表
         let all_packages = &vars::ALL_PACKAGES.all_packages;
@@ -162,6 +182,7 @@ impl TaskTrait for PreparingSoftware {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         self.check_flag();
         self.preparing_base_software();
+        //self.download_packages();
         Retval::empty()
     }
 }
