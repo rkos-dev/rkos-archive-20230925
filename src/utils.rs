@@ -14,6 +14,8 @@ use glob::glob;
 use std::os::unix::fs::chroot;
 use std::process::Stdio;
 
+use downloader::Downloader;
+
 use crate::vars::BASE_CONFIG;
 
 pub struct InstallInfo {
@@ -196,6 +198,24 @@ pub fn download(target_path: String, url: String) -> Result<bool, Box<dyn Error>
     let cmd = format!("wget -P {} {}", target_path, url);
     let output = Command::new("/bin/bash").arg("-c").arg(cmd).status()?;
     Ok(output.success())
+}
+
+#[allow(unused)]
+pub fn new_downlaod(target_path: String, url: &[&str]) -> Result<bool, Box<dyn Error>> {
+    let mut downloader = Downloader::builder()
+        .download_folder(std::path::Path::new(&target_path))
+        .retries(5)
+        .parallel_requests(1)
+        .build()?;
+    let dl = downloader::Download::new_mirrored(&url);
+    let result = downloader.download(&[dl])?;
+    for r in result {
+        match r {
+            Ok(_) => return Ok(true),
+            Err(e) => return Err(e.into()),
+        }
+    }
+    Ok(true)
 }
 
 pub fn install_package(
