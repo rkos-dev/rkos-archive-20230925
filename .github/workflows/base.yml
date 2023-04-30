@@ -21,6 +21,8 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      - name: Install dependencies
+        run: apt install parted
       - uses: actions-rs/cargo@v1
         with:
           command: check
