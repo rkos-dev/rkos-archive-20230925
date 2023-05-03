@@ -1,4 +1,4 @@
-swapon /dev/vdc
+#swapon /dev/vdc
 tar -xf ../llvm-cmake-15.0.7.src.tar.xz &&
 sed '/LLVM_COMMON_CMAKE_UTILS/s@../cmake@cmake-15.0.7.src@' \
     -i CMakeLists.txt
