@@ -48,7 +48,10 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
     //取绝对路径
     let abs_path = match fs::canonicalize(dir.as_path()) {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("get abs path failed");
+            return false;
+        }
     };
 
     let output = match Command::new("/bin/bash")
