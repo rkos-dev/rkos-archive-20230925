@@ -1083,7 +1083,7 @@
       },
       {
         "package_name": "make",
-        "script_name": "make"
+        "script_name": "make.sh"
       },
       {
         "package_name": "patch",
