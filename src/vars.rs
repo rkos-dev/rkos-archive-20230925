@@ -68,20 +68,19 @@ lazy_static! {
         }
     };
     pub static ref STOP_FLAG: PathBuf = PathBuf::from(&BASE_CONFIG.host_info.stop_flag);
-    pub static ref ALL_PACKAGES: AllPackages = {
-//        let temp = parse_json("configs/all_packages.json");
-        let temp = parse_json(
-            [&BASE_CONFIG.configs.root, &BASE_CONFIG.configs.package_info]
-                .iter()
-                .collect(),
-        );
-        match temp {
-            Ok(v) => v,
-            Err(e) => panic!("Cannot load all packages , Err msg: {}",e),
-        }
-    };
+//    pub static ref ALL_PACKAGES: AllPackages = {
+////        let temp = parse_json("configs/all_packages.json");
+//        let temp = parse_json(
+//            [&BASE_CONFIG.configs.root, &BASE_CONFIG.configs.package_info]
+//                .iter()
+//                .collect(),
+//        );
+//        match temp {
+//            Ok(v) => v,
+//            Err(e) => panic!("Cannot load all packages , Err msg: {}",e),
+//        }
+//    };
     pub static ref RUST_SUPPORT_PACKAGES: RustSupportPackages = {
-//        let temp = parse_json("configs/cross_compile_packages.json");
         let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.rust_support_packages].iter().collect());
         match temp {
             Ok(v) => v,
@@ -89,22 +88,32 @@ lazy_static! {
         }
     };
 
-    pub static ref CROSS_COMPILE_PACKAGES: CrossCompilePackages = {
-//        let temp = parse_json("configs/cross_compile_packages.json");
-        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.temp_toolchains].iter().collect());
+    pub static ref PACKAGES:Packages={
+        let temp=parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.new_config].iter().collect());
+
         match temp {
             Ok(v) => v,
             Err(e) => panic!("Cannot load cross compile packages, Err msg: {}",e),
         }
+
     };
-    pub static ref BASE_PACKAGES: BasePackages = {
-//        let temp = parse_json("configs/base_packages.json");
-        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.base_packages].iter().collect());
-        match temp {
-            Ok(v) => v,
-            Err(e) => panic!("Cannot load base packages , Err msg: {}",e),
-        }
-    };
+
+//    pub static ref CROSS_COMPILE_PACKAGES: CrossCompilePackages = {
+////        let temp = parse_json("configs/cross_compile_packages.json");
+//        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.temp_toolchains].iter().collect());
+//        match temp {
+//            Ok(v) => v,
+//            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}",e),
+//        }
+//    };
+//    pub static ref BASE_PACKAGES: BasePackages = {
+////        let temp = parse_json("configs/base_packages.json");
+//        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.base_packages].iter().collect());
+//        match temp {
+//            Ok(v) => v,
+//            Err(e) => panic!("Cannot load base packages , Err msg: {}",e),
+//        }
+//    };
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -113,6 +122,7 @@ pub struct HostInfo {
     pub stop_flag: String,
 }
 
+// 基础配置中的脚本路径
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ScriptsPath {
     pub root: String,
@@ -126,6 +136,7 @@ pub struct ScriptsPath {
     pub sysconfig: String,
 }
 
+//基础配置
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Configs {
     pub root: String,
@@ -133,8 +144,10 @@ pub struct Configs {
     pub base_packages: String,
     pub temp_toolchains: String,
     pub rust_support_packages: String,
+    pub new_config: String,
 }
 
+//基础配置中的路径配置
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PathInfo {
     pub root: String,
@@ -144,17 +157,20 @@ pub struct PathInfo {
     pub install_path: String,
 }
 
+//环境变量信息
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvsInfo {
     pub name: String,
     pub value: String,
 }
 
+//环境变量合集
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Envs {
     pub envs: Vec<EnvsInfo>,
 }
 
+//基础配置
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BaseConfig {
     pub host_info: HostInfo,
@@ -164,18 +180,7 @@ pub struct BaseConfig {
     pub envs: Vec<EnvsInfo>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct BasePackagesInfo {
-    pub name: String,
-    pub package_name: String,
-    pub script: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct BasePackages {
-    pub base_packages: Vec<BasePackagesInfo>,
-}
-
+// rust 系列包
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackageInfo {
     pub name: String,
@@ -183,41 +188,53 @@ pub struct RustSupportPackageInfo {
     pub script: String,
 }
 
+//rust 系列包
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackages {
     pub rust_support_packages: Vec<RustSupportPackageInfo>,
 }
 
+//包信息，需要人工维护，或者尝试自动拉取更新
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageInfo {
-    pub name: String,
-    pub url: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PatchInfo {
-    pub name: String,
-    pub url: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AllPackages {
-    pub all_packages: Vec<PackageInfo>,
-    pub package_patches: Vec<PatchInfo>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CrossCompilePackagesInfo {
-    pub name: String,
     pub package_name: String,
-    pub script: String,
+    pub file_name: String,
+    pub url: String,
+    pub last_version: String,
+    pub current_version: String,
 }
 
+// package install info , do not try to change this
 #[derive(Debug, Serialize, Deserialize)]
-pub struct CrossCompilePackages {
-    pub cross_compile_toolchains: Vec<CrossCompilePackagesInfo>,
-    pub cross_compile_packages: Vec<CrossCompilePackagesInfo>,
-    pub after_chroot_packages: Vec<CrossCompilePackagesInfo>,
+pub struct PackageInstallInfo {
+    pub package_name: String,
+    pub script_name: String,
+}
+
+// install info , do not try to change this
+#[derive(Debug, Serialize, Deserialize)]
+pub struct InstallInfo {
+    pub cross_compile_toolchains: Vec<PackageInstallInfo>,
+    pub cross_compile_packages: Vec<PackageInstallInfo>,
+    pub after_chroot_packages: Vec<PackageInstallInfo>,
+    pub base_packages: Vec<PackageInstallInfo>,
+}
+
+// package patch info
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PackagePatch {
+    pub patch_name: String,
+    pub url: String,
+    pub last_version: String,
+    pub current_version: String,
+}
+
+// all packages , package info , patches info , install info
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Packages {
+    pub package_info: Vec<PackageInfo>,
+    pub install_info: InstallInfo,
+    pub package_patches: Vec<PackagePatch>,
 }
 
 pub fn parse_json<T: serde::de::DeserializeOwned>(

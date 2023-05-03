@@ -1,5 +1,6 @@
 #!/bin/bash
-#
+# work dir /root/
+
 
 if ! type mkarchiso > /dev/null 2>&1; then
     echo "archiso package not install"
@@ -22,3 +23,6 @@ cp -r ../rkos/builder_iso/airootfs ../rkos/builder_iso/package.x86_64 ./
 sudo mkarchiso -v -w work/ -o out/ ./
 
 sudo rm -rf work/
+
+cd ../
+rm -rf target_archiso

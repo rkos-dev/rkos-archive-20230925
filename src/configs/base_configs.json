@@ -19,7 +19,8 @@
         "package_info": "packages_info.json",
         "base_packages": "base_packages.json",
         "temp_toolchains": "temp_toolchains.json",
-        "rust_support_packages": "rust_support_packages.json"
+        "rust_support_packages": "rust_support_packages.json",
+        "new_config": "new.json"
     },
     "path": {
         "root": "./",
