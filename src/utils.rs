@@ -29,12 +29,18 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
     //日志输出文件
     let stdout_file = match File::create("/root/log.log") {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("not find root/log.log");
+            return false;
+        }
     };
 
     let stderr_file = match stdout_file.try_clone() {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("try to clone stdout file error");
+            return false;
+        }
     };
 
     let stdio = Stdio::from(stdout_file);
@@ -54,13 +60,16 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
         .env("MAKEFLAGS", "-j8")
         .env("NINJAJOBS", "8")
         .arg("-e")
-        .arg(script_path)
+        .arg(script_path.clone())
         .stdout(stdio)
         .stderr(stderr)
         .status()
     {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("exec script {:?} failed", script_path);
+            return false;
+        }
     };
 
     output.success()
