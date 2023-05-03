@@ -24,7 +24,7 @@ Rust King OS - Linux Distro of Rust Programing Language
 
 - 安装git、rust、clang
     ```
-    pacman -S git rust clang parted
+    pacman -S git rust clang parted pkg-config
     ```
 
 - 编译构建工具
@@ -101,10 +101,10 @@ Rust King OS - Linux Distro of Rust Programing Language
     sudo mkfs.ext4 /dev/nbdxp2
 
     mkdir /mnt/lfs
-    sudo mount /dev/nbdxp1 /mnt/lfs
+    sudo mount /dev/nbdxp2 /mnt/lfs
 
     mkdir /mnt/lfs/boot
-    sudo mount /dev/nbdxp2 /mnt/lfs/boot
+    sudo mount /dev/nbdxp1 /mnt/lfs/boot
 
     ```
 - 调整配置文件（根据需求调整）
@@ -117,9 +117,13 @@ Rust King OS - Linux Distro of Rust Programing Language
 
     注意路径末尾需要有'/'符号
 
-- 编译构建工具
-
 - 将配置文件(configs,scripts,config-6.1,umount.sh)以及运行程序(rkos-builder)置于宿主系统目标分区（/mnt/lfs/）下
+
+```
+cp -r rkos/src/configs rkos/src/config-6.1 rkos/src/umount.sh rkos/src/scripts /mnt/lfs/
+```
+
+- 运行version-check.sh查看是否缺少构建必须的依赖包
 
 - 运行rkos-builder --help 查看指令，并按选项流程构建
 
