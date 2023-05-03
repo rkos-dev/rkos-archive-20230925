@@ -2,7 +2,7 @@ cd $LFS
 mkdir -v $LFS/sources
 chmod -v a+wt $LFS/sources
 
-mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
+mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin} $LFS/root
 
 for i in bin lib sbin; do
   ln -sv usr/$i $LFS/$i
