@@ -129,7 +129,6 @@ impl TaskTrait for AfterChroot {
         self.check_flag();
         let status = utils::exec_chroot_script(
             ["create_dirs.sh"].iter().collect(),
-            //            ["/chroot_scripts"].iter().collect(),
             [
                 &vars::BASE_CONFIG.scripts_path.root,
                 &vars::BASE_CONFIG.scripts_path.chroot,
@@ -141,7 +140,6 @@ impl TaskTrait for AfterChroot {
         self.try_set_flag(status);
         let status = utils::exec_chroot_script(
             ["create_files.sh"].iter().collect(),
-            //["/chroot_scripts"].iter().collect(),
             [
                 &vars::BASE_CONFIG.scripts_path.root,
                 &vars::BASE_CONFIG.scripts_path.chroot,
