@@ -235,7 +235,14 @@ pub fn install_package(
             .next()
         {
             Some(v) => v,
-            None => return Err(format!("Not found script {:?}", package_info.package_name).into()),
+            None => {
+                return Err(format!(
+                    "Not found script {:?}, script path {:?}",
+                    package_info.package_name,
+                    package_info.script_path.clone()
+                )
+                .into())
+            }
         };
 
     info!(
