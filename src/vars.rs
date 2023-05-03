@@ -277,7 +277,8 @@ pub fn get_blkid_output() -> Vec<String> {
         Ok(v) => {
             //TODO:确认flatten的方式是否可行
             let cursor = Cursor::new(v.as_bytes());
-            for line in cursor.lines().into_iter().flatten() {
+            //.into_iter()
+            for line in cursor.lines().flatten() {
                 lines.push(line);
             }
             //            for line in cursor.lines().into_iter() {
