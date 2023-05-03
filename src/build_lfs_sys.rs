@@ -16,29 +16,30 @@ impl TaskTrait for InstallBasicSystemSoftware {
         self.check_flag();
 
         let mut system_pack_status = HashMap::new();
-        let base_packages = &vars::BASE_PACKAGES.base_packages;
+        //        let base_packages = &vars::BASE_PACKAGES.base_packages;
+        let base_packages = &vars::PACKAGES.install_info.base_packages;
         for package in base_packages {
             let package_info = InstallInfo {
                 //TODO：替换成vars中的常量
-                dir_name: package.name.clone(),
+                dir_name: package.package_name.clone(),
                 package_name: package.package_name.clone(),
                 //script_path: "base_package_script/".to_owned(),
                 script_path: vars::BASE_CONFIG.scripts_path.root.clone()
                     + &vars::BASE_CONFIG.scripts_path.build_base_packages,
-                script_name: package.script.clone(),
+                script_name: package.script_name.clone(),
                 //package_source_path: "/sources/".to_string(),
                 package_source_path: vars::BASE_CONFIG.path.package_source.clone(),
                 package_target_path: vars::BASE_CONFIG.path.package_build.clone(),
             };
             match utils::install_package(package_info, true) {
                 Ok(v) => {
-                    system_pack_status.insert(package.script.clone(), v);
+                    system_pack_status.insert(package.script_name.clone(), v);
                 }
                 Err(e) => {
-                    system_pack_status.insert(package.script.clone(), false);
+                    system_pack_status.insert(package.script_name.clone(), false);
                     error!(
                         "package {} install failed Err msg: {}",
-                        package.name.clone(),
+                        package.package_name.clone(),
                         e
                     );
                     self.try_set_flag(false);

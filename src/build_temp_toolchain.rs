@@ -25,8 +25,11 @@ impl utils::ProgramEndingFlag for CompilingCrossToolChain {}
 impl CompilingCrossToolChain {
     fn before_chroot_install_packages(&self) -> Result<(), Box<dyn Error>> {
         let mut package_install_status = HashMap::new();
-        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
-        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
+        let cross_compile_toolchains = &vars::PACKAGES.install_info.cross_compile_toolchains;
+        let cross_compile_packages = &vars::PACKAGES.install_info.cross_compile_packages;
+
+        //        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
+        //        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
         info!(
             "waiting for {:?} {:?}",
             &cross_compile_toolchains, &cross_compile_packages
@@ -35,9 +38,9 @@ impl CompilingCrossToolChain {
         //安装临时工具链
         for package in cross_compile_toolchains {
             let pack_install_info = utils::InstallInfo {
-                dir_name: package.name.clone(),
+                dir_name: package.package_name.clone(),
                 package_name: package.package_name.clone(),
-                script_name: package.script.clone(),
+                script_name: package.script_name.clone(),
 
                 script_path: vars::BASE_CONFIG.scripts_path.root.clone()
                     + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
@@ -49,20 +52,20 @@ impl CompilingCrossToolChain {
 
             let res = utils::install_package(pack_install_info, false);
             match res {
-                Ok(v) => package_install_status.insert(package.script.clone(), v),
+                Ok(v) => package_install_status.insert(package.script_name.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(package.script.clone(), false);
-                    return Err(format!("Failed install package {}", &package.name).into());
+                    package_install_status.insert(package.script_name.clone(), false);
+                    return Err(format!("Failed install package {}", &package.package_name).into());
                 }
             };
         }
         //安装临时工具
         for package in cross_compile_packages {
             let pack_install_info = utils::InstallInfo {
-                dir_name: package.name.clone(),
+                dir_name: package.package_name.clone(),
                 package_name: package.package_name.clone(),
-                script_name: package.script.clone(),
+                script_name: package.script_name.clone(),
                 script_path: vars::BASE_CONFIG.scripts_path.root.clone()
                     + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
                 //                script_path: "cross_compile_script/".to_owned(),
@@ -75,11 +78,11 @@ impl CompilingCrossToolChain {
             };
             let res = utils::install_package(pack_install_info, false);
             match res {
-                Ok(v) => package_install_status.insert(package.script.clone(), v),
+                Ok(v) => package_install_status.insert(package.script_name.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(package.script.clone(), false);
-                    return Err(format!("Failed install package {}", &package.name).into());
+                    package_install_status.insert(package.script_name.clone(), false);
+                    return Err(format!("Failed install package {}", &package.package_name).into());
                 }
             };
         }
@@ -96,9 +99,9 @@ impl CompilingCrossToolChain {
     //TODO:检查安装状态
     #[allow(unused)]
     fn check_data(&self, package_name: String) {
-        let cross_compile_toolchains = &vars::CROSS_COMPILE_PACKAGES.cross_compile_toolchains;
-        let cross_compile_packages = &vars::CROSS_COMPILE_PACKAGES.cross_compile_packages;
-        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        let cross_compile_toolchains = &vars::PACKAGES.install_info.cross_compile_toolchains;
+        let cross_compile_packages = &vars::PACKAGES.install_info.cross_compile_packages;
+        let after_chroot_packages = &vars::PACKAGES.install_info.after_chroot_packages;
         let script_path = "cross_compile_script";
         let sources_path = "sources";
     }
@@ -158,13 +161,13 @@ impl utils::ProgramEndingFlag for AfterChrootInstall {}
 impl AfterChrootInstall {
     fn after_chroot_install_packages(&self) -> Result<(), Box<dyn Error>> {
         let mut package_install_status = HashMap::new();
-        let after_chroot_packages = &vars::CROSS_COMPILE_PACKAGES.after_chroot_packages;
+        let after_chroot_packages = &vars::PACKAGES.install_info.after_chroot_packages;
         info!("{:?}", after_chroot_packages);
         for packages in after_chroot_packages {
             let pack_build_info = utils::InstallInfo {
-                dir_name: packages.name.clone(),
+                dir_name: packages.package_name.clone(),
                 package_name: packages.package_name.clone(),
-                script_name: packages.script.clone(),
+                script_name: packages.script_name.clone(),
                 //                script_path: "cross_compile_script/".to_owned(),
                 script_path: vars::BASE_CONFIG.scripts_path.root.clone()
                     + &vars::BASE_CONFIG.scripts_path.build_temp_toolchains,
@@ -174,11 +177,11 @@ impl AfterChrootInstall {
             };
             let res = utils::install_package(pack_build_info, true);
             match res {
-                Ok(v) => package_install_status.insert(packages.script.clone(), v),
+                Ok(v) => package_install_status.insert(packages.script_name.clone(), v),
                 Err(e) => {
                     error!("{:?}", e);
-                    package_install_status.insert(packages.script.clone(), false);
-                    return Err(format!("Failed install package {}", &packages.name).into());
+                    package_install_status.insert(packages.script_name.clone(), false);
+                    return Err(format!("Failed install package {}", &packages.package_name).into());
                 }
             };
         }

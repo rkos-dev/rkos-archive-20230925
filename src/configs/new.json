@@ -1,0 +1,1152 @@
+{
+    "package_info": [
+        {
+            "package_name": "m4",
+            "file_name": "m4",
+            "url": "https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz",
+            "last_version": "1.4.19",
+            "current_version": "1.4.19"
+        },
+        {
+            "package_name": "ncurses",
+            "file_name": "ncurses",
+            "url": "https://invisible-mirror.net/archives/ncurses/ncurses-6.3.tar.gz",
+            "last_version": "6.3",
+            "current_version": "6.3"
+        },
+        {
+            "package_name": "bash",
+            "file_name": "bash",
+            "url": "https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz",
+            "last_version": "5.1.16",
+            "current_version": "5.1.16"
+        },
+        {
+            "package_name": "coreutils",
+            "file_name": "coreutils",
+            "url": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.1.tar.xz",
+            "last_version": "9.1",
+            "current_version": "9.1"
+        },
+        {
+            "package_name": "diffutils",
+            "file_name": "diffutils",
+            "url": "https://ftp.gnu.org/gnu/diffutils/diffutils-3.8.tar.xz",
+            "last_version": "3.8",
+            "current_version": "3.8"
+        },
+        {
+            "package_name": "file",
+            "file_name": "file",
+            "url": "https://astron.com/pub/file/file-5.42.tar.gz",
+            "last_version": "5.42",
+            "current_version": "5.42"
+        },
+        {
+            "package_name": "findutils",
+            "file_name": "findutils",
+            "url": "https://ftp.gnu.org/gnu/findutils/findutils-4.9.0.tar.xz",
+            "last_version": "4.9.0",
+            "current_version": "4.9.0"
+        },
+        {
+            "package_name": "gawk",
+            "file_name": "gawk",
+            "url": "https://ftp.gnu.org/gnu/gawk/gawk-5.1.1.tar.xz",
+            "last_version": "5.1.1",
+            "current_version": "5.1.1"
+        },
+        {
+            "package_name": "grep",
+            "file_name": "grep",
+            "url": "https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz",
+            "last_version": "3.7",
+            "current_version": "3.7"
+        },
+        {
+            "package_name": "gzip",
+            "file_name": "gzip",
+            "url": "https://ftp.gnu.org/gnu/gzip/gzip-1.12.tar.xz",
+            "last_version": "1.12",
+            "current_version": "1.12"
+        },
+        {
+            "package_name": "make",
+            "file_name": "make",
+            "url": "https://ftp.gnu.org/gnu/make/make-4.3.tar.gz",
+            "last_version": "4.3",
+            "current_version": "4.3"
+        },
+        {
+            "package_name": "patch",
+            "file_name": "patch",
+            "url": "https://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz",
+            "last_version": "2.7.6",
+            "current_version": "2.7.6"
+        },
+        {
+            "package_name": "sed",
+            "file_name": "sed",
+            "url": "https://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz",
+            "last_version": "4.8",
+            "current_version": "4.8"
+        },
+        {
+            "package_name": "tar",
+            "file_name": "tar",
+            "url": "https://ftp.gnu.org/gnu/tar/tar-1.34.tar.xz",
+            "last_version": "1.34",
+            "current_version": "1.34"
+        },
+        {
+            "package_name": "xz",
+            "file_name": "xz",
+            "url": "https://tukaani.org/xz/xz-5.2.6.tar.xz",
+            "last_version": "5.2.6",
+            "current_version": "5.2.6"
+        },
+        {
+            "package_name": "binutils",
+            "file_name": "binutils",
+            "url": "https://ftp.gnu.org/gnu/binutils/binutils-2.39.tar.xz",
+            "last_version": "2.39",
+            "current_version": "2.39"
+        },
+        {
+            "package_name": "gcc",
+            "file_name": "gcc",
+            "url": "https://ftp.gnu.org/gnu/gcc/gcc-12.2.0/gcc-12.2.0.tar.xz",
+            "last_version": "12.2.0",
+            "current_version": "12.2.0"
+        },
+        {
+            "package_name": "linux",
+            "file_name": "linux",
+            "url": "https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.1.tar.gz",
+            "last_version": "6.1",
+            "current_version": "6.1"
+        },
+        {
+            "package_name": "glibc",
+            "file_name": "glibc",
+            "url": "https://ftp.gnu.org/gnu/glibc/glibc-2.36.tar.xz",
+            "last_version": "2.36",
+            "current_version": "2.36"
+        },
+        {
+            "package_name": "gettext",
+            "file_name": "gettext",
+            "url": "https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz",
+            "last_version": "0.21",
+            "current_version": "0.21"
+        },
+        {
+            "package_name": "bison",
+            "file_name": "bison",
+            "url": "https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.xz",
+            "last_version": "3.8.2",
+            "current_version": "3.8.2"
+        },
+        {
+            "package_name": "perl",
+            "file_name": "perl",
+            "url": "http://www.cpan.org/src/5.0/perl-5.36.0.tar.xz",
+            "last_version": "5.36.0",
+            "current_version": "5.36.0"
+        },
+        {
+            "package_name": "Python",
+            "file_name": "Python",
+            "url": "https://www.python.org/ftp/python/3.10.6/Python-3.10.6.tar.xz",
+            "last_version": "3.10.6",
+            "current_version": "3.10.6"
+        },
+        {
+            "package_name": "texinfo",
+            "file_name": "texinfo",
+            "url": "https://ftp.gnu.org/gnu/texinfo/texinfo-6.8.tar.xz",
+            "last_version": "6.8",
+            "current_version": "6.8"
+        },
+        {
+            "package_name": "util-linux",
+            "file_name": "util-linux",
+            "url": "https://www.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.1.tar.gz",
+            "last_version": "2.38.1",
+            "current_version": "2.38.1"
+        },
+        {
+            "package_name": "man-pages",
+            "file_name": "man-pages",
+            "url": "https://www.kernel.org/pub/linux/docs/man-pages/man-pages-6.03.tar.xz",
+            "last_version": "6.03",
+            "current_version": "6.03"
+        },
+        {
+            "package_name": "iana-etc",
+            "file_name": "iana-etc",
+            "url": "https://github.com/Mic92/iana-etc/releases/download/20220812/iana-etc-20220812.tar.gz",
+            "last_version": "20220812",
+            "current_version": "20220812"
+        },
+        {
+            "package_name": "zlib",
+            "file_name": "zlib",
+            "url": "https://www.zlib.net/zlib-1.2.13.tar.gz",
+            "last_version": "1.2.13",
+            "current_version": "1.2.13"
+        },
+        {
+            "package_name": "bzip2",
+            "file_name": "bzip2",
+            "url": "https://www.sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
+            "last_version": "1.0.8",
+            "current_version": "1.0.8"
+        },
+        {
+            "package_name": "zstd",
+            "file_name": "zstd",
+            "url": "https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz",
+            "last_version": "1.5.2",
+            "current_version": "1.5.2"
+        },
+        {
+            "package_name": "readline",
+            "file_name": "readline",
+            "url": "https://ftp.gnu.org/gnu/readline/readline-8.1.2.tar.gz",
+            "last_version": "8.1.2",
+            "current_version": "8.1.2"
+        },
+        {
+            "package_name": "bc",
+            "file_name": "bc",
+            "url": "https://github.com/gavinhoward/bc/releases/download/6.0.1/bc-6.0.1.tar.xz",
+            "last_version": "6.0.1",
+            "current_version": "6.0.1"
+        },
+        {
+            "package_name": "flex",
+            "file_name": "flex",
+            "url": "https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz",
+            "last_version": "2.6.4",
+            "current_version": "2.6.4"
+        },
+        {
+            "package_name": "tcl8",
+            "file_name": "tcl8",
+            "url": "https://downloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz",
+            "last_version": "8.6.12",
+            "current_version": "8.6.12"
+        },
+        {
+            "package_name": "expect",
+            "file_name": "expect",
+            "url": "https://prdownloads.sourceforge.net/expect/expect5.45.4.tar.gz",
+            "last_version": "5.45.4",
+            "current_version": "5.45.4"
+        },
+        {
+            "package_name": "dejagnu",
+            "file_name": "dejagnu",
+            "url": "https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz",
+            "last_version": "1.6.3",
+            "current_version": "1.6.3"
+        },
+        {
+            "package_name": "gmp",
+            "file_name": "gmp",
+            "url": "https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz",
+            "last_version": "6.2.1",
+            "current_version": "6.2.1"
+        },
+        {
+            "package_name": "mpfr",
+            "file_name": "mpfr",
+            "url": "https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz",
+            "last_version": "4.1.0",
+            "current_version": "4.1.0"
+        },
+        {
+            "package_name": "mpc",
+            "file_name": "mpc",
+            "url": "https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz",
+            "last_version": "1.2.1",
+            "current_version": "1.2.1"
+        },
+        {
+            "package_name": "attr",
+            "file_name": "attr",
+            "url": "https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz",
+            "last_version": "2.5.1",
+            "current_version": "2.5.1"
+        },
+        {
+            "package_name": "acl",
+            "file_name": "acl",
+            "url": "https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.xz",
+            "last_version": "2.3.1",
+            "current_version": "2.3.1"
+        },
+        {
+            "package_name": "libcap",
+            "file_name": "libcap",
+            "url": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.67.tar.xz",
+            "last_version": "2.67",
+            "current_version": "2.67"
+        },
+        {
+            "package_name": "shadow",
+            "file_name": "shadow",
+            "url": "https://github.com/shadow-maint/shadow/releases/download/4.12.2/shadow-4.12.2.tar.xz",
+            "last_version": "4.12.2",
+            "current_version": "4.12.2"
+        },
+        {
+            "package_name": "pkg-config",
+            "file_name": "pkg-config",
+            "url": "https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz",
+            "last_version": "0.29.2",
+            "current_version": "0.29.2"
+        },
+        {
+            "package_name": "psmisc",
+            "file_name": "psmisc",
+            "url": "https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.5.tar.xz",
+            "last_version": "23.5",
+            "current_version": "23.5"
+        },
+        {
+            "package_name": "libtool",
+            "file_name": "libtool",
+            "url": "https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz",
+            "last_version": "2.4.7",
+            "current_version": "2.4.7"
+        },
+        {
+            "package_name": "gdbm",
+            "file_name": "gdbm",
+            "url": "https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz",
+            "last_version": "1.23",
+            "current_version": "1.23"
+        },
+        {
+            "package_name": "gperf",
+            "file_name": "gperf",
+            "url": "https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz",
+            "last_version": "3.1",
+            "current_version": "3.1"
+        },
+        {
+            "package_name": "expat",
+            "file_name": "expat",
+            "url": "https://sourceforge.net/projects/expat/files/expat/2.5.0/expat-2.5.0.tar.xz",
+            "last_version": "2.5.0",
+            "current_version": "2.5.0"
+        },
+        {
+            "package_name": "inetutils",
+            "file_name": "inetutils",
+            "url": "https://ftp.gnu.org/gnu/inetutils/inetutils-2.4.tar.xz",
+            "last_version": "2.4",
+            "current_version": "2.4"
+        },
+        {
+            "package_name": "less",
+            "file_name": "less",
+            "url": "https://www.greenwoodsoftware.com/less/less-590.tar.gz",
+            "last_version": "590",
+            "current_version": "590"
+        },
+        {
+            "package_name": "XML-Parser",
+            "file_name": "XML-Parser",
+            "url": "http://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz",
+            "last_version": "2.46",
+            "current_version": "2.46"
+        },
+        {
+            "package_name": "intltool",
+            "file_name": "intltool",
+            "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+            "last_version": "0.51.0",
+            "current_version": "0.51.0"
+        },
+        {
+            "package_name": "autoconf",
+            "file_name": "autoconf",
+            "url": "https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz",
+            "last_version": "2.71",
+            "current_version": "2.71"
+        },
+        {
+            "package_name": "automake",
+            "file_name": "automake",
+            "url": "https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz",
+            "last_version": "1.16.5",
+            "current_version": "1.16.5"
+        },
+        {
+            "package_name": "openssl",
+            "file_name": "openssl",
+            "url": "https://www.openssl.org/source/openssl-3.0.5.tar.gz",
+            "last_version": "3.0.5",
+            "current_version": "3.0.5"
+        },
+        {
+            "package_name": "kmod",
+            "file_name": "kmod",
+            "url": "https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.gz",
+            "last_version": "30",
+            "current_version": "30"
+        },
+        {
+            "package_name": "elfutils",
+            "file_name": "elfutils",
+            "url": "https://sourceware.org/ftp/elfutils/0.187/elfutils-0.187.tar.bz2",
+            "last_version": "0.187",
+            "current_version": "0.187"
+        },
+        {
+            "package_name": "libffi",
+            "file_name": "libffi",
+            "url": "https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz",
+            "last_version": "3.4.2",
+            "current_version": "3.4.2"
+        },
+        {
+            "package_name": "wheel",
+            "file_name": "wheel",
+            "url": "https://anduin.linuxfromscratch.org/LFS/wheel-0.37.1.tar.gz",
+            "last_version": "0.37.1",
+            "current_version": "0.37.1"
+        },
+        {
+            "package_name": "ninja",
+            "file_name": "ninja",
+            "url": "https://github.com/ninja-build/ninja/archive/v1.11.0/ninja-1.11.0.tar.gz",
+            "last_version": "1.11.0",
+            "current_version": "1.11.0"
+        },
+        {
+            "package_name": "meson",
+            "file_name": "meson",
+            "url": "https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz",
+            "last_version": "0.63.1",
+            "current_version": "0.63.1"
+        },
+        {
+            "package_name": "check",
+            "file_name": "check",
+            "url": "https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz",
+            "last_version": "0.15.2",
+            "current_version": "0.15.2"
+        },
+        {
+            "package_name": "groff",
+            "file_name": "groff",
+            "url": "https://ftp.gnu.org/gnu/groff/groff-1.22.4.tar.gz",
+            "last_version": "1.22.4",
+            "current_version": "1.22.4"
+        },
+        {
+            "package_name": "grub",
+            "file_name": "grub",
+            "url": "https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz",
+            "last_version": "2.06",
+            "current_version": "2.06"
+        },
+        {
+            "package_name": "iproute2",
+            "file_name": "iproute2",
+            "url": "https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-6.2.0.tar.xz",
+            "last_version": "6.2.0",
+            "current_version": "6.2.0"
+        },
+        {
+            "package_name": "kbd",
+            "file_name": "kbd",
+            "url": "https://www.kernel.org/pub/linux/utils/kbd/kbd-2.5.1.tar.gz",
+            "last_version": "2.5.1",
+            "current_version": "2.5.1"
+        },
+        {
+            "package_name": "libpipeline",
+            "file_name": "libpipeline",
+            "url": "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.6.tar.gz",
+            "last_version": "1.5.6",
+            "current_version": "1.5.6"
+        },
+        {
+            "package_name": "vim",
+            "file_name": "vim",
+            "url": "https://anduin.linuxfromscratch.org/LFS/vim-9.0.0228.tar.gz",
+            "last_version": "9.0.0228",
+            "current_version": "9.0.0228"
+        },
+        {
+            "package_name": "libxml2",
+            "file_name": "libxml2",
+            "url": "https://download.gnome.org/sources/libxml2/2.10/libxml2-2.10.3.tar.xz",
+            "last_version": "2.10.3",
+            "current_version": "2.10.3"
+        },
+        {
+            "package_name": "nghttp",
+            "file_name": "nghttp",
+            "url": "https://github.com/nghttp2/nghttp2/releases/download/v1.52.0/nghttp2-1.52.0.tar.xz",
+            "last_version": "1.52.0",
+            "current_version": "1.52.0"
+        },
+        {
+            "package_name": "libuv",
+            "file_name": "libuv",
+            "url": " https://dist.libuv.org/dist/v1.44.2/libuv-v1.44.2.tar.gz",
+            "last_version": "v1.44.2",
+            "current_version": "v1.44.2"
+        },
+        {
+            "package_name": "nettle",
+            "file_name": "nettle",
+            "url": "https://ftp.gnu.org/gnu/nettle/nettle-3.8.1.tar.gz",
+            "last_version": "3.8.1",
+            "current_version": "3.8.1"
+        },
+        {
+            "package_name": "lzo",
+            "file_name": "lzo",
+            "url": "https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz",
+            "last_version": "2.10",
+            "current_version": "2.10"
+        },
+        {
+            "package_name": "libarchive",
+            "file_name": "libarchive",
+            "url": "https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.xz",
+            "last_version": "3.6.2",
+            "current_version": "3.6.2"
+        },
+        {
+            "package_name": "libtasn",
+            "file_name": "libtasn",
+            "url": "https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz",
+            "last_version": "4.19.0",
+            "current_version": "4.19.0"
+        },
+        {
+            "package_name": "p11",
+            "file_name": "p11",
+            "url": "https://github.com/p11-glue/p11-kit/releases/download/0.24.1/p11-kit-0.24.1.tar.xz",
+            "last_version": "0.24.1",
+            "current_version": "0.24.1"
+        },
+        {
+            "package_name": "make-ca",
+            "file_name": "make-ca",
+            "url": "https://github.com/lfs-book/make-ca/releases/download/v1.12/make-ca-1.12.tar.xz",
+            "last_version": "1.12",
+            "current_version": "1.12"
+        },
+        {
+            "package_name": "curl",
+            "file_name": "curl",
+            "url": "https://curl.se/download/curl-7.88.1.tar.xz",
+            "last_version": "7.88.1",
+            "current_version": "7.88.1"
+        },
+        {
+            "package_name": "cmake",
+            "file_name": "cmake",
+            "url": "https://cmake.org/files/v3.25/cmake-3.25.2.tar.gz",
+            "last_version": "3.25.2",
+            "current_version": "3.25.2"
+        },
+        {
+            "package_name": "llvm",
+            "file_name": "llvm",
+            "url": " https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/llvm-15.0.7.src.tar.xz",
+            "last_version": "15.0.7.src",
+            "current_version": "15.0.7.src"
+        },
+        {
+            "package_name": "eudev",
+            "file_name": "eudev",
+            "url": "https://github.com/eudev-project/eudev/releases/download/v3.2.11/eudev-3.2.11.tar.gz",
+            "last_version": "3.2.11",
+            "current_version": "3.2.11"
+        },
+        {
+            "package_name": "man-db",
+            "file_name": "man-db",
+            "url": "https://download-mirror.savannah.gnu.org/releases/man-db/man-db-2.10.0.tar.xz",
+            "last_version": "2.10.0",
+            "current_version": "2.10.0"
+        },
+        {
+            "package_name": "procps-ng",
+            "file_name": "procps-ng",
+            "url": "https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-4.0.0.tar.xz",
+            "last_version": "4.0.0",
+            "current_version": "4.0.0"
+        },
+        {
+            "package_name": "e2fsprogs",
+            "file_name": "e2fsprogs",
+            "url": "https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.46.5/e2fsprogs-1.46.5.tar.gz",
+            "last_version": "1.46.5",
+            "current_version": "1.46.5"
+        },
+        {
+            "package_name": "sysklogd",
+            "file_name": "sysklogd",
+            "url": "https://www.infodrom.org/projects/sysklogd/download/sysklogd-1.5.1.tar.gz",
+            "last_version": "1.5.1",
+            "current_version": "1.5.1"
+        },
+        {
+            "package_name": "sysvinit",
+            "file_name": "sysvinit",
+            "url": "https://download.savannah.gnu.org/releases/sysvinit/sysvinit-3.04.tar.xz",
+            "last_version": "3.04",
+            "current_version": "3.04"
+        },
+        {
+            "package_name": "dhcpcd",
+            "file_name": "dhcpcd",
+            "url": "https://github.com/networkconfiguration/dhcpcd/releases/download/v9.5.1/dhcpcd-9.5.1.tar.xz",
+            "last_version": "9.5.1",
+            "current_version": "9.5.1"
+        },
+        {
+            "package_name": "blfs-bootscripts",
+            "file_name": "blfs-bootscripts",
+            "url": "https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20230101.tar.xz",
+            "last_version": "2023.01.01",
+            "current_version": "2023.01.01"
+        },
+        {
+            "package_name": "lfs-bootscripts",
+            "file_name": "lfs-bootscripts",
+            "url": "https://www.linuxfromscratch.org/lfs/downloads/11.2/lfs-bootscripts-20220723.tar.xz",
+            "last_version": "20220723",
+            "current_version": "20220723"
+        }
+    ],
+    "package_patches": [
+        {
+            "patch_name": "bzip2_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/bzip2-1.0.8-install_docs-1.patch",
+            "last_version": "1.0.8",
+            "current_version": "1.0.8"
+        },
+        {
+            "patch_name": "coreutils_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/coreutils-9.1-i18n-1.patch",
+            "last_version": "9.1-i18n-1",
+            "current_version": "9.1-i18n-1"
+        },
+        {
+            "patch_name": "glibc_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/glibc-2.36-fhs-1.patch",
+            "last_version": "2.36",
+            "current_version": "2.36"
+        },
+        {
+            "patch_name": "kbd_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/kbd-2.5.1-backspace-1.patch",
+            "last_version": "2.5.1",
+            "current_version": "2.5.1"
+        },
+        {
+            "patch_name": "sysvinit_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/sysvinit-3.04-consolidated-1.patch",
+            "last_version": "3.04",
+            "current_version": "3.04"
+        },
+        {
+            "patch_name": "zstd_patch",
+            "url": "https://www.linuxfromscratch.org/patches/lfs/11.2/zstd-1.5.2-upstream_fixes-1.patch",
+            "last_version": "1.5.2",
+            "current_version": "1.5.2"
+        },
+        {
+            "patch_name": "clang_patch",
+            "url": "https://www.linuxfromscratch.org/patches/blfs/11.3/clang-15.0.7-enable_default_ssp-1.patch",
+            "last_version": "15.0.7",
+            "current_version": "15.0.7"
+        }
+    ],
+    "install_info": {
+        "cross_compile_toolchains": [
+            {
+                "package_name": "binutils",
+                "script_name": "binutils_first"
+            },
+            {
+                "package_name": "linux",
+                "script_name": "linux_headers_api"
+            },
+            {
+                "package_name": "gcc",
+                "script_name": "gcc_first"
+            },
+            {
+                "package_name": "glibc",
+                "script_name": "glibc"
+            },
+            {
+                "package_name": "gcc",
+                "script_name": "libstdc++"
+            }
+        ],
+        "cross_compile_packages": [
+            {
+                "package_name": "m4",
+                "script_name": "m4"
+            },
+            {
+                "package_name": "ncurses",
+                "script_name": "ncurses"
+            },
+            {
+                "package_name": "bash",
+                "script_name": "bash"
+            },
+            {
+                "package_name": "coreutils",
+                "script_name": "coreutils"
+            },
+            {
+                "package_name": "diffutils",
+                "script_name": "diffutils"
+            },
+            {
+                "package_name": "file",
+                "script_name": "file"
+            },
+            {
+                "package_name": "findutils",
+                "script_name": "findutils"
+            },
+            {
+                "package_name": "gawk",
+                "script_name": "gawk"
+            },
+            {
+                "package_name": "grep",
+                "script_name": "grep"
+            },
+            {
+                "package_name": "gzip",
+                "script_name": "gzip"
+            },
+            {
+                "package_name": "make",
+                "script_name": "make"
+            },
+            {
+                "package_name": "patch",
+                "script_name": "patch"
+            },
+            {
+                "package_name": "sed",
+                "script_name": "sed"
+            },
+            {
+                "package_name": "tar",
+                "script_name": "tar"
+            },
+            {
+                "package_name": "xz",
+                "script_name": "xz"
+            },
+            {
+                "package_name": "binutils",
+                "script_name": "binutils_second"
+            },
+            {
+                "package_name": "gcc",
+                "script_name": "gcc_second"
+            }
+        ],
+        "after_chroot_packages": [
+            {
+                "package_name": "gettext",
+                "script_name": "gettext"
+            },
+            {
+                "package_name": "bison",
+                "script_name": "bison"
+            },
+            {
+                "package_name": "perl",
+                "script_name": "perl"
+            },
+            {
+                "package_name": "Python",
+                "script_name": "python"
+            },
+            {
+                "package_name": "texinfo",
+                "script_name": "texinfo"
+            },
+            {
+                "package_name": "util-linux",
+                "script_name": "util-linux"
+            }
+        ],
+        "base_packages": [
+            {
+                "package_name": "man-pages",
+                "script_name": "man_page"
+            },
+            {
+                "package_name": "iana-etc",
+                "script_name": "iana_etc"
+            },
+            {
+                "package_name": "glibc",
+                "script_name": "glibc"
+            },
+            {
+                "package_name": "zlib",
+                "script_name": "zlib"
+            },
+            {
+                "package_name": "bzip2",
+                "script_name": "bzip2"
+            },
+            {
+                "package_name": "xz",
+                "script_name": "xz"
+            },
+            {
+                "package_name": "zstd",
+                "script_name": "zstd"
+            },
+            {
+                "package_name": "file",
+                "script_name": "file"
+            },
+            {
+                "package_name": "readline",
+                "script_name": "readline"
+            },
+            {
+                "package_name": "m4",
+                "script_name": "m4"
+            },
+            {
+                "package_name": "bc",
+                "script_name": "bc"
+            },
+            {
+                "package_name": "flex",
+                "script_name": "flex"
+            },
+            {
+                "package_name": "tcl8",
+                "script_name": "tcl"
+            },
+            {
+                "package_name": "expect",
+                "script_name": "expect"
+            },
+            {
+                "package_name": "dejagnu",
+                "script_name": "dejagnu"
+            },
+            {
+                "package_name": "binutils",
+                "script_name": "binutils"
+            },
+            {
+                "package_name": "gmp",
+                "script_name": "gmp"
+            },
+            {
+                "package_name": "mpfr",
+                "script_name": "mpfr"
+            },
+            {
+                "package_name": "mpc",
+                "script_name": "mpc"
+            },
+            {
+                "package_name": "attr",
+                "script_name": "attr"
+            },
+            {
+                "package_name": "acl",
+                "script_name": "acl"
+            },
+            {
+                "package_name": "libcap",
+                "script_name": "libcap"
+            },
+            {
+                "package_name": "shadow",
+                "script_name": "shadow"
+            },
+            {
+                "package_name": "gcc",
+                "script_name": "gcc"
+            },
+            {
+                "package_name": "pkg-config",
+                "script_name": "pkg_config"
+            },
+            {
+                "package_name": "ncurses",
+                "script_name": "ncurses"
+            },
+            {
+                "package_name": "sed",
+                "script_name": "sed"
+            },
+            {
+                "package_name": "psmisc",
+                "script_name": "psmisc"
+            },
+            {
+                "package_name": "gettext",
+                "script_name": "gettext"
+            },
+            {
+                "package_name": "bison",
+                "script_name": "bison"
+            },
+            {
+                "package_name": "grep",
+                "script_name": "grep"
+            },
+            {
+                "package_name": "bash",
+                "script_name": "bash"
+            },
+            {
+                "package_name": "libtool",
+                "script_name": "libtool"
+            },
+            {
+                "package_name": "gdbm",
+                "script_name": "gdbm"
+            },
+            {
+                "package_name": "gperf",
+                "script_name": "gperf"
+            },
+            {
+                "package_name": "expat",
+                "script_name": "expat"
+            },
+            {
+                "package_name": "inetutils",
+                "script_name": "inetutils"
+            },
+            {
+                "package_name": "less",
+                "script_name": "less"
+            },
+            {
+                "package_name": "perl",
+                "script_name": "perl"
+            },
+            {
+                "package_name": "XML-Parser",
+                "script_name": "xml_parser"
+            },
+            {
+                "package_name": "intltool",
+                "script_name": "intltool"
+            },
+            {
+                "package_name": "autoconf",
+                "script_name": "autoconf"
+            },
+            {
+                "package_name": "automake",
+                "script_name": "automake"
+            },
+            {
+                "package_name": "openssl",
+                "script_name": "openssl"
+            },
+            {
+                "package_name": "kmod",
+                "script_name": "kmod"
+            },
+            {
+                "package_name": "elfutils",
+                "script_name": "libelf"
+            },
+            {
+                "package_name": "libffi",
+                "script_name": "libffi"
+            },
+            {
+                "package_name": "Python",
+                "script_name": "python"
+            },
+            {
+                "package_name": "wheel",
+                "script_name": "wheel"
+            },
+            {
+                "package_name": "ninja",
+                "script_name": "ninja"
+            },
+            {
+                "package_name": "meson",
+                "script_name": "meson"
+            },
+            {
+                "package_name": "check",
+                "script_name": "check"
+            },
+            {
+                "package_name": "diffutils",
+                "script_name": "diffutils"
+            },
+            {
+                "package_name": "gawk",
+                "script_name": "gawk"
+            },
+            {
+                "package_name": "findutils",
+                "script_name": "findutils"
+            },
+            {
+                "package_name": "groff",
+                "script_name": "groff"
+            },
+            {
+                "package_name": "grub",
+                "script_name": "grub"
+            },
+            {
+                "package_name": "gzip",
+                "script_name": "gzip"
+            },
+            {
+                "package_name": "iproute2",
+                "script_name": "iproute"
+            },
+            {
+                "package_name": "kbd",
+                "script_name": "kbd"
+            },
+            {
+                "package_name": "libpipeline",
+                "script_name": "libpipeline"
+            },
+            {
+                "package_name": "make",
+                "script_name": "make.sh"
+            },
+            {
+                "package_name": "patch",
+                "script_name": "patch"
+            },
+            {
+                "package_name": "tar",
+                "script_name": "tar"
+            },
+            {
+                "package_name": "texinfo",
+                "script_name": "texinfo"
+            },
+            {
+                "package_name": "vim",
+                "script_name": "vim"
+            },
+            {
+                "package_name": "libxml2",
+                "script_name": "libxml2"
+            },
+            {
+                "package_name": "nghttp",
+                "script_name": "nghttp"
+            },
+            {
+                "package_name": "libuv",
+                "script_name": "libuv"
+            },
+            {
+                "package_name": "nettle",
+                "script_name": "nettle"
+            },
+            {
+                "package_name": "lzo",
+                "script_name": "lzo"
+            },
+            {
+                "package_name": "libarchive",
+                "script_name": "libarchive"
+            },
+            {
+                "package_name": "libtasn",
+                "script_name": "libtasn"
+            },
+            {
+                "package_name": "p11",
+                "script_name": "p11"
+            },
+            {
+                "package_name": "make-ca",
+                "script_name": "make-ca"
+            },
+            {
+                "package_name": "curl",
+                "script_name": "curl"
+            },
+            {
+                "package_name": "cmake",
+                "script_name": "cmake"
+            },
+            {
+                "package_name": "llvm",
+                "script_name": "llvm"
+            },
+            {
+                "package_name": "eudev",
+                "script_name": "eudev"
+            },
+            {
+                "package_name": "man-db",
+                "script_name": "man_db"
+            },
+            {
+                "package_name": "procps-ng",
+                "script_name": "procps_ng"
+            },
+            {
+                "package_name": "util-linux",
+                "script_name": "util_linux"
+            },
+            {
+                "package_name": "e2fsprogs",
+                "script_name": "e2fsprogs"
+            },
+            {
+                "package_name": "sysklogd",
+                "script_name": "sysklogd"
+            },
+            {
+                "package_name": "sysvinit",
+                "script_name": "sysvinit"
+            },
+            {
+                "package_name": "dhcpcd",
+                "script_name": "dhcpcd"
+            },
+            {
+                "package_name": "blfs-bootscripts",
+                "script_name": "blfs-bootscripts"
+            },
+            {
+                "package_name": "lfs-bootscripts",
+                "script_name": "lfs-bootscripts"
+            }
+        ]
+    }
+}
