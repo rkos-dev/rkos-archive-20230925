@@ -47,10 +47,10 @@ pub enum BuildOption {
     PackageDownload,
     BuildTempToolchains,
     BuildBasePackages,
-    BuildRustSupportPackageAndKernel,
-    ConfigTargetSystem,
-    InstallGrub,
     CleanUp,
+    ConfigTargetSystem,
+    BuildRustSupportPackageAndKernel,
+    InstallGrub,
 }
 
 lazy_static! {
@@ -122,7 +122,7 @@ pub struct HostInfo {
     pub stop_flag: String,
 }
 
-// 基础配置中的脚本路径
+// scripte path in base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ScriptsPath {
     pub root: String,
@@ -136,7 +136,7 @@ pub struct ScriptsPath {
     pub sysconfig: String,
 }
 
-//基础配置
+// base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Configs {
     pub root: String,
@@ -147,7 +147,7 @@ pub struct Configs {
     pub new_config: String,
 }
 
-//基础配置中的路径配置
+// path info in base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PathInfo {
     pub root: String,
@@ -157,20 +157,20 @@ pub struct PathInfo {
     pub install_path: String,
 }
 
-//环境变量信息
+// env config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvsInfo {
     pub name: String,
     pub value: String,
 }
 
-//环境变量合集
+// env config vec
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Envs {
     pub envs: Vec<EnvsInfo>,
 }
 
-//基础配置
+// base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BaseConfig {
     pub host_info: HostInfo,
@@ -180,7 +180,7 @@ pub struct BaseConfig {
     pub envs: Vec<EnvsInfo>,
 }
 
-// rust 系列包
+// rust support package
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackageInfo {
     pub name: String,
@@ -188,13 +188,13 @@ pub struct RustSupportPackageInfo {
     pub script: String,
 }
 
-//rust 系列包
+// rust support package vec
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackages {
     pub rust_support_packages: Vec<RustSupportPackageInfo>,
 }
 
-//包信息，需要人工维护，或者尝试自动拉取更新
+// package info , todo: auto update
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageInfo {
     pub package_name: String,
