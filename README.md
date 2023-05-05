@@ -9,22 +9,20 @@ Rust King OS - Linux Distro of Rust Programing Language
 
 - 请确认目前使用的是root用户，并且在所有构建流程都应该使用root用户，另外不推荐使用物理机，虽然构建程序理论上并不会破坏宿主机环境，为了安全起见，建议使用虚拟机
 
-- 请确认内存+交换分区总大小在35GB及以上，如果使用了构建程序提供的宿主机环境，请保证第三块磁盘容量足够，并且已经挂载为交换分区
+- 请确认内存+交换分区总大小在35GB及以上，如果使用了提供的宿主机环境，请保证宿主机可用内存大于等于32GB或者第三块磁盘容量充足
+
+- 手动执行scripts中的任何脚本都可能导致宿主机环境被破坏
 
 ### 使用提供的宿主机环境
 
-- 运行version-check.sh查看输出，判断是否存在软件包缺失等问题
+- 运行version-check.sh查看输出，判断是否存在软件包缺失等问题，如果缺失请手动安装
 
 - 构建宿主系统，并使用kvm启动宿主系统
+
 - 挂载swap分区
     ```
     mkswap /dev/vdc1
     swapon /dev/vdc1
-    ```
-
-- 安装git、rust、clang
-    ```
-    pacman -S git rust clang parted pkg-config
     ```
 
 - 编译构建工具
@@ -70,15 +68,21 @@ Rust King OS - Linux Distro of Rust Programing Language
     Tar >= 1.22
     Texinfo >= 4.7
     Xz >= 5.0.0
+    rust
+    git
+    clang
+    parted
+    pkg-config
     ```
+
+- 如果是arch请安装arch开发套件 ```pacman -S base-devel```
 
 - 运行version-check.sh查看输出，判断是否存在软件包缺失等问题
 
 - 安装qemu镜像相关工具
 
     ```
-    qemu-img
-    nbd
+    sudo pacman -S qemu-img nbd
     ```
 
 - 创建一个大小为30G的qcow2镜像
@@ -115,21 +119,35 @@ Rust King OS - Linux Distro of Rust Programing Language
 
     - 将"envs":["name":"LFS","value":"设置为上述相同的路径"]
 
+    - 将脚本文件 scripts/prepare/prepare_host_env.sh中的/dev/vdb1 与 /dev/vdb2 改成实际使用的分区
+
+    - 将脚本文件 scripts/sysconfig/config_grub.sh 中的/dev/vdb改为实际使用的分区
+
     注意路径末尾需要有'/'符号
 
 - 将配置文件(configs,scripts,config-6.1,umount.sh)以及运行程序(rkos-builder)置于宿主系统目标分区（/mnt/lfs/）下
 
-```
-cp -r rkos/src/configs rkos/src/config-6.1 rkos/src/umount.sh rkos/src/scripts /mnt/lfs/
-```
+    ```
+    cp -r rkos/src/configs rkos/src/config-6.1 rkos/src/umount.sh rkos/src/scripts /mnt/lfs/
+    ```
 
 - 运行version-check.sh查看是否缺少构建必须的依赖包
 
-- 运行rkos-builder --help 查看指令，并按选项流程构建
+- 运行rkos-builder --help 查看指令，并按选项流程构建，每个流程执行完之后，务必运行./umount.sh
+    - 流程：
+        - host-config
+        - package-download
+        - build-temp-toolchains
+        - build-base-packages
+        - config-target-system
+        - build-rust-support-package-and-kernel
+        - install-grub
+
 
 - 构建完成后在主机上压缩目标分区qcow2镜像，镜像目录在宿主机kvm镜像存放的位置处
 
     ```
+    sudo pacman -S guestfs-tools
     TMPDIR=/home/tmp/path virt-sparsity --compress xxx.qcow2 xxx_compress.qcow2
     ```
 
