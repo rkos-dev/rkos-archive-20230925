@@ -1,66 +1,63 @@
 {
-    "host_info": {
-        "target_part": "",
-        "stop_flag": "./stop"
+  "host_info": {
+    "target_part": "",
+    "stop_flag": "./stop"
+  },
+  "scripts_path": {
+    "root": "./scripts/",
+    "build_base_packages": "build_base_packages/",
+    "build_temp_toolchains": "build_temp_toolchains/",
+    "build_rust_support_packages": "build_rust_support_packages/",
+    "chroot": "chroot/",
+    "clean": "clean/",
+    "prepare": "prepare/",
+    "release": "release/",
+    "sysconfig": "sysconfig/"
+  },
+  "configs": {
+    "root": "./configs/",
+    "rust_support_packages": "rust_support_packages.json",
+    "package_config": "packages.json"
+  },
+  "path": {
+    "root": "./",
+    "package_source": "sources/",
+    "package_build": "sources/",
+    "package_patches": "base_patches/",
+    "install_path": "/mnt/lfs/"
+  },
+  "envs": [
+    {
+      "name": "LFS",
+      "value": "/mnt/lfs"
     },
-    "scripts_path": {
-        "root": "./scripts/",
-        "build_base_packages": "build_base_packages/",
-        "build_temp_toolchains": "build_temp_toolchains/",
-        "build_rust_support_packages": "build_rust_support_packages/",
-        "chroot": "chroot/",
-        "clean": "clean/",
-        "prepare": "prepare/",
-        "release": "release/",
-        "sysconfig": "sysconfig/"
+    {
+      "name": "LFS_TGT",
+      "value": "x86_64-rkos-linux-gnu"
     },
-    "configs": {
-        "root": "./configs/",
-        "package_info": "packages_info.json",
-        "base_packages": "base_packages.json",
-        "temp_toolchains": "temp_toolchains.json",
-        "rust_support_packages": "rust_support_packages.json",
-        "new_config": "new.json"
+    {
+      "name": "LC_ALL",
+      "value": "POSIX"
     },
-    "path": {
-        "root": "./",
-        "package_source": "sources/",
-        "package_build": "sources/",
-        "package_patches": "base_patches/",
-        "install_path": "/mnt/lfs/"
+    {
+      "name": "PATH",
+      "value": "/tools/bin:/usr/bin:/bin"
     },
-    "envs": [
-        {
-            "name": "LFS",
-            "value": "/mnt/lfs"
-        },
-        {
-            "name": "LFS_TGT",
-            "value": "x86_64-rkos-linux-gnu"
-        },
-        {
-            "name": "LC_ALL",
-            "value": "POSIX"
-        },
-        {
-            "name": "PATH",
-            "value": "/tools/bin:/usr/bin:/bin"
-        },
-        {
-            "name": "CONFIG_FILE",
-            "value": "$LFS/usr/share/config.site"
-        },
-        {
-            "name": "MAKEFLAGS",
-            "value": "-j8"
-        },
-        {
-            "name": "FORCE_UNSAFE_CONFIGURE",
-            "value": "1"
-        },
-        {
-            "name": "NINJAJOBS",
-            "value": "4"
-        }
-    ]
+    {
+      "name": "CONFIG_FILE",
+      "value": "$LFS/usr/share/config.site"
+    },
+    {
+      "name": "MAKEFLAGS",
+      "value": "-j8"
+    },
+    {
+      "name": "FORCE_UNSAFE_CONFIGURE",
+      "value": "1"
+    },
+    {
+      "name": "NINJAJOBS",
+      "value": "4"
+    }
+  ]
 }
