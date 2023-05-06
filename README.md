@@ -1,5 +1,6 @@
 # rkos
 Rust King OS - Linux Distro of Rust Programing Language
+<<<<<<< HEAD
 
 # Tutorial
 
@@ -221,5 +222,6 @@ rkos-builder host-config start
     ```
     cp configs/[base_packages.json|temp_toolchains.json|rust_support_packages.json]{,.bak}
 
-    #然后找到对应安装失败的软件包，将之前安装好的全部删掉，解决安装失败的问题后，可以继续运行构建流程
+    #然后找到对应安装失败的软件包，将之前安装好的软件包的条目全部删掉，解决安装失败的问题后，可以继续运行构建流程
     ```
+
