@@ -3,67 +3,67 @@ Rust King OS - Linux Distro of Rust Programing Language
 
 # Tutorial
 
-## 宿主机的准备工作
+## Host preparation
 
-### 注意事项
+### ATTENTION!!!
 
-- rkos 目前正在积极开发中，仅适用于开发以及测试，并且构建rkos的宿主机存在被损坏的风险
+- rkos is currently under active development and is only suitable for development and testing, and there is a risk of damage to the host machine where rkos is being built.
 
-- 请确认目前使用的是root用户，并且在所有构建流程都应该使用root用户
+- Please make sure you are currently using the root user, and you should use the root user for all build processes.
 
-- 请确认内存+交换分区总大小在32GB及以上，如果使用了提供的宿主机环境，请保证宿主机可用内存大于等于32GB或者第三块磁盘容量充足并挂载为交换分区
+- Please confirm that the total size of the memory and swap partition is 32GB or more. If you use the provided host environment, please ensure that the available memory of the host is greater than or equal to 32GB or that the third disk has sufficient capacity and is mounted as a swap partition.
 
-- 风险：
-    - 构建程序理论上并不会破坏宿主机环境，但是可能存在未预料到的bug，为了安全起见，建议使用虚拟机作为宿主机
+- Warn:
+    - In theory, building the program will not destroy the host environment, but there may be unexpected bugs. For safety reasons, it is recommended to use a virtual machine as the host.
 
-    - 没有仔细检查过scripts中脚本的代码的前提下，手动执行任何一个脚本都有可能导致宿主机环境被破坏
-
-
+    - Without carefully checking the code of the script, manually executing any script may cause the host environment to be destroyed.
 
 
-### 使用提供的宿主机环境
 
-- 运行version-check.sh查看输出，判断是否存在软件包缺失等问题，如果缺失请手动安装
 
-- 构建宿主系统，并使用kvm启动宿主系统
+### Use the provided host environment.
 
-- 挂载swap分区
+- Run version-check.sh to view the output and determine whether there are problems, such as missing software packages. If missing, please install manually.
+
+- Build the host system and use kvm to start the host system.
+
+- Mount the swap partition.
     ```
     mkswap /dev/vdc1
     swapon /dev/vdc1
     ```
 
-- 编译构建工具
+- Compile and build tools.
     ```
     git clone https://github.com/open-rust-initiative/rkos
     cd ./rkos
     cargo build --release
     ```
 
-- 将配置文件(configs,scripts,config-6.1,umount.sh)以及运行程序(rkos-builder)置于宿主系统目标分区（/mnt/lfs/）下
+- Place the configuration files (configs, scripts, config-6.1, and umount.sh) and the running program (rkos-builder) under the host system target partition (/mnt/lfs/).
     ```
     cp -r src/configs src/scripts src/config-6.1 src/umount.sh target/release/rkos-builder /mnt/lfs/
     ```
-- 运行rkos-builder --help 查看指令，并按选项流程构建
+- Run rkos-builder --help to view the instructions and build according to the option process.
 
-- 构建完成后在主机上压缩目标分区qcow2镜像，镜像目录在宿主机kvm镜像存放的位置处
+- After the build is complete, compress the target partition qcow2 image on the host, and the image directory should be at the location where the host kvm image is stored.
 
     ```
     TMPDIR=/home/tmp/path virt-sparsity --compress xxx.qcow2 xxx_compress.qcow2
     ```
 
-### 使用自己的Linux
+### Use your own Linux
 
-- 安装宿主机必需的软件
+- Install the necessary software for the host.
     ```
-    Bash >= 3.2 (/bin/sh 必须是到 bash 的符号链接或硬连接)
+    Bash >= 3.2 (/bin/sh must be a symlink or hardlink to bash)
     Binutils >= 2.13.1
-    Bison >= 2.7 (/usr/bin/yacc 必须是到 bison 的链接，或者是一个执行 bison 的小脚本)
+    Bison >= 2.7 (/usr/bin/yacc must be a link to bison, or a small script that executes bison)
     Coreutils >= 6.9
     Diffutils >= 2.8.1
     Findutils >= 4.2.31
-    Gawk >= 4.0.1 (/usr/bin/awk 必须是到 gawk 的链接)
-    GCC >= 4.8，包括 C++ 编译器 g++ ，C 和 C++ 标准库 (包括头文件) 也必须可用，这样 C++ 编译器才能构建宿主环境的程序
+    Gawk >= 4.0.1 (/usr/bin/awk must be a link to gawk)
+    GCC >= 4.8, including the C++ compiler g++, and the C and C++ standard libraries (including header files) must also be available so that the C++ compiler can build programs for the host environment.
     Grep >= 2.5.1a
     Gzip >= 1.3.12
     Linux Kernel >= 3.2
@@ -83,24 +83,24 @@ Rust King OS - Linux Distro of Rust Programing Language
     pkg-config
     ```
 
-- 如果是arch请安装arch开发套件 ```pacman -S base-devel```
+- If it is arch, please install the arch development kit ```pacman -S base-devel```
 
-- 运行version-check.sh查看输出，判断是否存在软件包缺失等问题
-    - 注意: rust git clang parted pkg-config 不会被检查，因此你应当确认这些包已经安装
+- Run version-check.sh to view the output and determine whether there are problems, such as missing software packages.
+    - Note: rust git clang parted pkg-config will not be checked, so you should make sure these packages are installed.
 
-- 安装qemu镜像相关工具
+- Install QEMU image-related tools.
 
     ```
     sudo pacman -S qemu-img nbd
     ```
 
-- 创建一个大小为30G的qcow2镜像
+- Create a qcow2 image with a size of 30G.
 
     ```
     qemu-img create -f qcow2 vda.qcow2 30G
     ```
 
-- 设置分区并挂载
+- Set up partitions and mount.
 
     ```
     sudo modprobe nbd max_part=16
@@ -120,30 +120,30 @@ Rust King OS - Linux Distro of Rust Programing Language
     sudo mount /dev/nbdxp1 /mnt/lfs/boot
 
     ```
-- 调整配置文件（根据需求调整）
+- Adjust configuration files (adjust according to needs).
 
-    - 文件路径：configs/base_configs.json
+    - File path: configs/base_configs.json
 
-    - 将"path":{"install_path":"设置为/mnt/lfs/或者自己挂载镜像的其他路径，但是要确保在/mnt目录下"}
+    - Set "path": "install_path": to /mnt/lfs/ or other paths, but make sure it is in the /mnt directory."
 
-    - 将"envs":["name":"LFS","value":"设置为上述相同的路径"]
+    - Set "envs": ["to the same path as above"]
 
-    - 将脚本文件 scripts/prepare/prepare_host_env.sh中的/dev/vdb1 与 /dev/vdb2 改成实际使用的分区
+    - Change /dev/vdb1 and /dev/vdb2 in the script file scripts/prepare/prepare_host_env.sh to the actual partition used.
 
-    - 将脚本文件 scripts/sysconfig/config_grub.sh 中的/dev/vdb改为实际使用的分区
+    - Change /dev/vdb in the script file scripts/sysconfig/config_grub.sh to the actual partition used.
 
-    注意路径末尾需要有'/'符号
+    Note that there needs to be a '/' symbol at the end of the path.
 
 
-- 将配置文件(configs,scripts,config-6.1,umount.sh)以及运行程序(rkos-builder)置于宿主系统目标分区（/mnt/lfs/）下
+- Place the configuration files (configs, scripts, config-6.1, and umount.sh) and the running program (rkos-builder) under the host system target partition (/mnt/lfs/).
 
     ```
     cp -r rkos/src/configs rkos/src/config-6.1 rkos/src/umount.sh rkos/src/scripts /mnt/lfs/
     ```
 
 
-- 运行rkos-builder --help 查看指令，并按选项流程构建，每个流程执行完之后，务必运行./umount.sh，但是可以忽略该脚本的输出
-    - 流程：
+- Run rkos-builder --help to view the instructions, and build according to the option process. After each process is executed, be sure to run./umount.sh, but the output of this script can be ignored.
+    - Process：
         - host-config
         - package-download
         - build-temp-toolchains
@@ -153,7 +153,7 @@ Rust King OS - Linux Distro of Rust Programing Language
         - install-grub
 
 
-- 构建完成后在主机上压缩目标分区qcow2镜像，镜像目录在宿主机kvm镜像存放的位置处
+- After the build is complete, compress the target partition qcow2 image on the host, and the image directory should be at the location where the host kvm image is stored.
 
     ```
     sudo pacman -S guestfs-tools
@@ -194,34 +194,78 @@ Options:
 ```
 ## Example：
 
-```
-# 配置宿主机环境
-rkos-builder host-config start 
-```
+    ```
+    # Configure the host environment.
+    rkos-builder host-config start 
+    ```
 
-- 构建时可以按照<BUILD_OPTION>中的选项，从host-config开始手动构建每一步，在build-temp-toolchains之后每一步构建完成后需要手动运行umount.sh然后再开始下一步
+- When building, you can manually build each step from host-config according to the options in BUILD_OPTION>. After build-temp-toolchains, you need to manually run umount.sh after each step is completed and then start the next step.
 
-- build-base-packages由于需要构建clang，根据机器性能不同可能会需要2小时以上的时间，并且需要宿主机挂载有20GB的交换分区
+- build-base-packages needs to build clang; it may take more than 2 hours depending on the performance of the machine, and the host needs to be mounted with a 20GB swap partition.
 
-- 可以直接使用build选项来构建所有流程，暂时还不稳定，可能会出现问题，构建的日志会记录在目标分区的root/prepare.log、root/config.log 和root/log.log文件中，分别记录宿主机环境准备过程中的日志和配置中的日志以及构建过程中的日志
+- You can directly use the build option to build all processes. It is not stable yet, and problems may occur. The build log will be recorded in the root/prepare.log, root/config.log, and root/log.log files of the target partition. Record the logs in the preparation process of the host environment, the logs in the configuration, and the logs in the construction process.
 
 # Issue
 
-- e2fsck 版本太旧，内核启动时会产生一个错误，不影响启动，即将修复
+- The e2fsck version is too old; there will be an error when the kernel starts; it will not affect startup; it will be fixed soon.
 
-- 宿主机网络不通会导致配置和安装失败
+- Host network failure will lead to configuration and installation failure.
 
-- rust包（rust,coreutils,kernel）的构建和安装过程的日志输出不会被记录，即将修复
+- The log output of the build and installation processes of rust packages (rust, coreutils, and kernel) will not be recorded and will be fixed soon.
 
-- 可能出现由于网络不稳定导致rust-src下载失败，重新开始对应option即可
+- The download of rust-src may fail due to network instability; just restart the corresponding option.
 
-- 软件包安装验证功能缺少，可能出现软件包漏安装，目前测试可能会出现1-2个包漏安装
+- The software package installation verification function is lacking, and there may be missing installations of the software package. Currently, there may be 1-2 missing package installations in the test.
 
-- 如果安装过程中出现问题，修复问题后，在对应的配置文件中暂时删除已经安装的软件包即可继续构建
+- If there is a problem during the installation process, after fixing the problem, temporarily delete the installed software package from the corresponding configuration file to continue building.
 
     ```
     cp configs/[package_info.json|rust_support_packages.json]{,.bak}
 
-    #然后找到对应安装失败的软件包，将之前安装好的全部删掉，解决安装失败的问题后，可以继续运行构建流程
+    # Then find the corresponding software package that failed to install, delete all the previously installed ones, and after solving the problem of failed installation, you can continue to run the build process.
     ```
 
+# Contributing
+
+Mega is an open-source Git-based monorepo platform for trunk-based development. The project relies on community contributions and aims to simplify getting started. To use Mega, clone the repo, install dependencies, and run tests. Pick an issue, make changes, and submit a pull request for community review.
+
+To contribute to Mega, you should:
+
+- Familiarize yourself with the [Code of Conduct](CODE-OF-CONDUCT.md). Mega has a strict policy against abusive, unethical, or illegal behavior.
+- Review the [Contributing Guidelines](CONTRIBUTING.md). This document outlines the process for submitting bug reports, feature requests, and pull requests to Mega.
+- Sign the [Developer Certificate of Origin](https://developercertificate.org) (DCO) by adding a `Signed-off-by` line to your commit messages. This certifies that you wrote or have the right to submit the code you are contributing to the project.
+- Choose an issue to work on. Issues labeled `good first issue` are suitable for newcomers. You can also look for issues marked `help wanted`.
+- Fork the Mega repository and create a branch for your changes.
+- Make your changes and commit them with a clear commit message.
+- Push your changes to GitHub and open a pull request.
+- Respond to any feedback on your pull request. The Mega maintainers will review your changes and may request modifications before merging.
+- Once your pull request is merged, you will be listed as a contributor in the project repository and documentation.
+
+To comply with the requirements, contributors must include both a `Signed-off-by` line and a PGP signature in their commit messages. You can find more information about how to generate a PGP key [here](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key).
+
+Git even has a `-s` command line option to append this automatically to your commit message, and `-S` to sign your commit with your PGP key. For example:
+
+```bash
+$ git commit -S -s -m 'This is my commit message'
+```
+
+## Rebase the branch
+
+If you have a local git environment and meet the criteria below, one option is to rebase the branch and add your Signed-off-by lines in the new commits. Please note that if others have already begun work based upon the commits in this branch, this solution will rewrite history and may cause serious issues for collaborators (described in the git documentation under “The Perils of Rebasing”).
+
+You should only do this if:
+
+- You are the only author of the commits in this branch
+- You are absolutely certain nobody else is doing any work based upon this branch
+- There are no empty commits in the branch (for example, a DCO Remediation Commit which was added using `-allow-empty`)
+
+To add your Signed-off-by line to every commit in this branch:
+
+- Ensure you have a local copy of your branch by checking out the pull request locally via command line.
+- In your local branch, run: `git rebase HEAD~1 --signoff`
+- Force push your changes to overwrite the branch: `git push --force-with-lease origin main`
+
+# License
+rkso is licensed under this licensed:
+
+- MIT LICENSE ( [LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
