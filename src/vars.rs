@@ -47,62 +47,54 @@ pub enum BuildOption {
     PackageDownload,
     BuildTempToolchains,
     BuildBasePackages,
-    BuildRustSupportPackageAndKernel,
-    ConfigTargetSystem,
-    InstallGrub,
     CleanUp,
+    ConfigTargetSystem,
+    BuildRustSupportPackageAndKernel,
+    InstallGrub,
 }
 
 lazy_static! {
-    pub static ref DISK_INFO:Answers=req_user_input();
-    pub static ref BOOT_PARTUUID:String=get_uuid(DISK_INFO["target_boot_part"].clone(), false);
-    pub static ref BOOT_UUID:String=get_uuid(DISK_INFO["target_boot_part"].clone(), true);
-    pub static ref ROOT_PARTUUID:String=get_uuid(DISK_INFO["target_root_part"].clone(), false);
-    pub static ref ROOT_UUID:String=get_uuid(DISK_INFO["target_root_part"].clone(), true);
+    pub static ref DISK_INFO: Answers = req_user_input();
+    pub static ref BOOT_PARTUUID: String = get_uuid(DISK_INFO["target_boot_part"].clone(), false);
+    pub static ref BOOT_UUID: String = get_uuid(DISK_INFO["target_boot_part"].clone(), true);
+    pub static ref ROOT_PARTUUID: String = get_uuid(DISK_INFO["target_root_part"].clone(), false);
+    pub static ref ROOT_UUID: String = get_uuid(DISK_INFO["target_root_part"].clone(), true);
     pub static ref ROOT_DIR: PathBuf = env::current_dir().unwrap();
     pub static ref BASE_CONFIG: BaseConfig = {
         let temp = parse_json(["configs", "base_configs.json"].iter().collect());
         match temp {
             Ok(v) => v,
-            Err(e) => panic!("Cannot load base config , Err msg: {}",e),
+            Err(e) => panic!("Cannot load base config , Err msg: {}", e),
         }
     };
     pub static ref STOP_FLAG: PathBuf = PathBuf::from(&BASE_CONFIG.host_info.stop_flag);
-    pub static ref ALL_PACKAGES: AllPackages = {
-//        let temp = parse_json("configs/all_packages.json");
+    pub static ref RUST_SUPPORT_PACKAGES: RustSupportPackages = {
         let temp = parse_json(
-            [&BASE_CONFIG.configs.root, &BASE_CONFIG.configs.package_info]
-                .iter()
-                .collect(),
+            [
+                &BASE_CONFIG.configs.root,
+                &BASE_CONFIG.configs.rust_support_packages,
+            ]
+            .iter()
+            .collect(),
         );
         match temp {
             Ok(v) => v,
-            Err(e) => panic!("Cannot load all packages , Err msg: {}",e),
+            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}", e),
         }
     };
-    pub static ref RUST_SUPPORT_PACKAGES: RustSupportPackages = {
-//        let temp = parse_json("configs/cross_compile_packages.json");
-        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.rust_support_packages].iter().collect());
-        match temp {
-            Ok(v) => v,
-            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}",e),
-        }
-    };
+    pub static ref PACKAGES: Packages = {
+        let temp = parse_json(
+            [
+                &BASE_CONFIG.configs.root,
+                &BASE_CONFIG.configs.package_config,
+            ]
+            .iter()
+            .collect(),
+        );
 
-    pub static ref CROSS_COMPILE_PACKAGES: CrossCompilePackages = {
-//        let temp = parse_json("configs/cross_compile_packages.json");
-        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.temp_toolchains].iter().collect());
         match temp {
             Ok(v) => v,
-            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}",e),
-        }
-    };
-    pub static ref BASE_PACKAGES: BasePackages = {
-//        let temp = parse_json("configs/base_packages.json");
-        let temp = parse_json([&BASE_CONFIG.configs.root,&BASE_CONFIG.configs.base_packages].iter().collect());
-        match temp {
-            Ok(v) => v,
-            Err(e) => panic!("Cannot load base packages , Err msg: {}",e),
+            Err(e) => panic!("Cannot load cross compile packages, Err msg: {}", e),
         }
     };
 }
@@ -113,6 +105,7 @@ pub struct HostInfo {
     pub stop_flag: String,
 }
 
+// scripte path in base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ScriptsPath {
     pub root: String,
@@ -126,15 +119,15 @@ pub struct ScriptsPath {
     pub sysconfig: String,
 }
 
+// base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Configs {
     pub root: String,
-    pub package_info: String,
-    pub base_packages: String,
-    pub temp_toolchains: String,
     pub rust_support_packages: String,
+    pub package_config: String,
 }
 
+// path info in base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PathInfo {
     pub root: String,
@@ -144,17 +137,20 @@ pub struct PathInfo {
     pub install_path: String,
 }
 
+// env config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvsInfo {
     pub name: String,
     pub value: String,
 }
 
+// env config vec
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Envs {
     pub envs: Vec<EnvsInfo>,
 }
 
+// base config
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BaseConfig {
     pub host_info: HostInfo,
@@ -164,18 +160,7 @@ pub struct BaseConfig {
     pub envs: Vec<EnvsInfo>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct BasePackagesInfo {
-    pub name: String,
-    pub package_name: String,
-    pub script: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct BasePackages {
-    pub base_packages: Vec<BasePackagesInfo>,
-}
-
+// rust support package
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackageInfo {
     pub name: String,
@@ -183,41 +168,53 @@ pub struct RustSupportPackageInfo {
     pub script: String,
 }
 
+// rust support package vec
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RustSupportPackages {
     pub rust_support_packages: Vec<RustSupportPackageInfo>,
 }
 
+// package info , todo: auto update
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageInfo {
-    pub name: String,
-    pub url: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PatchInfo {
-    pub name: String,
-    pub url: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AllPackages {
-    pub all_packages: Vec<PackageInfo>,
-    pub package_patches: Vec<PatchInfo>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CrossCompilePackagesInfo {
-    pub name: String,
     pub package_name: String,
-    pub script: String,
+    pub file_name: String,
+    pub url: String,
+    pub last_version: String,
+    pub current_version: String,
 }
 
+// package install info , do not try to change this
 #[derive(Debug, Serialize, Deserialize)]
-pub struct CrossCompilePackages {
-    pub cross_compile_toolchains: Vec<CrossCompilePackagesInfo>,
-    pub cross_compile_packages: Vec<CrossCompilePackagesInfo>,
-    pub after_chroot_packages: Vec<CrossCompilePackagesInfo>,
+pub struct PackageInstallInfo {
+    pub package_name: String,
+    pub script_name: String,
+}
+
+// install info , do not try to change this
+#[derive(Debug, Serialize, Deserialize)]
+pub struct InstallInfo {
+    pub cross_compile_toolchains: Vec<PackageInstallInfo>,
+    pub cross_compile_packages: Vec<PackageInstallInfo>,
+    pub after_chroot_packages: Vec<PackageInstallInfo>,
+    pub base_packages: Vec<PackageInstallInfo>,
+}
+
+// package patch info
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PackagePatch {
+    pub patch_name: String,
+    pub url: String,
+    pub last_version: String,
+    pub current_version: String,
+}
+
+// all packages , package info , patches info , install info
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Packages {
+    pub package_info: Vec<PackageInfo>,
+    pub install_info: InstallInfo,
+    pub package_patches: Vec<PackagePatch>,
 }
 
 pub fn parse_json<T: serde::de::DeserializeOwned>(
@@ -260,7 +257,8 @@ pub fn get_blkid_output() -> Vec<String> {
         Ok(v) => {
             //TODO:确认flatten的方式是否可行
             let cursor = Cursor::new(v.as_bytes());
-            for line in cursor.lines().into_iter().flatten() {
+            //.into_iter()
+            for line in cursor.lines().flatten() {
                 lines.push(line);
             }
             //            for line in cursor.lines().into_iter() {

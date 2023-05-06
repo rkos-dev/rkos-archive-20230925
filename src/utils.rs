@@ -29,12 +29,18 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
     //日志输出文件
     let stdout_file = match File::create("/root/log.log") {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("not find root/log.log");
+            return false;
+        }
     };
 
     let stderr_file = match stdout_file.try_clone() {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("try to clone stdout file error");
+            return false;
+        }
     };
 
     let stdio = Stdio::from(stdout_file);
@@ -42,7 +48,10 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
     //取绝对路径
     let abs_path = match fs::canonicalize(dir.as_path()) {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("get abs path failed");
+            return false;
+        }
     };
 
     let output = match Command::new("/bin/bash")
@@ -54,13 +63,16 @@ pub fn exec_chroot_script(script_path: PathBuf, dir: PathBuf) -> bool {
         .env("MAKEFLAGS", "-j8")
         .env("NINJAJOBS", "8")
         .arg("-e")
-        .arg(script_path)
+        .arg(script_path.clone())
         .stdout(stdio)
         .stderr(stderr)
         .status()
     {
         Ok(v) => v,
-        Err(_e) => return false,
+        Err(_e) => {
+            error!("exec script {:?} failed", script_path);
+            return false;
+        }
     };
 
     output.success()
@@ -226,7 +238,14 @@ pub fn install_package(
             .next()
         {
             Some(v) => v,
-            None => return Err(format!("Not found script {:?}", package_info.package_name).into()),
+            None => {
+                return Err(format!(
+                    "Not found script {:?}, script path {:?}",
+                    package_info.package_name,
+                    package_info.script_path.clone()
+                )
+                .into())
+            }
         };
 
     info!(

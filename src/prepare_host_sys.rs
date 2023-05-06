@@ -50,10 +50,36 @@ pub struct PreparingSoftware {}
 impl utils::ProgramEndingFlag for PreparingSoftware {}
 impl PreparingSoftware {
     /// 下载软件包和软件包补丁
+    //    #[allow(unused)]
+    //    fn download_packages(&self) {
+    //        //        let all_packages = &vars::ALL_PACKAGES.all_packages;
+    //        //        let all_patches = &vars::ALL_PACKAGES.package_patches;
+    //        let all_packages = &vars::PACKAGES.package_info;
+    //        let all_patches = &vars::PACKAGES.package_patches;
+    //
+    //        let mut dls = Vec::new();
+    //
+    //        for package in all_packages {
+    //            dls.push(package.url.as_str());
+    //            //TODO:!!!!!
+    //        }
+    //        for patch in all_patches {
+    //            dls.push(patch.url.as_str());
+    //        }
+    //        info!("{:?}", dls);
+    //        let status = utils::new_downlaod("./source".to_string(), &dls[..]);
+    //        match status {
+    //            Ok(v) => info!("ok"),
+    //            Err(e) => error!("error {:?}", e),
+    //        }
+    //    }
     fn preparing_base_software(&self) {
         //软件包和补丁列表
-        let all_packages = &vars::ALL_PACKAGES.all_packages;
-        let patches = &vars::ALL_PACKAGES.package_patches;
+        //        let all_packages = &vars::ALL_PACKAGES.all_packages;
+        //        let patches = &vars::ALL_PACKAGES.package_patches;
+
+        let all_packages = &vars::PACKAGES.package_info;
+        let all_patches = &vars::PACKAGES.package_patches;
 
         //软件包下载状态记录
         let mut pack_status = HashMap::new();
@@ -63,13 +89,16 @@ impl PreparingSoftware {
             let mut try_download_times = 0;
 
             //检查是否已经存在数据,原本存在就不需要下载
-            if utils::check_download_before(&package.name, &vars::BASE_CONFIG.path.package_build) {
+            if utils::check_download_before(
+                &package.package_name,
+                &vars::BASE_CONFIG.path.package_build,
+            ) {
                 continue;
             }
 
             while try_download_times < 5 {
                 utils::delete_failed_download_pack(
-                    &package.name,
+                    &package.package_name,
                     &vars::BASE_CONFIG.path.package_build,
                 );
                 match utils::download(
@@ -81,7 +110,7 @@ impl PreparingSoftware {
                             true => {
                                 //下载成功
                                 try_download_times = 0;
-                                pack_status.insert(&package.name, v);
+                                pack_status.insert(&package.package_name, v);
                                 break;
                             }
                             false => {
@@ -100,19 +129,19 @@ impl PreparingSoftware {
                 }
             }
             if try_download_times == 5 {
-                pack_status.insert(&package.name, false);
+                pack_status.insert(&package.package_name, false);
             }
         }
 
         //下载补丁
-        for patch in patches {
+        for patch in all_patches {
             //重试次数
             let mut try_download_times = 0;
 
             //检查是否存在
             //FIXME:目录不是补丁目录，需要调整
             if utils::check_download_before(
-                &patch.name,
+                &patch.patch_name,
                 &(vars::BASE_CONFIG.path.package_source.clone()
                     + &vars::BASE_CONFIG.path.package_patches),
             ) {
@@ -132,7 +161,7 @@ impl PreparingSoftware {
                     Ok(v) => match v {
                         true => {
                             try_download_times = 0;
-                            pack_status.insert(&patch.name, v);
+                            pack_status.insert(&patch.patch_name, v);
                             break;
                         }
                         false => {
@@ -147,7 +176,7 @@ impl PreparingSoftware {
                 }
             }
             if try_download_times == 5 {
-                pack_status.insert(&patch.name, false);
+                pack_status.insert(&patch.patch_name, false);
             }
         }
 
@@ -162,6 +191,7 @@ impl TaskTrait for PreparingSoftware {
     fn run(&self, _input: Inputval, _env: EnvVar) -> Retval {
         self.check_flag();
         self.preparing_base_software();
+        //self.download_packages();
         Retval::empty()
     }
 }

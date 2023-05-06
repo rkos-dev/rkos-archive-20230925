@@ -48,7 +48,7 @@
     "ip": null,
     "type": "iso"
   },
-  "packages": ["openssh", "vim", "wget"],
+  "packages": ["openssh", "vim", "wget", "git", "rust", "clang", "parted"],
   "services": ["sshd"],
   "no_pkg_lookups": false,
   "offline": false,
