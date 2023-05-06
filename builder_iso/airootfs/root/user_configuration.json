@@ -5,8 +5,14 @@
   "config_version": "2.5.1",
   "debug": false,
   "hostname": "lfs_host",
-  "harddrives": ["/dev/vda", "/dev/vdb", "/dev/vdc"],
-  "kernels": ["linux"],
+  "harddrives": [
+    "/dev/vda",
+    "/dev/vdb",
+    "/dev/vdc"
+  ],
+  "kernels": [
+    "linux"
+  ],
   "keyboard-layout": "us",
   "mirror-region": {
     "China": {
@@ -48,8 +54,18 @@
     "ip": null,
     "type": "iso"
   },
-  "packages": ["openssh", "vim", "wget"],
-  "services": ["sshd"],
+  "packages": [
+    "openssh",
+    "vim",
+    "wget",
+    "git",
+    "rust",
+    "clang",
+    "parted"
+  ],
+  "services": [
+    "sshd"
+  ],
   "no_pkg_lookups": false,
   "offline": false,
   "script": "guided",
