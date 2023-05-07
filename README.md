@@ -227,18 +227,18 @@ Options:
 
 # Contributing
 
-Mega is an open-source Git-based monorepo platform for trunk-based development. The project relies on community contributions and aims to simplify getting started. To use Mega, clone the repo, install dependencies, and run tests. Pick an issue, make changes, and submit a pull request for community review.
+rkos is a linux distro of rust programing language. The project relies on community contributions and aims to simplify getting started. To use rkos, clone the repo, install dependencies, and run rkso-builder. Pick an issue, make changes, and submit a pull request for community review.
 
-To contribute to Mega, you should:
+To contribute to rkos, you should:
 
-- Familiarize yourself with the [Code of Conduct](CODE-OF-CONDUCT.md). Mega has a strict policy against abusive, unethical, or illegal behavior.
-- Review the [Contributing Guidelines](CONTRIBUTING.md). This document outlines the process for submitting bug reports, feature requests, and pull requests to Mega.
+- Familiarize yourself with the [Code of Conduct](CODE-OF-CONDUCT.md). rkos has a strict policy against abusive, unethical, or illegal behavior.
+- Review the [Contributing Guidelines](CONTRIBUTING.md). This document outlines the process for submitting bug reports, feature requests, and pull requests to rkos.
 - Sign the [Developer Certificate of Origin](https://developercertificate.org) (DCO) by adding a `Signed-off-by` line to your commit messages. This certifies that you wrote or have the right to submit the code you are contributing to the project.
 - Choose an issue to work on. Issues labeled `good first issue` are suitable for newcomers. You can also look for issues marked `help wanted`.
-- Fork the Mega repository and create a branch for your changes.
+- Fork the rkos repository and create a branch for your changes.
 - Make your changes and commit them with a clear commit message.
 - Push your changes to GitHub and open a pull request.
-- Respond to any feedback on your pull request. The Mega maintainers will review your changes and may request modifications before merging.
+- Respond to any feedback on your pull request. The rkos maintainers will review your changes and may request modifications before merging.
 - Once your pull request is merged, you will be listed as a contributor in the project repository and documentation.
 
 To comply with the requirements, contributors must include both a `Signed-off-by` line and a PGP signature in their commit messages. You can find more information about how to generate a PGP key [here](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/generating-a-new-gpg-key).
@@ -266,6 +266,6 @@ To add your Signed-off-by line to every commit in this branch:
 - Force push your changes to overwrite the branch: `git push --force-with-lease origin main`
 
 # License
-rkso is licensed under this licensed:
+rkos is licensed under this licensed:
 
 - MIT LICENSE ( [LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
