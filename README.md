@@ -132,6 +132,8 @@ Rust King OS - Linux Distro of Rust Programing Language
 
     - Change /dev/vdb in the script file scripts/sysconfig/config_grub.sh to the actual partition used.
 
+    - Change /mnt/lfs in the script file umount.sh to the actual mount point used.
+
     Note that there needs to be a '/' symbol at the end of the path.
 
 
