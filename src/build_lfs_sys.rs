@@ -63,11 +63,15 @@ impl TaskTrait for RemoveDebugSymbol {
         let remove_symbol_path =
             vars::BASE_CONFIG.scripts_path.root.clone() + &vars::BASE_CONFIG.scripts_path.clean;
 
-        let status = utils::exec_chroot_script(
+        //        let status = utils::exec_chroot_script(
+        //            ["remove_debug_symbol.sh"].iter().collect(),
+        //            remove_symbol_path.into(),
+        //        );
+        utils::exec_chroot_script(
             ["remove_debug_symbol.sh"].iter().collect(),
             remove_symbol_path.into(),
         );
-        self.try_set_flag(status);
+        //self.try_set_flag(status);
         Retval::empty()
     }
 }
