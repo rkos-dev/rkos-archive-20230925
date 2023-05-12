@@ -10,9 +10,15 @@ rustup component add clippy
 
 make CC=clang  rustavailable
 
-make CC=clang allnoconfig /config-6.1
+cp /config-6.1 ./.config
+
+#make CC=clang allnoconfig /config-6.1
+
+make CC=clang oldconfig
 
 make CC=clang
+
+make CC=clang modules_install
 
 cp -iv arch/x86_64/boot/bzImage /boot/vmlinuz-6.1-rkos-0.0.1
 

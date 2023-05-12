@@ -104,6 +104,8 @@ Rust King OS - Linux Distro of Rust Programing Language
 
     ```
     sudo modprobe nbd max_part=16
+
+    # Please change the x in nbdx to an actual number. 
     qemu-nbd -c /dev/nbdx vda.qocw2
 
     sudo parted /dev/nbdx mklabel msdos
@@ -132,6 +134,8 @@ Rust King OS - Linux Distro of Rust Programing Language
 
     - Change /dev/vdb in the script file scripts/sysconfig/config_grub.sh to the actual partition used.
 
+    - Change /mnt/lfs in the script file umount.sh to the actual mount point used.
+
     Note that there needs to be a '/' symbol at the end of the path.
 
 
@@ -141,8 +145,9 @@ Rust King OS - Linux Distro of Rust Programing Language
     cp -r rkos/src/configs rkos/src/config-6.1 rkos/src/umount.sh rkos/src/scripts /mnt/lfs/
     ```
 
+- You can directly execute the automated build process. Run ```rkos-builder build start``` If there is an error during the process, please check the log and delete all mounts (run .umount.sh) and delete all files on the disk, restart after troubleshooting.
 
-- Run rkos-builder --help to view the instructions, and build according to the option process. After each process is executed, be sure to run./umount.sh, but the output of this script can be ignored.
+- Or You can run rkos-builder --help to view the instructions, and build according to the option process. After each process is executed, be sure to run./umount.sh, and the output of this script can not be ignored.
     - Process：
         - host-config
         - package-download
@@ -156,6 +161,10 @@ Rust King OS - Linux Distro of Rust Programing Language
 - After the build is complete, compress the target partition qcow2 image on the host, and the image directory should be at the location where the host kvm image is stored.
 
     ```
+    ./umount.sh
+
+    qemu-nbd -d /mnt/lfs 
+
     sudo pacman -S guestfs-tools
     TMPDIR=/home/tmp/path virt-sparsity --compress xxx.qcow2 xxx_compress.qcow2
     ```
