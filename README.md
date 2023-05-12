@@ -161,6 +161,8 @@ Rust King OS - Linux Distro of Rust Programing Language
 - After the build is complete, compress the target partition qcow2 image on the host, and the image directory should be at the location where the host kvm image is stored.
 
     ```
+    ./umount.sh
+
     qemu-nbd -d /mnt/lfs 
 
     sudo pacman -S guestfs-tools
